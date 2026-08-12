@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This practical follows the IES Week 8 seminar of the same name. That seminar introduced sampling variability through an interactive demonstration, stated the central limit theorem as a one-sentence summary of what that demonstration showed, and drew a sharp line between the standard deviation and the standard error. The SD describes the spread of the <em>data</em>. The SE describes the precision of an <em>estimate</em>. In this session we put those ideas to work. We’ll calculate a standard error, build a confidence interval from it, check the calculation against R’s own functions, and then use the same logic in reverse to size a study before it is run.</p>
+<p>This practical follows the Week 8 seminar of the same name. That seminar introduced sampling variability through an interactive demonstration, stated the central limit theorem as a one-sentence summary of what that demonstration showed, and drew a sharp line between the standard deviation and the standard error. The SD describes the spread of the <em>data</em>. The SE describes the precision of an <em>estimate</em>. In this session we put those ideas to work. We’ll calculate a standard error, build a confidence interval from it, check the calculation against R’s own functions, and then use the same logic in reverse to size a study before it is run.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">4.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this session you will be able to:</p>
@@ -265,8 +265,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">4.2</span> Setup</h2>
-<p>As in IES Week 7, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary. This chapter also brings in a second dataset for the first time: <code>strep_tb</code>, from the <code>medicaldata</code> package. Unlike <code>nhanes_mph</code>, <code>strep_tb</code> doesn’t live in a CSV file. It ships built into the package itself, so <code>library(medicaldata)</code> is enough to make it available. There is no <code>read_csv()</code> step for it. We’ll explain what <code>strep_tb</code> contains properly below, the first time we use it.</p>
-<p><code>medicaldata</code> is the first package this book uses that doesn’t come with the tidyverse, so it almost certainly isn’t on your machine yet. As IES Week 4 explained, installing a package and loading it are two different actions, and the data living inside the package doesn’t change that: you still have to install the package before you can load it. Run <code>install.packages("medicaldata")</code> once in the console, not inside this document. Once it’s installed, <code>library(medicaldata)</code> below works for this session, exactly like every other package we load.</p>
+<p>As in Week 7, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary. This chapter also brings in a second dataset for the first time: <code>strep_tb</code>, from the <code>medicaldata</code> package. Unlike <code>nhanes_mph</code>, <code>strep_tb</code> doesn’t live in a CSV file. It ships built into the package itself, so <code>library(medicaldata)</code> is enough to make it available. There is no <code>read_csv()</code> step for it. We’ll explain what <code>strep_tb</code> contains properly below, the first time we use it.</p>
+<p><code>medicaldata</code> is the first package this book uses that doesn’t come with the tidyverse, so it almost certainly isn’t on your machine yet. As Week 4 explained, installing a package and loading it are two different actions, and the data living inside the package doesn’t change that: you still have to install the package before you can load it. Run <code>install.packages("medicaldata")</code> once in the console, not inside this document. Once it’s installed, <code>library(medicaldata)</code> below works for this session, exactly like every other package we load.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
@@ -301,11 +301,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>))</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This is the same recode we introduced in IES Week 7. See IES Week 7 for the reasoning behind each variable and each choice of <code>ordered = TRUE</code>. We repeat it here, unchanged, so this chapter stands on its own.</p>
+<p>This is the same recode we introduced in Week 7. See Week 7 for the reasoning behind each variable and each choice of <code>ordered = TRUE</code>. We repeat it here, unchanged, so this chapter stands on its own.</p>
 </section>
 <section id="point-estimate-and-standard-error-by-hand" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="point-estimate-and-standard-error-by-hand"><span class="header-section-number">4.3</span> Point estimate and standard error, by hand</h2>
-<p>A point estimate on its own says nothing about how precise it is. The standard error attaches a precision to it, and we calculate it from three quantities already familiar from IES Week 7: the standard deviation, <code>sd()</code>, and the sample size, <code>n()</code>. Let’s apply this to sedentary time (<code>sed</code>):</p>
+<p>A point estimate on its own says nothing about how precise it is. The standard error attaches a precision to it, and we calculate it from three quantities already familiar from Week 7: the standard deviation, <code>sd()</code>, and the sample size, <code>n()</code>. Let’s apply this to sedentary time (<code>sed</code>):</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sed_stats <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sed)) <span class="sc">|&gt;</span></span>
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1     6.56   10.9 34434 0.0588</code></pre>
 </div>
 </div>
-<p><code>sqrt()</code> is base R’s square root function. The standard error of a mean is the standard deviation divided by the square root of the sample size. As <code>n</code> grows, the denominator grows and the standard error shrinks. That’s the algebra behind IES Week 8’s precision argument.</p>
-<p><code>sed</code> was shown in IES Week 7 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn’t disqualify it from a confidence interval on its <em>mean</em>. The seminar’s interactive demonstration made the point with dice: the value of a single roll is flat, every face equally likely and nothing bell-shaped about it, yet the <em>average</em> of 25 rolls piles up into a bell anyway. The shape of the thing you’re averaging and the shape of the average are two different questions.</p>
+<p><code>sqrt()</code> is base R’s square root function. The standard error of a mean is the standard deviation divided by the square root of the sample size. As <code>n</code> grows, the denominator grows and the standard error shrinks. That’s the algebra behind Week 8’s precision argument.</p>
+<p><code>sed</code> was shown in Week 7 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn’t disqualify it from a confidence interval on its <em>mean</em>. The seminar’s interactive demonstration made the point with dice: the value of a single roll is flat, every face equally likely and nothing bell-shaped about it, yet the <em>average</em> of 25 rolls piles up into a bell anyway. The shape of the thing you’re averaging and the shape of the average are two different questions.</p>
 <p>That’s what licenses what we just did. <code>sed</code> is skewed where the die was flat, but both are a long way from normal, and neither has to be normal for the interval on the mean to behave. What does the work is the sample size, and with 34,434 participants behind it, <code>sed</code> has far more of it than 25 dice.</p>
 </section>
 <section id="from-standard-error-to-a-confidence-interval" class="level2" data-number="4.4">
@@ -363,8 +363,8 @@ mean of x
  6.564277 </code></pre>
 </div>
 </div>
-<p><code>t.test()</code> also reports a test statistic, degrees of freedom, and a p-value. These belong to a hypothesis test, which is IES Week 9’s subject. For now, look only at the confidence interval, and check that it closely matches the interval we calculated by hand above.</p>
-<p>One thing <code>t.test()</code> does quietly is worth making loud. We passed it <code>nhanes$sed</code> whole, missing values and all, with no <code>filter()</code> and no <code>na.rm = TRUE</code>, and it ran anyway. It drops missing values itself, before calculating. The evidence is in the output: the degrees of freedom are 34,433, one less than the 34,434 participants we filtered down to by hand, which is why the two intervals agree at all. That’s a sensible default, but it’s the same silent drop the histogram warnings in IES Week 5 and IES Week 7 made noisy, this time with nothing printed to tell you it happened. So count the missing values yourself before you report a result from <code>t.test()</code>, the way we did with <code>is.na()</code> and <code>sum()</code> in IES Week 5. The function won’t do it for you.</p>
+<p><code>t.test()</code> also reports a test statistic, degrees of freedom, and a p-value. These belong to a hypothesis test, which is Week 9’s subject. For now, look only at the confidence interval, and check that it closely matches the interval we calculated by hand above.</p>
+<p>One thing <code>t.test()</code> does quietly is worth making loud. We passed it <code>nhanes$sed</code> whole, missing values and all, with no <code>filter()</code> and no <code>na.rm = TRUE</code>, and it ran anyway. It drops missing values itself, before calculating. The evidence is in the output: the degrees of freedom are 34,433, one less than the 34,434 participants we filtered down to by hand, which is why the two intervals agree at all. That’s a sensible default, but it’s the same silent drop the histogram warnings in Week 5 and Week 7 made noisy, this time with nothing printed to tell you it happened. So count the missing values yourself before you report a result from <code>t.test()</code>, the way we did with <code>is.na()</code> and <code>sum()</code> in Week 5. The function won’t do it for you.</p>
 <p>The two intervals are close but not identical, because <code>t.test()</code> doesn’t use a fixed multiplier of 1.96. It uses a value from the t-distribution, which depends on the sample size through its degrees of freedom (<code>n - 1</code>), and which is very slightly wider than 1.96 for any finite sample. <code>qt()</code>, from base R, looks up that exact multiplier:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df =</span> sed_stats<span class="sc">$</span>n_sed <span class="sc">-</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -410,7 +410,7 @@ $ rad_num             &lt;dbl&gt; 6, 5, 5, 5, 5, 6, 5, 5, 5, 5, 6, 5, 5, 5, 5, 6
 $ improved            &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE…</code></pre>
 </div>
 </div>
-<p><code>arm</code> and <code>gender</code> are already factors. <code>improved</code>, the outcome we care about here, is <strong>logical</strong>: <code>TRUE</code> or <code>FALSE</code>, rather than a factor. R stores <code>TRUE</code> and <code>FALSE</code> as 1 and 0, which will matter again shortly. <code>table()</code>, already met in IES Week 7, counts how many patients fall into each category of <code>improved</code>, and <code>prop.table()</code> converts those counts to proportions:</p>
+<p><code>arm</code> and <code>gender</code> are already factors. <code>improved</code>, the outcome we care about here, is <strong>logical</strong>: <code>TRUE</code> or <code>FALSE</code>, rather than a factor. R stores <code>TRUE</code> and <code>FALSE</code> as 1 and 0, which will matter again shortly. <code>table()</code>, already met in Week 7, counts how many patients fall into each category of <code>improved</code>, and <code>prop.table()</code> converts those counts to proportions:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(strep_tb<span class="sc">$</span>improved)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -428,7 +428,7 @@ FALSE  TRUE
 <section id="the-standard-error-of-a-proportion-by-hand" class="level3" data-number="4.5.1">
 <h3 data-number="4.5.1" class="anchored" data-anchor-id="the-standard-error-of-a-proportion-by-hand"><span class="header-section-number">4.5.1</span> The standard error of a proportion, by hand</h3>
 <p>A proportion is an estimate like any other, so it has a standard error too. The formula is different from the one for a mean, because a proportion carries its own variability: once you know p, you know how spread out a yes/no variable is, so there’s no separate SD to measure. The standard error of a proportion is the square root of p × (1 − p) ÷ n.</p>
-<p><code>sum()</code> of a logical vector counts how many values are <code>TRUE</code>, since R stores <code>TRUE</code> as 1 and <code>FALSE</code> as 0. So <code>sum(strep_tb$improved)</code> is the number of patients who improved, out of <code>nrow(strep_tb)</code> in total. <code>nrow()</code> was met briefly in IES Week 5, returning just the row count on its own rather than rows and columns together the way <code>dim()</code> does:</p>
+<p><code>sum()</code> of a logical vector counts how many values are <code>TRUE</code>, since R stores <code>TRUE</code> as 1 and <code>FALSE</code> as 0. So <code>sum(strep_tb$improved)</code> is the number of patients who improved, out of <code>nrow(strep_tb)</code> in total. <code>nrow()</code> was met briefly in Week 5, returning just the row count on its own rather than rows and columns together the way <code>dim()</code> does:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>n_improved <span class="ot">&lt;-</span> <span class="fu">sum</span>(strep_tb<span class="sc">$</span>improved)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>n_total <span class="ot">&lt;-</span> <span class="fu">nrow</span>(strep_tb)</span>
@@ -501,7 +501,7 @@ sample estimates:
 </div>
 </div>
 <p>Notice there’s no <code>$</code> anywhere in that call, even though <code>chol</code> and <code>gender</code> both live inside <code>nhanes</code>. The <code>data =</code> argument tells <code>t.test()</code> which data frame to search for bare names like <code>chol</code> and <code>gender</code>, so it looks them up there itself instead of us pulling each one out by hand first with <code>$</code>. <code>$</code> is still the right tool for getting a single column on its own, the way <code>nhanes$sed</code> was above; a formula’s <code>data =</code> argument does that lookup for every variable named in the formula at once.</p>
-<p>This is the same pairing we showed descriptively in IES Week 7’s boxplot and Table 1: cholesterol by gender. Now it’s attached to a confidence interval for the <em>difference</em> in means between the two groups. By default, <code>t.test()</code> doesn’t assume the two groups have equal variance. That’s a sensible default and not something we need to adjust here.</p>
+<p>This is the same pairing we showed descriptively in Week 7’s boxplot and Table 1: cholesterol by gender. Now it’s attached to a confidence interval for the <em>difference</em> in means between the two groups. By default, <code>t.test()</code> doesn’t assume the two groups have equal variance. That’s a sensible default and not something we need to adjust here.</p>
 <section id="which-way-round-is-the-difference" class="level3" data-number="4.6.1">
 <h3 data-number="4.6.1" class="anchored" data-anchor-id="which-way-round-is-the-difference"><span class="header-section-number">4.6.1</span> Which way round is the difference?</h3>
 <p>Both ends of that interval are negative, and a negative difference in cholesterol isn’t obviously meaningful until we know what has been subtracted from what. R tells us, on the line beginning “alternative hypothesis”: <em>true difference in means between group Male and group Female</em>. So it has taken the men’s mean and subtracted the women’s.</p>
@@ -518,7 +518,7 @@ sample estimates:
 </section>
 <section id="confidence-interval-for-a-difference-in-proportions" class="level2" data-number="4.7">
 <h2 data-number="4.7" class="anchored" data-anchor-id="confidence-interval-for-a-difference-in-proportions"><span class="header-section-number">4.7</span> Confidence interval for a difference in proportions</h2>
-<p>The same idea extends to two proportions: how many improved in each trial arm. <code>group_by()</code> and <code>summarise()</code>, already familiar from IES Week 7, give us the count and the number improved in each arm:</p>
+<p>The same idea extends to two proportions: how many improved in each trial arm. <code>group_by()</code> and <code>summarise()</code>, already familiar from Week 7, give us the count and the number improved in each arm:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>strep_arm_summary <span class="ot">&lt;-</span> strep_tb <span class="sc">|&gt;</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(arm) <span class="sc">|&gt;</span></span>
@@ -563,14 +563,13 @@ sample estimates:
 <pre><code>[1] "Streptomycin" "Control"     </code></pre>
 </div>
 </div>
-<p><code>"Streptomycin"</code> is first, so <code>prop 1</code> is the streptomycin arm and <code>prop 2</code> is the control arm, and the difference runs streptomycin minus control. Both ends of the interval are positive, which therefore says the streptomycin arm improved <em>more</em>. Had the two levels been the other way round, every number in that interval would have carried a minus sign and meant exactly the same thing. IES Week 9 puts this same factor the other way round on purpose, so it’s worth having looked at the levels here first.</p>
-<p>Two more things in that output are worth naming rather than skipping. The heading says “with continuity correction”: <code>prop.test()</code> applies a small adjustment by default that nudges the p-value up and the interval slightly wider. IES Week 9 explains what it does and when it earns its place, so leave it for now, but notice that the p-value printed here, 0.0004, is the one that adjustment produces. And the p-value itself belongs to a hypothesis test, which is still IES Week 9’s subject. Read the interval; the rest keeps.</p>
+<p><code>"Streptomycin"</code> is first, so <code>prop 1</code> is the streptomycin arm and <code>prop 2</code> is the control arm, and the difference runs streptomycin minus control. Both ends of the interval are positive, which therefore says the streptomycin arm improved <em>more</em>. Had the two levels been the other way round, every number in that interval would have carried a minus sign and meant exactly the same thing. Week 9 puts this same factor the other way round on purpose, so it’s worth having looked at the levels here first.</p>
+<p>Two more things in that output are worth naming rather than skipping. The heading says “with continuity correction”: <code>prop.test()</code> applies a small adjustment by default that nudges the p-value up and the interval slightly wider. Week 9 explains what it does and when it earns its place, so leave it for now, but notice that the p-value printed here, 0.0004, is the one that adjustment produces. And the p-value itself belongs to a hypothesis test, which is still Week 9’s subject. Read the interval; the rest keeps.</p>
 <p>Because <code>strep_tb</code> is a randomised trial rather than an observational study, a difference this large and this precisely estimated supports a causal reading in a way that an association in <code>nhanes_mph</code> would not. Randomisation, not statistical adjustment, is what licenses that conclusion here.</p>
 </section>
 <section id="gtsummarytbl_summary-as-shorthand" class="level2" data-number="4.8">
 <h2 data-number="4.8" class="anchored" data-anchor-id="gtsummarytbl_summary-as-shorthand"><span class="header-section-number">4.8</span> <code>gtsummary::tbl_summary()</code> as shorthand</h2>
-<p><code>tbl_summary()</code>, met in IES Week 7, can be told which summary to use for a given variable with the <code>statistic</code> argument, which takes a <code>list()</code>. This is a way of bundling several named settings together, pairing a variable with the display it should use.</p>
-<p>The display itself is written as a piece of text with curly braces in it: <code>"{mean} ({sd})"</code>. The braces are placeholders. <code>gtsummary</code> works out the mean and the standard deviation, then drops each number into the spot where its name appears, and everything outside the braces, here a space and a pair of round brackets, is printed exactly as written. So <code>"{mean} ({sd})"</code> comes out as something like <code>5.05 (1.08)</code>. Writing the layout out this way means you decide how the cell reads, rather than accepting a default.</p>
+<p>Week 7 showed how to tell <code>tbl_summary()</code> to display mean and SD for every continuous variable at once, with <code>statistic = list(all_continuous() ~ "{mean} ({sd})")</code>. The same <code>statistic</code> argument works one variable at a time too, by naming the variable on the left of the <code>~</code> instead of <code>all_continuous()</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(chol, gender) <span class="sc">|&gt;</span></span>
@@ -582,23 +581,23 @@ Table&nbsp;4.1
 </figcaption>
 <div aria-describedby="tbl-summary-shorthand-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="ckflaozwhe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ckflaozwhe table {
+<div id="dplahkqqpi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dplahkqqpi table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ckflaozwhe thead, #ckflaozwhe tbody, #ckflaozwhe tfoot, #ckflaozwhe tr, #ckflaozwhe td, #ckflaozwhe th {
+#dplahkqqpi thead, #dplahkqqpi tbody, #dplahkqqpi tfoot, #dplahkqqpi tr, #dplahkqqpi td, #dplahkqqpi th {
   border-style: none;
 }
 
-#ckflaozwhe p {
+#dplahkqqpi p {
   margin: 0;
   padding: 0;
 }
 
-#ckflaozwhe .gt_table {
+#dplahkqqpi .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -624,12 +623,12 @@ Table&nbsp;4.1
   border-left-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_caption {
+#dplahkqqpi .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ckflaozwhe .gt_title {
+#dplahkqqpi .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -641,7 +640,7 @@ Table&nbsp;4.1
   border-bottom-width: 0;
 }
 
-#ckflaozwhe .gt_subtitle {
+#dplahkqqpi .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -653,7 +652,7 @@ Table&nbsp;4.1
   border-top-width: 0;
 }
 
-#ckflaozwhe .gt_heading {
+#dplahkqqpi .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -665,13 +664,13 @@ Table&nbsp;4.1
   border-right-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_bottom_border {
+#dplahkqqpi .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_col_headings {
+#dplahkqqpi .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -686,7 +685,7 @@ Table&nbsp;4.1
   border-right-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_col_heading {
+#dplahkqqpi .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -706,7 +705,7 @@ Table&nbsp;4.1
   overflow-x: hidden;
 }
 
-#ckflaozwhe .gt_column_spanner_outer {
+#dplahkqqpi .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -718,15 +717,15 @@ Table&nbsp;4.1
   padding-right: 4px;
 }
 
-#ckflaozwhe .gt_column_spanner_outer:first-child {
+#dplahkqqpi .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ckflaozwhe .gt_column_spanner_outer:last-child {
+#dplahkqqpi .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ckflaozwhe .gt_column_spanner {
+#dplahkqqpi .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -738,11 +737,11 @@ Table&nbsp;4.1
   width: 100%;
 }
 
-#ckflaozwhe .gt_spanner_row {
+#dplahkqqpi .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ckflaozwhe .gt_group_heading {
+#dplahkqqpi .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -768,7 +767,7 @@ Table&nbsp;4.1
   text-align: left;
 }
 
-#ckflaozwhe .gt_empty_group_heading {
+#dplahkqqpi .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -783,15 +782,15 @@ Table&nbsp;4.1
   vertical-align: middle;
 }
 
-#ckflaozwhe .gt_from_md > :first-child {
+#dplahkqqpi .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ckflaozwhe .gt_from_md > :last-child {
+#dplahkqqpi .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ckflaozwhe .gt_row {
+#dplahkqqpi .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -810,7 +809,7 @@ Table&nbsp;4.1
   overflow-x: hidden;
 }
 
-#ckflaozwhe .gt_stub {
+#dplahkqqpi .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -823,7 +822,7 @@ Table&nbsp;4.1
   padding-right: 5px;
 }
 
-#ckflaozwhe .gt_stub_row_group {
+#dplahkqqpi .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -837,15 +836,15 @@ Table&nbsp;4.1
   vertical-align: top;
 }
 
-#ckflaozwhe .gt_row_group_first td {
+#dplahkqqpi .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ckflaozwhe .gt_row_group_first th {
+#dplahkqqpi .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ckflaozwhe .gt_summary_row {
+#dplahkqqpi .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -855,16 +854,16 @@ Table&nbsp;4.1
   padding-right: 5px;
 }
 
-#ckflaozwhe .gt_first_summary_row {
+#dplahkqqpi .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_first_summary_row.thick {
+#dplahkqqpi .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ckflaozwhe .gt_last_summary_row {
+#dplahkqqpi .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -874,7 +873,7 @@ Table&nbsp;4.1
   border-bottom-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_grand_summary_row {
+#dplahkqqpi .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -884,7 +883,7 @@ Table&nbsp;4.1
   padding-right: 5px;
 }
 
-#ckflaozwhe .gt_first_grand_summary_row {
+#dplahkqqpi .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -894,7 +893,7 @@ Table&nbsp;4.1
   border-top-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_last_grand_summary_row_top {
+#dplahkqqpi .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -904,11 +903,11 @@ Table&nbsp;4.1
   border-bottom-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_striped {
+#dplahkqqpi .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ckflaozwhe .gt_table_body {
+#dplahkqqpi .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -917,7 +916,7 @@ Table&nbsp;4.1
   border-bottom-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_footnotes {
+#dplahkqqpi .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -931,7 +930,7 @@ Table&nbsp;4.1
   border-right-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_footnote {
+#dplahkqqpi .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -940,7 +939,7 @@ Table&nbsp;4.1
   padding-right: 5px;
 }
 
-#ckflaozwhe .gt_sourcenotes {
+#dplahkqqpi .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -954,7 +953,7 @@ Table&nbsp;4.1
   border-right-color: #D3D3D3;
 }
 
-#ckflaozwhe .gt_sourcenote {
+#dplahkqqpi .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -962,72 +961,72 @@ Table&nbsp;4.1
   padding-right: 5px;
 }
 
-#ckflaozwhe .gt_left {
+#dplahkqqpi .gt_left {
   text-align: left;
 }
 
-#ckflaozwhe .gt_center {
+#dplahkqqpi .gt_center {
   text-align: center;
 }
 
-#ckflaozwhe .gt_right {
+#dplahkqqpi .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ckflaozwhe .gt_font_normal {
+#dplahkqqpi .gt_font_normal {
   font-weight: normal;
 }
 
-#ckflaozwhe .gt_font_bold {
+#dplahkqqpi .gt_font_bold {
   font-weight: bold;
 }
 
-#ckflaozwhe .gt_font_italic {
+#dplahkqqpi .gt_font_italic {
   font-style: italic;
 }
 
-#ckflaozwhe .gt_super {
+#dplahkqqpi .gt_super {
   font-size: 65%;
 }
 
-#ckflaozwhe .gt_footnote_marks {
+#dplahkqqpi .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ckflaozwhe .gt_asterisk {
+#dplahkqqpi .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ckflaozwhe .gt_indent_1 {
+#dplahkqqpi .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ckflaozwhe .gt_indent_2 {
+#dplahkqqpi .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ckflaozwhe .gt_indent_3 {
+#dplahkqqpi .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ckflaozwhe .gt_indent_4 {
+#dplahkqqpi .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ckflaozwhe .gt_indent_5 {
+#dplahkqqpi .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ckflaozwhe .katex-display {
+#dplahkqqpi .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ckflaozwhe div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dplahkqqpi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1072,7 +1071,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 </figure>
 </div>
 </div>
-<p>This forces mean (SD) display for <code>chol</code>, overriding whatever <code>tbl_summary()</code> would otherwise have chosen automatically.</p>
+<p>This forces mean (SD) display for <code>chol</code> alone, leaving every other variable in the table at <code>tbl_summary()</code>’s default.</p>
 </section>
 <section id="width-and-sample-size-without-programming" class="level2" data-number="4.9">
 <h2 data-number="4.9" class="anchored" data-anchor-id="width-and-sample-size-without-programming"><span class="header-section-number">4.9</span> Width and sample size, without programming</h2>
@@ -1142,7 +1141,7 @@ mean of x
 </div>
 </div>
 <p>The point estimates are similar across all three, because all three are samples from the same population. But the confidence interval widens as the sample size drops.</p>
-<p>That’s hard to see across three blocks of output, so let’s put the three intervals in one small table. A <code>t.test()</code> result isn’t a data frame, but <code>$</code> still works on it, pulling out one named piece at a time exactly as it pulls one column out of a data frame. <code>tt_full$conf.int</code> is the pair of numbers at the ends of the interval, and <code>[1]</code> and <code>[2]</code> take the lower and the upper one, the same square-bracket indexing we used in IES Week 5. <code>data.frame()</code>, from IES Week 4, builds the table out of them, and <code>mutate()</code> adds the column we actually care about:</p>
+<p>That’s hard to see across three blocks of output, so let’s put the three intervals in one small table. A <code>t.test()</code> result isn’t a data frame, but <code>$</code> still works on it, pulling out one named piece at a time exactly as it pulls one column out of a data frame. <code>tt_full$conf.int</code> is the pair of numbers at the ends of the interval, and <code>[1]</code> and <code>[2]</code> take the lower and the upper one, the same square-bracket indexing we used in Week 5. <code>data.frame()</code>, from Week 4, builds the table out of them, and <code>mutate()</code> adds the column we actually care about:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>widths <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> <span class="fu">c</span>(<span class="st">"Full"</span>, <span class="st">"50% subset"</span>, <span class="st">"10% subset"</span>),</span>
@@ -1380,7 +1379,7 @@ sample estimates:
 <p><code>smoking</code> still has three levels after the <code>filter()</code>, but only two of them have any rows left, and <code>t.test()</code> rebuilds the factor from the data it’s actually given, so the empty third group drops out on its own.</p>
 <p>Check the direction before reading the interval, as above. <code>"Never"</code> comes first in <code>smoking</code>’s levels, so R has subtracted current smokers from never smokers, and the difference is never minus current.</p>
 <p>Mean total cholesterol was -0.028 mmol/L in never smokers compared with current smokers (95% CI: -0.056 to 0.001 mmol/L), so a little lower on average in those who had never smoked. Notice that the estimate sits inside its own interval, which is the check worth running on any result you write down: if it doesn’t, a sign has been flipped somewhere. The interval includes zero, so these data are consistent with no difference between the two groups, though they don’t rule out a small one either.</p>
-<p>The two intervals mean different things. The first is about a single quantity, mean cholesterol, and says how precisely this sample pins it down. The second is about a <em>comparison</em> between two groups, and the value that matters in it is zero: an interval containing zero is one where the data can’t establish which group is higher. From IES Week 9 onward, almost every interval in this course is of the second kind.</p>
+<p>The two intervals mean different things. The first is about a single quantity, mean cholesterol, and says how precisely this sample pins it down. The second is about a <em>comparison</em> between two groups, and the value that matters in it is zero: an interval containing zero is one where the data can’t establish which group is higher. From Week 9 onward, almost every interval in this course is of the second kind.</p>
 <p><strong>Exercise 2</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>n_cav <span class="ot">&lt;-</span> <span class="fu">sum</span>(strep_tb<span class="sc">$</span>baseline_cavitation <span class="sc">==</span> <span class="st">"yes"</span>)</span>

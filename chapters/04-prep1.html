@@ -268,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">1.2</span> Setup</h2>
-<p>There’s no data to read yet, so this chapter’s setup chunk is almost empty. The one thing we set is the console’s print width, so that printed output stays narrow enough to fit this book’s page. That’s a setting for producing the book, not part of any analysis, and from IES Week 7 onward we keep it out of sight rather than opening every chapter with it. You don’t need it in your own scripts.</p>
+<p>There’s no data to read yet, so this chapter’s setup chunk is almost empty. The one thing we set is the console’s print width, so that printed output stays narrow enough to fit this book’s page. That’s a setting for producing the book, not part of any analysis, and from Week 7 onward we keep it out of sight rather than opening every chapter with it. You don’t need it in your own scripts.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">width =</span> <span class="dv">76</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -317,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>The New Project wizard, with Existing Directory highlighted.</figcaption>
 </figure>
 </div>
-<p>A Project’s working directory is the folder R treats as “here” when it looks for a file. Once we start reading data in IES Week 5, this is what lets a path like <code>data/mph_nhanes_20241107.csv</code> work on any machine, no matter where the project folder actually sits on that machine’s disk.</p>
+<p>A Project’s working directory is the folder R treats as “here” when it looks for a file. Once we start reading data in Week 5, this is what lets a path like <code>data/mph_nhanes_20241107.csv</code> work on any machine, no matter where the project folder actually sits on that machine’s disk.</p>
 </section>
 <section id="console-versus-script" class="level3" data-number="1.4.4">
 <h3 data-number="1.4.4" class="anchored" data-anchor-id="console-versus-script"><span class="header-section-number">1.4.4</span> Console versus script</h3>
@@ -402,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>numeric</strong>: a number, like 45</li>
 <li><strong>character</strong>: text, like <code>"Yes"</code>, always in quotes</li>
 <li><strong>logical</strong>: <code>TRUE</code> or <code>FALSE</code></li>
-<li><strong>factor</strong>: a set of categories. It looks like text but is stored with a fixed, known list of possible categories behind it. IES Week 7 turns six columns of <code>nhanes_mph</code> into factors, exactly this way, against the dictionary file.</li>
+<li><strong>factor</strong>: a set of categories. It looks like text but is stored with a fixed, known list of possible categories behind it. Week 7 turns six columns of <code>nhanes_mph</code> into factors, exactly this way, against the dictionary file.</li>
 </ul>
 </section>
 <section id="functions-and-arguments" class="level2" data-number="1.8">
@@ -448,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="comparison-and-logical-operators" class="level2" data-number="1.9">
 <h2 data-number="1.9" class="anchored" data-anchor-id="comparison-and-logical-operators"><span class="header-section-number">1.9</span> Comparison and logical operators</h2>
-<p>These build a condition that’s either <code>TRUE</code> or <code>FALSE</code> for each value in a vector, which is what every <code>filter()</code> from IES Week 7 onward runs on:</p>
+<p>These build a condition that’s either <code>TRUE</code> or <code>FALSE</code> for each value in a vector, which is what every <code>filter()</code> from Week 7 onward runs on:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ages <span class="sc">&gt;</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -508,7 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 4    Yes</code></pre>
 </div>
 </div>
-<p>The values are the same either way. The difference is the container. <code>toy_data$smoker</code> is four bare values with nothing else attached. <code>select(toy_data, smoker)</code> is still a data frame, one column wide, four rows long. This matters practically from IES Week 8 onward: some functions, like <code>t.test()</code>, want a bare vector and expect <code>$</code>. Most of <code>dplyr</code>, starting in IES Week 7, works on data frames throughout and expects <code>select()</code>.</p>
+<p>The values are the same either way. The difference is the container. <code>toy_data$smoker</code> is four bare values with nothing else attached. <code>select(toy_data, smoker)</code> is still a data frame, one column wide, four rows long. This matters practically from Week 8 onward: some functions, like <code>t.test()</code>, want a bare vector and expect <code>$</code>. Most of <code>dplyr</code>, starting in Week 7, works on data frames throughout and expects <code>select()</code>.</p>
 </section>
 <section id="quoting-rules-and-backticks" class="level2" data-number="1.12">
 <h2 data-number="1.12" class="anchored" data-anchor-id="quoting-rules-and-backticks"><span class="header-section-number">1.12</span> Quoting rules and backticks</h2>
@@ -532,7 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 1 2 3</code></pre>
 </div>
 </div>
-<p>Backticks aren’t easy to work with, and generally it’s not recommended to have variable names containing a space. <code>data.frame()</code> normally cleans up column names automatically, turning a space into a dot. <code>check.names = FALSE</code> switches that off, purely so this example can show a genuine spaced name. When we read a CSV file with <code>read_csv()</code> in IES Week 5, column names come in exactly as written, spaces and all, with no automatic cleanup. Its dictionary file has a column literally called <code>Variable names</code>, and backticks are exactly how we’ll refer to it.</p>
+<p>Backticks aren’t easy to work with, and generally it’s not recommended to have variable names containing a space. <code>data.frame()</code> normally cleans up column names automatically, turning a space into a dot. <code>check.names = FALSE</code> switches that off, purely so this example can show a genuine spaced name. When we read a CSV file with <code>read_csv()</code> in Week 5, column names come in exactly as written, spaces and all, with no automatic cleanup. Its dictionary file has a column literally called <code>Variable names</code>, and backticks are exactly how we’ll refer to it.</p>
 </section>
 <section id="the-pipe" class="level2" data-number="1.13">
 <h2 data-number="1.13" class="anchored" data-anchor-id="the-pipe"><span class="header-section-number">1.13</span> The pipe</h2>
@@ -543,7 +543,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 15</code></pre>
 </div>
 </div>
-<p>Take these three numbers, and then take the square root of each, and then add up what’s left. Written without the pipe, the same calculation reads inside-out: <code>sum(sqrt(c(16, 25, 36)))</code>. The pipe exists so a sequence of steps can be read in the order they actually happen, which is how every multi-step <code>dplyr</code> sequence in this book, starting in IES Week 7, is written.</p>
+<p>Take these three numbers, and then take the square root of each, and then add up what’s left. Written without the pipe, the same calculation reads inside-out: <code>sum(sqrt(c(16, 25, 36)))</code>. The pipe exists so a sequence of steps can be read in the order they actually happen, which is how every multi-step <code>dplyr</code> sequence in this book, starting in Week 7, is written.</p>
 <p>There is a keyboard shortcut for the pipe: <strong>Ctrl+Shift+M</strong> (Windows) or <strong>Cmd+Shift+M</strong> (Mac). You’ll likely write a lot of pipes, so it’s worth remembering.</p>
 <p>It’s also worth knowing that <code>%&gt;%</code> is the older pipe, and is only available once you’ve loaded the <code>dplyr</code> package. Practically, both pipes can be treated the same.</p>
 </section>
@@ -620,15 +620,15 @@ such file or directory</code></pre>
 ! cannot open the connection</code></pre>
 </div>
 </div>
-<p>The warning line above states the actual reason, a missing file, before the error itself. We’ll meet this one properly in IES Week 5, once there’s a real file to read. <code>read.csv()</code> is base R’s own version of the function; from there onward we use <code>read_csv()</code> from the <code>readr</code> package instead, which behaves a little differently but fails the same way when a path is wrong.</p>
+<p>The warning line above states the actual reason, a missing file, before the error itself. We’ll meet this one properly in Week 5, once there’s a real file to read. <code>read.csv()</code> is base R’s own version of the function; from there onward we use <code>read_csv()</code> from the <code>readr</code> package instead, which behaves a little differently but fails the same way when a path is wrong.</p>
 </section>
 <section id="getting-help" class="level2" data-number="1.15">
 <h2 data-number="1.15" class="anchored" data-anchor-id="getting-help"><span class="header-section-number">1.15</span> Getting help</h2>
-<p>Every function used in this course has a help page. Typing <code>?mean</code> in the console and pressing Enter opens <code>mean()</code>’s help page in the Help pane, bottom-right, showing exactly what arguments it takes and what it returns. It’s usually faster than searching online, and it’s always correct for the version of R actually installed. RStudio also keeps a set of cheat sheets under <strong>Help → Cheatsheets</strong>, one per major package. Beyond that, this book itself stays the main reference for the rest of the course. IES Week 5 explains how to find your way around it.</p>
+<p>Every function used in this course has a help page. Typing <code>?mean</code> in the console and pressing Enter opens <code>mean()</code>’s help page in the Help pane, bottom-right, showing exactly what arguments it takes and what it returns. It’s usually faster than searching online, and it’s always correct for the version of R actually installed. RStudio also keeps a set of cheat sheets under <strong>Help → Cheatsheets</strong>, one per major package. Beyond that, this book itself stays the main reference for the rest of the course. Week 5 explains how to find your way around it.</p>
 </section>
 <section id="worked-example-four-clinic-visits" class="level2" data-number="1.16">
 <h2 data-number="1.16" class="anchored" data-anchor-id="worked-example-four-clinic-visits"><span class="header-section-number">1.16</span> Worked example: four clinic visits</h2>
-<p>Let’s put several of today’s pieces together on one small, made-up example: four clinic visits, invented purely to practise on. From IES Week 7 onward, everything in this book runs on real-world data (<code>nhanes_mph</code> or <code>strep_tb</code>) instead; today’s numbers exist only to give the syntax something to run on before either dataset has been introduced.</p>
+<p>Let’s put several of today’s pieces together on one small, made-up example: four clinic visits, invented purely to practise on. From Week 7 onward, everything in this book runs on real-world data (<code>nhanes_mph</code> or <code>strep_tb</code>) instead; today’s numbers exist only to give the syntax something to run on before either dataset has been introduced.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>visit_id <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">101</span>, <span class="dv">102</span>, <span class="dv">103</span>, <span class="dv">104</span>)</span>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>patient_age <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">62</span>, <span class="dv">38</span>, <span class="dv">71</span>)</span>
@@ -686,7 +686,7 @@ such file or directory</code></pre>
 4    Yes</code></pre>
 </div>
 </div>
-<p>Same values, different container: a bare vector from <code>$</code>, a one-column data frame from <code>select()</code>. Every idea in this worked example, a vector, a data frame, <code>$</code>, a comparison, loading a package, the pipe, comes back constantly from IES Week 7 onward. Only the data changes.</p>
+<p>Same values, different container: a bare vector from <code>$</code>, a one-column data frame from <code>select()</code>. Every idea in this worked example, a vector, a data frame, <code>$</code>, a comparison, loading a package, the pipe, comes back constantly from Week 7 onward. Only the data changes.</p>
 </section>
 <section id="exercises" class="level2" data-number="1.17">
 <h2 data-number="1.17" class="anchored" data-anchor-id="exercises"><span class="header-section-number">1.17</span> Exercises</h2>
@@ -698,7 +698,7 @@ such file or directory</code></pre>
 </section>
 <section id="self-check" class="level2" data-number="1.18">
 <h2 data-number="1.18" class="anchored" data-anchor-id="self-check"><span class="header-section-number">1.18</span> Self-check</h2>
-<p>A short multiple-choice check, not a writing exercise. There’s no statistical result yet to interpret in a sentence. That starts in IES Week 7. Instead, these five questions target the places students most often get tripped up in R’s syntax. Answers are in the Solutions callout below.</p>
+<p>A short multiple-choice check, not a writing exercise. There’s no statistical result yet to interpret in a sentence. That starts in Week 7. Instead, these five questions target the places students most often get tripped up in R’s syntax. Answers are in the Solutions callout below.</p>
 <p><strong>1.</strong> In <code>mean_x &lt;- mean(x, na.rm = TRUE)</code>, what’s the difference between <code>&lt;-</code> and <code>=</code>?</p>
 <ol type="a">
 <li>They mean exactly the same thing</li>
