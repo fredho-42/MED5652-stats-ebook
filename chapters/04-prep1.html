@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#chapter-intended-learning-outcomes" id="toc-chapter-intended-learning-outcomes" class="nav-link active" data-scroll-target="#chapter-intended-learning-outcomes"><span class="header-section-number">1.1</span> Chapter intended learning outcomes</a></li>
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">1.2</span> Setup</a></li>
   <li><a href="#installing-r-and-rstudio" id="toc-installing-r-and-rstudio" class="nav-link" data-scroll-target="#installing-r-and-rstudio"><span class="header-section-number">1.3</span> Installing R and RStudio</a></li>
-  <li><a href="#finding-your-way-around-rstudio" id="toc-finding-your-way-around-rstudio" class="nav-link" data-scroll-target="#finding-your-way-around-rstudio"><span class="header-section-number">1.4</span> Finding your way around RStudio</a>
+  <li><a href="#finding-our-way-around-rstudio" id="toc-finding-our-way-around-rstudio" class="nav-link" data-scroll-target="#finding-our-way-around-rstudio"><span class="header-section-number">1.4</span> Finding our way around RStudio</a>
   <ul class="collapse">
   <li><a href="#the-four-panes" id="toc-the-four-panes" class="nav-link" data-scroll-target="#the-four-panes"><span class="header-section-number">1.4.1</span> The four panes</a></li>
   <li><a href="#building-a-project-folder" id="toc-building-a-project-folder" class="nav-link" data-scroll-target="#building-a-project-folder"><span class="header-section-number">1.4.2</span> Building a project folder</a></li>
@@ -252,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This is a preparatory chapter to learn about the basics of R, and the RStudio interface. It will cover what a script is, how to create things in R, and how to read the handful of error messages we’ll all meet in the next ten weeks. Nothing here is about statistics yet, but these are an important foundation for applying statistical analysis to data.</p>
+<p>This session covers the basics of R and the RStudio interface: what a script is, how to create things in R, and how to read the handful of error messages we’ll all meet in the next ten weeks. Nothing here is statistics yet, but it’s the foundation everything after it stands on. In this session we install R, work in a Project, and write our first lines of code.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">1.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this session you will be able to:</p>
@@ -275,20 +275,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="installing-r-and-rstudio" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="installing-r-and-rstudio"><span class="header-section-number">1.3</span> Installing R and RStudio</h2>
-<p>R is the programming language itself, and is the software program that actually runs your code. RStudio is a separate, free program that sits on top of R and makes it far nicer to work in: a proper editor, a console, and the panes we look at next. Install R first, then RStudio, in that order. You can use R without RStudio (even though it’s harder for a beginner) but not the other way round.</p>
+<p>R is the programming language itself, and is the software program that actually runs our code. RStudio is a separate, free program that sits on top of R and makes it far nicer to work in: a proper editor, a console, and the panes we look at next. Install R first, then RStudio, in that order. We can use R without RStudio, though it’s harder for a beginner, but not the other way round.</p>
 <p><strong>Installing R.</strong> Go to <a href="https://cran.r-project.org" class="uri">https://cran.r-project.org</a> and choose the download link for your operating system, “Download R for Windows” or “Download R for macOS.” For most people, you can run the installer and accept every default option.</p>
 <p><strong>Installing RStudio.</strong> Go to <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a> and download the free RStudio Desktop installer for your operating system. Run it the same way, accepting the defaults throughout.</p>
 <p><strong>Verification.</strong> Installed isn’t the same as working, so check before moving on. Open RStudio, type <code>2 + 2</code> into the console, the panel where typed commands run, covered properly in a moment, and press Enter. You should see <code>[1] 4</code>. Then confirm a package installs and loads too: run <code>install.packages("dplyr")</code> once, then <code>library(dplyr)</code>. Both get a proper explanation later in this chapter, under Packages; for now, just check that neither throws an error. If anything here fails, get it fixed before going on, since nothing later in this chapter works without it.</p>
 </section>
-<section id="finding-your-way-around-rstudio" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="finding-your-way-around-rstudio"><span class="header-section-number">1.4</span> Finding your way around RStudio</h2>
+<section id="finding-our-way-around-rstudio" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="finding-our-way-around-rstudio"><span class="header-section-number">1.4</span> Finding our way around RStudio</h2>
 <section id="the-four-panes" class="level3" data-number="1.4.1">
 <h3 data-number="1.4.1" class="anchored" data-anchor-id="the-four-panes"><span class="header-section-number">1.4.1</span> The four panes</h3>
-<p>RStudio’s window is split into four panes. Where each one sits is consistent no matter what you’re doing, so it’s worth learning the layout by position, not just by name.</p>
+<p>RStudio’s window is split into four panes. Where each one sits is consistent no matter what we’re doing, so it’s worth learning the layout by position, not just by name.</p>
 <ul>
-<li><strong>Top-left: the source pane.</strong> This only shows when you have an active script, so you most likely won’t see this in RStudio out of the box. This is where you write and save scripts, the <code>.R</code> files that hold everything worth keeping. Code typed here doesn’t run on its own; you have to tell RStudio to run it, which is the next thing we cover.</li>
-<li><strong>Bottom-left: the console.</strong> This is where code actually executes, one line at a time, and where its output appears. You can type directly into the console, but anything typed there is gone once you close RStudio, which is exactly why the source pane exists.</li>
-<li><strong>Top-right: the environment pane.</strong> This lists every object that currently exists in your R session, its type, and a preview of its contents. Every time you create something, it appears here. When something you expected to see isn’t listed, that’s usually the first clue something went wrong.</li>
+<li><strong>Top-left: the source pane.</strong> This only shows when a script is open, so it likely won’t appear in RStudio fresh out of the box. This is where we write and save scripts, the <code>.R</code> files that hold everything worth keeping. Code typed here doesn’t run on its own; we have to tell RStudio to run it, which is the next thing we cover.</li>
+<li><strong>Bottom-left: the console.</strong> This is where code actually executes, one line at a time, and where its output appears. We can type directly into the console, but anything typed there is gone once RStudio closes, which is exactly why the source pane exists.</li>
+<li><strong>Top-right: the environment pane.</strong> This lists every object that currently exists in our R session, its type, and a preview of its contents. Every time we create something, it appears here. When something we expected to see isn’t listed, that’s usually the first clue something went wrong.</li>
 <li><strong>Bottom-right: a tabbed pane.</strong> This holds the file browser, the plot viewer, the list of installed packages, and the help viewer, one tab each.</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
@@ -300,7 +300,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="building-a-project-folder" class="level3" data-number="1.4.2">
 <h3 data-number="1.4.2" class="anchored" data-anchor-id="building-a-project-folder"><span class="header-section-number">1.4.2</span> Building a project folder</h3>
-<p>Working with R means you have to manage at least a couple of files, most likely some data files and an R script file. It is usually a good idea to put them into a ‘project folder’. Pick somewhere sensible on your machine, for example inside Documents. Create a new folder there and give it a short, sensible name, for example <code>ies_mph</code>, following the naming habit we’ll use for every file and folder in this course from here on: no spaces, no <code>&amp;</code>, <code>#</code>, or <code>%</code>, consistent case, and a date written as <code>YYYY-MM-DD</code> if a name needs one, so files sort in the right order. Inside that folder, create three subfolders: <code>data</code>, for anything you read in; <code>scripts</code>, for the <code>.R</code> files you write; and <code>outputs</code>, for anything you save out, a plot or a table. Keeping these three separate means you always know where to look for something later, in this course and beyond it. This folder structure isn’t compulsory, just a suggestion. We’d still recommend sticking with it throughout the course, just to build the habit. Once you’re more familiar with R and RStudio, feel free to work with whatever folder structure works for you.</p>
+<p>Working with R means managing at least a couple of files, most likely some data files and an R script file. It is usually a good idea to put them into a ‘project folder’. Pick somewhere sensible on your machine, for example inside Documents. Create a new folder there and give it a short, sensible name, for example <code>ies_mph</code>, following the naming habit we’ll use for every file and folder in this course from here on: no spaces, no <code>&amp;</code>, <code>#</code>, or <code>%</code>, consistent case, and a date written as <code>YYYY-MM-DD</code> if a name needs one, so files sort in the right order. Inside that folder, create three subfolders: <code>data</code>, for anything you read in; <code>scripts</code>, for the <code>.R</code> files you write; and <code>outputs</code>, for anything you save out, a plot or a table. Keeping these three separate means you always know where to look for something later, in this course and beyond it. This folder structure isn’t compulsory, just a suggestion. We’d still recommend sticking with it throughout the course, just to build the habit. Once you’re more familiar with R and RStudio, feel free to work with whatever folder structure works for you.</p>
 </section>
 <section id="creating-an-rstudio-project" class="level3" data-number="1.4.3">
 <h3 data-number="1.4.3" class="anchored" data-anchor-id="creating-an-rstudio-project"><span class="header-section-number">1.4.3</span> Creating an RStudio Project</h3>
@@ -321,14 +321,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="console-versus-script" class="level3" data-number="1.4.4">
 <h3 data-number="1.4.4" class="anchored" data-anchor-id="console-versus-script"><span class="header-section-number">1.4.4</span> Console versus script</h3>
-<p>You can type a line directly into the console and press Enter, and it runs immediately. That’s fine for a quick check, but it isn’t saved anywhere. Close RStudio, and it’s gone.</p>
+<p>We can type a line directly into the console and press Enter, and it runs immediately. That’s fine for a quick check, but it isn’t saved anywhere. Close RStudio, and it’s gone.</p>
 <p>For anything worth keeping, we write it in a script in the source pane instead, then run it from there:</p>
 <ul>
 <li><strong>Ctrl+Enter</strong> (Windows) or <strong>Cmd+Return</strong> (Mac) runs the single line the cursor is on, or a selected block of lines, and sends it to the console.</li>
 <li>Highlighting several lines and pressing the same shortcut runs all of them in order.</li>
 <li>The <strong>Source</strong> button, top-right of the source pane, runs the entire script from top to bottom.</li>
 </ul>
-<p>The reason this course insists on scripts rather than the console is simple: you will need to do this again, and you will not remember exactly what you typed. A saved script is a record you, or anyone else, can rerun from scratch and get the same result. That’s the whole idea behind reproducible work, and it’s why every exercise in this book asks you to write and save a script rather than work directly in the console.</p>
+<p>The reason this course insists on scripts rather than the console is simple: we will need to do this again, and we won’t remember exactly what we typed. A saved script is a record we, or anyone else, can rerun from scratch and get the same result. That’s the whole idea behind reproducible work, and it’s why every exercise in this book asks you to write and save a script rather than work directly in the console.</p>
 </section>
 </section>
 <section id="objects-and-assignment" class="level2" data-number="1.5">
@@ -341,7 +341,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 45</code></pre>
 </div>
 </div>
-<p><code>age</code> now holds the value 45. It appears in the Environment pane, top right, and stays there for the rest of the session, or until you overwrite it by assigning something else to the same name.</p>
+<p><code>age</code> now holds the value 45. It appears in the Environment pane, top right, and stays there for the rest of the session, or until we overwrite it by assigning something else to the same name.</p>
 <p><code>=</code> looks similar, but does a different job. Inside the parentheses of a function call, <code>=</code> doesn’t create an object at all. It names which argument of the function a value belongs to:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="at">x =</span> <span class="fl">3.14159</span>, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -374,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 4   71    Yes</code></pre>
 </div>
 </div>
-<p>Note that both vectors have to have the same length of data (4 values each), otherwise R will complain when you create a data frame.</p>
+<p>Note that both vectors have to have the same length of data (4 values each), otherwise R will complain when we create a data frame.</p>
 </section>
 <section id="data-types" class="level2" data-number="1.7">
 <h2 data-number="1.7" class="anchored" data-anchor-id="data-types"><span class="header-section-number">1.7</span> Data types</h2>
@@ -424,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>All three lines return the same result. The first matches purely by position: <code>round()</code>’s first argument is <code>x</code>, its second is <code>digits</code>. The second and third name <code>digits</code> explicitly, so its position in the call no longer matters, which is why the third line can put <code>digits</code> before <code>x</code> without changing the answer.</p>
-<p>The examples above simply run the function, so the output is shown in the console. If you’re going to reuse the output later, you’ll have to save it, the same way as the assignment above:</p>
+<p>The examples above simply run the function, so the output is shown in the console. If we’re going to reuse the output later, we’ll have to save it, the same way as the assignment above:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fl">3.14159</span>, <span class="dv">2</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>x <span class="sc">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -432,7 +432,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 6.28</code></pre>
 </div>
 </div>
-<p>Some arguments have a <strong>default</strong>: a value the function uses automatically if you don’t supply one.</p>
+<p>Some arguments have a <strong>default</strong>: a value the function uses automatically if we don’t supply one.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>readings <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="cn">NA</span>, <span class="dv">15</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(readings)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -481,12 +481,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="packages" class="level2" data-number="1.10">
 <h2 data-number="1.10" class="anchored" data-anchor-id="packages"><span class="header-section-number">1.10</span> Packages</h2>
-<p>Everything used so far, <code>c()</code>, <code>class()</code>, <code>round()</code>, <code>mean()</code>, comes built into R itself. Most of what this course does lives in add-on packages instead: <code>dplyr</code> for manipulating data, <code>ggplot2</code> for plotting, and others still to come. Getting a package ready to use is two separate actions. <strong>Installing</strong> downloads it onto this computer, once. <strong>Loading</strong>, with <code>library()</code>, makes its functions available in the current R session, and has to be done again every time you start a fresh session, even though you never need to install the same package twice.</p>
+<p>Everything used so far, <code>c()</code>, <code>class()</code>, <code>round()</code>, <code>mean()</code>, comes built into R itself. Most of what this course does lives in add-on packages instead: <code>dplyr</code> for manipulating data, <code>ggplot2</code> for plotting, and others still to come. Getting a package ready to use is two separate actions. <strong>Installing</strong> downloads it onto this computer, once. <strong>Loading</strong>, with <code>library()</code>, makes its functions available in the current R session, and has to be done again every time we start a fresh session, even though we never need to install the same package twice.</p>
 <p>Installing is typically a one-off, run in the console rather than saved in a script: <code>install.packages("dplyr")</code>. Loading is what actually goes in a script, since every script that uses <code>dplyr</code> needs it loaded first:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Loading a package sometimes prints a short message, often about functions it’s replacing from another package. It’s suppressed here since it doesn’t matter yet, but don’t be alarmed if you see one later in the course. It’s routine, not an error.</p>
+<p>Loading a package sometimes prints a short message, often about functions it’s replacing from another package. It’s suppressed here since it doesn’t matter yet, but there’s no need to worry if one appears later in the course. It’s routine, not an error.</p>
 </section>
 <section id="versus-select" class="level2" data-number="1.11">
 <h2 data-number="1.11" class="anchored" data-anchor-id="versus-select"><span class="header-section-number">1.11</span> <code>$</code> versus <code>select()</code></h2>
@@ -544,12 +544,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Take these three numbers, and then take the square root of each, and then add up what’s left. Written without the pipe, the same calculation reads inside-out: <code>sum(sqrt(c(16, 25, 36)))</code>. The pipe exists so a sequence of steps can be read in the order they actually happen, which is how every multi-step <code>dplyr</code> sequence in this book, starting in Week 7, is written.</p>
-<p>There is a keyboard shortcut for the pipe: <strong>Ctrl+Shift+M</strong> (Windows) or <strong>Cmd+Shift+M</strong> (Mac). You’ll likely write a lot of pipes, so it’s worth remembering.</p>
-<p>It’s also worth knowing that <code>%&gt;%</code> is the older pipe, and is only available once you’ve loaded the <code>dplyr</code> package. Practically, both pipes can be treated the same.</p>
+<p>There is a keyboard shortcut for the pipe: <strong>Ctrl+Shift+M</strong> (Windows) or <strong>Cmd+Shift+M</strong> (Mac). We’ll likely write a lot of pipes, so it’s worth remembering.</p>
+<p>It’s also worth knowing that <code>%&gt;%</code> is the older pipe, and is only available once we’ve loaded the <code>dplyr</code> package. Practically, both pipes can be treated the same.</p>
 </section>
 <section id="reading-errors" class="level2" data-number="1.14">
 <h2 data-number="1.14" class="anchored" data-anchor-id="reading-errors"><span class="header-section-number">1.14</span> Reading errors</h2>
-<p>You will encounter a lot of errors when you work with R, and that’s normal. Even a very experienced R user will encounter errors. The skill worth building now is reading the message rather than panicking at it. R, by way of the <code>rlang</code> package installed alongside the tidyverse, formats errors as a short heading followed by a line starting with <code>!</code> stating what went wrong. Five kinds of failure account for nearly everything you’ll see in this course.</p>
+<p>We will encounter a lot of errors when working with R, and that’s normal. Even a very experienced R user encounters errors. The skill worth building now is reading the message rather than panicking at it. R, by way of the <code>rlang</code> package installed alongside the tidyverse, formats errors as a short heading followed by a line starting with <code>!</code> stating what went wrong. Five kinds of failure account for nearly everything we’ll see in this course.</p>
 <p><strong>Object not found.</strong> R can’t find something by that name, usually a typo or a variable that was never created:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(ags2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -578,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 54</code></pre>
 </div>
 </div>
-<p><strong>Unexpected symbol.</strong> R’s interpreter (the machine that reads your code and executes it) found something it couldn’t make sense of, usually a missing operator or a missing comma between two things that were meant to be one call:</p>
+<p><strong>Unexpected symbol.</strong> R’s interpreter (the machine that reads our code and executes it) found something it couldn’t make sense of, usually a missing operator or a missing comma between two things that were meant to be one call:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>) <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
@@ -593,7 +593,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 1 2 3 4</code></pre>
 </div>
 </div>
-<p><strong>Unexpected end of input.</strong> A bracket was opened and never closed, so R keeps waiting for the rest of the expression that never arrives. In the console this shows up as a <code>+</code> prompt instead of the usual <code>&gt;</code>, waiting for you to finish the line; here, where the code has to run to completion on its own, it shows as an error instead:</p>
+<p><strong>Unexpected end of input.</strong> A bracket was opened and never closed, so R keeps waiting for the rest of the expression that never arrives. In the console this shows up as a <code>+</code> prompt instead of the usual <code>&gt;</code>, waiting for us to finish the line; here, where the code has to run to completion on its own, it shows as an error instead:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
@@ -624,16 +624,16 @@ such file or directory</code></pre>
 </section>
 <section id="getting-help" class="level2" data-number="1.15">
 <h2 data-number="1.15" class="anchored" data-anchor-id="getting-help"><span class="header-section-number">1.15</span> Getting help</h2>
-<p>Every function used in this course has a help page. Typing <code>?mean</code> in the console and pressing Enter opens <code>mean()</code>’s help page in the Help pane, bottom-right, showing exactly what arguments it takes and what it returns. It’s usually faster than searching online, and it’s always correct for the version of R actually installed. RStudio also keeps a set of cheat sheets under <strong>Help → Cheatsheets</strong>, one per major package. Beyond that, this book itself stays the main reference for the rest of the course. Week 5 explains how to find your way around it.</p>
+<p>Every function used in this course has a help page. Typing <code>?mean</code> in the console and pressing Enter opens <code>mean()</code>’s help page in the Help pane, bottom-right, showing exactly what arguments it takes and what it returns. It’s usually faster than searching online, and it’s always correct for the version of R actually installed. RStudio also keeps a set of cheat sheets under <strong>Help → Cheatsheets</strong>, one per major package. Beyond that, this book itself stays the main reference for the rest of the course.</p>
 </section>
 <section id="worked-example-four-clinic-visits" class="level2" data-number="1.16">
 <h2 data-number="1.16" class="anchored" data-anchor-id="worked-example-four-clinic-visits"><span class="header-section-number">1.16</span> Worked example: four clinic visits</h2>
-<p>Let’s put several of today’s pieces together on one small, made-up example: four clinic visits, invented purely to practise on. From Week 7 onward, everything in this book runs on real-world data (<code>nhanes_mph</code> or <code>strep_tb</code>) instead; today’s numbers exist only to give the syntax something to run on before either dataset has been introduced.</p>
+<p>Let’s put several of today’s pieces together on one small, made-up example: four clinic visits, invented purely to practise on. From Week 5 onward, everything in this book runs on real-world data (<code>nhanes_mph</code> or <code>strep_tb</code>) instead; today’s numbers exist only to give the syntax something to run on before either dataset has been introduced.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>visit_id <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">101</span>, <span class="dv">102</span>, <span class="dv">103</span>, <span class="dv">104</span>)</span>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>patient_age <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">62</span>, <span class="dv">38</span>, <span class="dv">71</span>)</span>
 <span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>smoker <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>, <span class="st">"Yes"</span>)</span>
-<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>weight_kg <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">81.456</span>, <span class="fl">50.204</span>, <span class="fl">68.933</span>, <span class="fl">73.118</span>) </span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>weight_kg <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">81.456</span>, <span class="fl">50.204</span>, <span class="fl">68.933</span>, <span class="fl">73.118</span>)</span>
 <span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>visits <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(visit_id, patient_age, smoker, weight_kg)</span>
 <span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>visits</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -686,7 +686,7 @@ such file or directory</code></pre>
 4    Yes</code></pre>
 </div>
 </div>
-<p>Same values, different container: a bare vector from <code>$</code>, a one-column data frame from <code>select()</code>. Every idea in this worked example, a vector, a data frame, <code>$</code>, a comparison, loading a package, the pipe, comes back constantly from Week 7 onward. Only the data changes.</p>
+<p>Same values, different container: a bare vector from <code>$</code>, a one-column data frame from <code>select()</code>. Every idea in this worked example, a vector, a data frame, <code>$</code>, a comparison, loading a package, the pipe, comes back constantly from Week 5 onward. Only the data changes.</p>
 </section>
 <section id="exercises" class="level2" data-number="1.17">
 <h2 data-number="1.17" class="anchored" data-anchor-id="exercises"><span class="header-section-number">1.17</span> Exercises</h2>
@@ -780,12 +780,12 @@ such file or directory</code></pre>
 <pre><code>[1] 81 50 69 73</code></pre>
 </div>
 </div>
-<p>The two lines give identical results, which is what a default argument means in practice. The help page is the fastest way to find out what a function does when you don’t tell it, and it’s always right for the version of R you actually have installed.</p>
+<p>The two lines give identical results, which is what a default argument means in practice. The help page is the fastest way to find out what a function does when we don’t tell it, and it’s always right for the version of R we actually have installed.</p>
 <p><strong>Exercise 3</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>visits <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(visits, height_cm)</span>
 <span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>bmi <span class="ot">&lt;-</span> visits<span class="sc">$</span>weight_kg <span class="sc">/</span> (visits<span class="sc">$</span>height_cm <span class="sc">/</span> <span class="dv">100</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>bmi </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>bmi</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 26.00019 20.89657 24.42354 22.31861</code></pre>
 </div>
