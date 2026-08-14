@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/08-estimation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (Week 8)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and sample size (Week 8)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -254,7 +254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">5.2</span> Setup</h2>
-<p>As in Weeks 7 and 8, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary. We also bring back <code>strep_tb</code>, from the <code>medicaldata</code> package, for the categorical half of this chapter.</p>
+<p>As in Chapters 3 and 4, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary. We also bring back <code>strep_tb</code>, from the <code>medicaldata</code> package, for the categorical half of this chapter.</p>
 <p>This chapter adds one new package, <code>epitools</code>. If <code>epitools</code> isn’t already on your machine, run <code>install.packages("epitools")</code> once in the console, not inside this document. Once it’s installed, <code>library(epitools)</code> below makes its functions available for this session.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
@@ -268,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>dictionary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_dictionary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>As in Week 8, <code>dictionary</code> is read in even though no code below refers to it. It’s there so it’s to hand the moment we’re unsure what a column means.</p>
+<p>As in Chapter 4, <code>dictionary</code> is read in even though no code below refers to it. It’s there so it’s to hand the moment we’re unsure what a column means.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -292,11 +292,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>))</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This is the same recode we introduced in Weeks 7 and 8. See Week 7 for the reasoning behind each variable.</p>
+<p>This is the same recode we introduced in Chapters 3 and 4. See Chapter 3 for the reasoning behind each variable.</p>
 </section>
 <section id="independent-samples-t-test-cholesterol-by-gender" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="independent-samples-t-test-cholesterol-by-gender"><span class="header-section-number">5.3</span> Independent-samples t-test: cholesterol by gender</h2>
-<p><code>t.test()</code> compares two independent groups directly. We already used it in Week 8 to build a confidence interval for the difference in total cholesterol (<code>chol</code>, in mmol/L) between men and women:</p>
+<p><code>t.test()</code> compares two independent groups directly. We already used it in Chapter 4 to build a confidence interval for the difference in total cholesterol (<code>chol</code>, in mmol/L) between men and women:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(chol <span class="sc">~</span> gender, <span class="at">data =</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -313,8 +313,8 @@ sample estimates:
             4.885939             5.054489 </code></pre>
 </div>
 </div>
-<p>This is the exact same call as Week 8’s. <code>t.test()</code> was already giving us a hypothesis test; Week 8 just hadn’t introduced hypothesis testing yet, so we only looked at the confidence interval. Now we bring the rest into view: a t-statistic, degrees of freedom, and a p-value.</p>
-<p>Before trusting a t-test, it’s worth checking that the two groups aren’t wildly different in spread or shape, the way Week 7’s boxplot of <code>chol</code> by <code>gender</code> already let us do:</p>
+<p>This is the exact same call as Chapter 4’s. <code>t.test()</code> was already giving us a hypothesis test; Chapter 4 just hadn’t introduced hypothesis testing yet, so we only looked at the confidence interval. Now we bring the rest into view: a t-statistic, degrees of freedom, and a p-value.</p>
+<p>Before trusting a t-test, it’s worth checking that the two groups aren’t wildly different in spread or shape, the way Chapter 3’s boxplot of <code>chol</code> by <code>gender</code> already let us do:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
@@ -332,7 +332,7 @@ sample estimates:
 </div>
 </div>
 <p>The two boxplots are similar in spread and shape, just shifted slightly. Nothing here rules out a t-test. If, instead, the shape of the boxplot looks very different between the two groups, a t-test might not be appropriate, since it only compares the sample means. <code>t.test()</code> also doesn’t assume equal variance between the two groups by default, which protects us even where the spreads differ more than they do here.</p>
-<p>Before reading the interval, check the direction, exactly as Week 8 set out. The alternative-hypothesis line says <em>group Male and group Female</em>, because <code>"Male"</code> is the first level of <code>gender</code>, so R has printed men minus women and both ends come out negative. Reversing every sign together turns it into the more natural reading: mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L, p &lt; 0.001). The two statements are the same result written from a different perspective. This is the reporting standard the seminar introduced: effect size, confidence interval, and p-value, together, every time, from here on. <code>p &lt; 0.001</code> is how we write a p-value that R prints as something like <code>&lt; 2.2e-16</code>. Convention in public health (or clinical medicine) reports a very small p-value this way rather than typing out the full number.</p>
+<p>Before reading the interval, check the direction, exactly as Chapter 4 set out. The alternative-hypothesis line says <em>group Male and group Female</em>, because <code>"Male"</code> is the first level of <code>gender</code>, so R has printed men minus women and both ends come out negative. Reversing every sign together turns it into the more natural reading: mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L, p &lt; 0.001). The two statements are the same result written from a different perspective. This is the reporting standard the seminar introduced: effect size, confidence interval, and p-value, together, every time, from here on. <code>p &lt; 0.001</code> is how we write a p-value that R prints as something like <code>&lt; 2.2e-16</code>. Convention in public health (or clinical medicine) reports a very small p-value this way rather than typing out the full number.</p>
 </section>
 <section id="paired-t-test-two-domains-of-activity-in-one-person" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="paired-t-test-two-domains-of-activity-in-one-person"><span class="header-section-number">5.4</span> Paired t-test: two domains of activity in one person</h2>
@@ -412,7 +412,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 </section>
 <section id="chi-squared-test-strep_tbs-primary-result" class="level2" data-number="5.6">
 <h2 data-number="5.6" class="anchored" data-anchor-id="chi-squared-test-strep_tbs-primary-result"><span class="header-section-number">5.6</span> Chi-squared test: <code>strep_tb</code>’s primary result</h2>
-<p><code>strep_tb</code>’s primary outcome is binary: did chest X-ray improve at six months (<code>improved</code>), and does that depend on trial arm (<code>arm</code>)? <code>table()</code> builds a two-way count, the same way it did in Week 7, and <code>chisq.test()</code>, from base R, tests whether the two variables are associated:</p>
+<p><code>strep_tb</code>’s primary outcome is binary: did chest X-ray improve at six months (<code>improved</code>), and does that depend on trial arm (<code>arm</code>)? <code>table()</code> builds a two-way count, the same way it did in Chapter 3, and <code>chisq.test()</code>, from base R, tests whether the two variables are associated:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tab_arm <span class="ot">&lt;-</span> <span class="fu">table</span>(strep_tb<span class="sc">$</span>arm, strep_tb<span class="sc">$</span>improved)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>tab_arm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -446,7 +446,7 @@ X-squared = 14.176, df = 1, p-value = 0.0001665</code></pre>
 </div>
 <p>All four expected counts are comfortably above 5, so the test is on solid ground here. When expected counts run low, typically in a small or very unevenly split sample, <code>fisher.test()</code>, also from base R, tests the same association exactly rather than by approximation, and doesn’t depend on that condition.</p>
 <p>It’s worth saying what <code>correct = FALSE</code> actually switches off. Left alone on a 2×2 table, <code>chisq.test()</code> applies <strong>Yates’ continuity correction</strong> by default: a conservative adjustment that shrinks the test statistic slightly, to compensate for approximating whole-number counts with a smooth curve. It makes the p-value larger.</p>
-<p>We’ve already met it without being told what it was. Week 8’s <code>prop.test()</code> on these same two arms was headed “with continuity correction” too, and printed a p-value of 0.0003548. The uncorrected test above gives 0.000166: same data, same comparison, two different numbers, purely from this one default.</p>
+<p>We’ve already met it without being told what it was. Chapter 4’s <code>prop.test()</code> on these same two arms was headed “with continuity correction” too, and printed a p-value of 0.0003548. The uncorrected test above gives 0.000166: same data, same comparison, two different numbers, purely from this one default.</p>
 <p>The correction earns its place when expected counts run low, typically down around 5 to 10. Ours aren’t: the smallest expected count is above 25. So we switch it off here, and it’s also what makes this p-value match the one <code>epitools</code> reports for the same table in the next section.</p>
 </section>
 <section id="fishers-exact-test" class="level2" data-number="5.7">
@@ -483,7 +483,7 @@ odds ratio
 <pre><code>[1] "Streptomycin" "Control"     </code></pre>
 </div>
 </div>
-<p><code>Streptomycin</code> is listed first, which would make it the reference, backwards from what we want here. <code>relevel()</code>, met in Week 7 when we checked the reference level on <code>eth</code>, moves the level named in <code>ref</code> to the front, making it the new reference level. There we were only demonstrating it; here it changes the answer:</p>
+<p><code>Streptomycin</code> is listed first, which would make it the reference, backwards from what we want here. <code>relevel()</code>, met in Chapter 3 when we checked the reference level on <code>eth</code>, moves the level named in <code>ref</code> to the front, making it the new reference level. There we were only demonstrating it; here it changes the answer:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>arm_control_ref <span class="ot">&lt;-</span> <span class="fu">relevel</span>(strep_tb<span class="sc">$</span>arm, <span class="at">ref =</span> <span class="st">"Control"</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(arm_control_ref)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -491,7 +491,7 @@ odds ratio
 <pre><code>[1] "Control"      "Streptomycin"</code></pre>
 </div>
 </div>
-<p><code>Control</code> is now first, so it becomes the reference row: the one everything else is compared against. This is the same reference level idea we met with factors in Week 7, now doing real work rather than being demonstrated on a copy, and it’s worth having used twice before Week 11, where setting a sensible reference level is part of fitting a regression model.</p>
+<p><code>Control</code> is now first, so it becomes the reference row: the one everything else is compared against. This is the same reference level idea we met with factors in Chapter 3, now doing real work rather than being demonstrated on a copy, and it’s worth having used twice before Chapter 7, where setting a sensible reference level is part of fitting a regression model.</p>
 <p>We rebuild the table with the releveled factor, and pass it to <code>riskratio()</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tab_arm_releveled <span class="ot">&lt;-</span> <span class="fu">table</span>(arm_control_ref, strep_tb<span class="sc">$</span>improved)</span>
@@ -530,7 +530,7 @@ attr(,"method")
 [1] "Unconditional MLE &amp; normal approximation (Wald) CI"</code></pre>
 </div>
 </div>
-<p><code>oddsratio()</code> works the same way. We ask for <code>method = "wald"</code>, which uses the same normal-approximation logic behind the ± 1.96 × SE intervals from Week 8, and which matches the simple cross-product formula from the hand calculation directly:</p>
+<p><code>oddsratio()</code> works the same way. We ask for <code>method = "wald"</code>, which uses the same normal-approximation logic behind the ± 1.96 × SE intervals from Chapter 4, and which matches the simple cross-product formula from the hand calculation directly:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">oddsratio</span>(tab_arm_releveled, <span class="at">method =</span> <span class="st">"wald"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -561,11 +561,11 @@ attr(,"method")
 </div>
 </div>
 <p>From the table above: 38 of 55 patients improved in the streptomycin arm (risk = 0.69), and 17 of 52 improved in the control arm (risk = 0.33). By hand, risk ratio = 0.69 / 0.33 = 2.11, and odds ratio = (38 × 35) / (17 × 17) = 4.60. Both match what <code>riskratio()</code> and <code>oddsratio()</code> just reported, with a confidence interval attached to each: a risk ratio of 2.11 (95% CI: 1.38 to 3.24) and an odds ratio of 4.60 (95% CI: 2.04 to 10.39). Neither interval comes close to including 1, the null value for both a risk ratio and an odds ratio, consistent with the chi-squared test above.</p>
-<p><code>riskratio()</code> and <code>oddsratio()</code> each also report three p-values alongside the estimate: a mid-p exact test, Fisher’s exact test, and a chi-squared test. All three agree closely here. The chi-squared one is 0.000166, exactly the p-value <code>chisq.test(tab_arm, correct = FALSE)</code> gave us above, to every digit printed. That’s the payoff from switching the continuity correction off: the same test, run by two different packages, now gives one number instead of two. Had we left the correction on, <code>chisq.test()</code> would have reported 0.0003548, the number Week 8’s <code>prop.test()</code> printed, while <code>epitools</code> reported 0.000166, and there’d be no way to tell from the output that the two functions had simply made different default choices.</p>
+<p><code>riskratio()</code> and <code>oddsratio()</code> each also report three p-values alongside the estimate: a mid-p exact test, Fisher’s exact test, and a chi-squared test. All three agree closely here. The chi-squared one is 0.000166, exactly the p-value <code>chisq.test(tab_arm, correct = FALSE)</code> gave us above, to every digit printed. That’s the payoff from switching the continuity correction off: the same test, run by two different packages, now gives one number instead of two. Had we left the correction on, <code>chisq.test()</code> would have reported 0.0003548, the number Chapter 4’s <code>prop.test()</code> printed, while <code>epitools</code> reported 0.000166, and there’d be no way to tell from the output that the two functions had simply made different default choices.</p>
 </section>
 <section id="gtsummarytbl_summary-with-a-test-attached" class="level2" data-number="5.9">
 <h2 data-number="5.9" class="anchored" data-anchor-id="gtsummarytbl_summary-with-a-test-attached"><span class="header-section-number">5.9</span> <code>gtsummary::tbl_summary()</code> with a test attached</h2>
-<p><code>tbl_summary()</code>, already met in Week 7, can attach a test to a stratified table with <code>add_p()</code>, piped on afterwards:</p>
+<p><code>tbl_summary()</code>, already met in Chapter 3, can attach a test to a stratified table with <code>add_p()</code>, piped on afterwards:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>strep_tb <span class="sc">|&gt;</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(arm, improved) <span class="sc">|&gt;</span></span>
@@ -578,23 +578,23 @@ Table&nbsp;5.1
 </figcaption>
 <div aria-describedby="tbl-summary-addp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="magtywwxio" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#magtywwxio table {
+<div id="pjfbkxlpgj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pjfbkxlpgj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#magtywwxio thead, #magtywwxio tbody, #magtywwxio tfoot, #magtywwxio tr, #magtywwxio td, #magtywwxio th {
+#pjfbkxlpgj thead, #pjfbkxlpgj tbody, #pjfbkxlpgj tfoot, #pjfbkxlpgj tr, #pjfbkxlpgj td, #pjfbkxlpgj th {
   border-style: none;
 }
 
-#magtywwxio p {
+#pjfbkxlpgj p {
   margin: 0;
   padding: 0;
 }
 
-#magtywwxio .gt_table {
+#pjfbkxlpgj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -620,12 +620,12 @@ Table&nbsp;5.1
   border-left-color: #D3D3D3;
 }
 
-#magtywwxio .gt_caption {
+#pjfbkxlpgj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#magtywwxio .gt_title {
+#pjfbkxlpgj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -637,7 +637,7 @@ Table&nbsp;5.1
   border-bottom-width: 0;
 }
 
-#magtywwxio .gt_subtitle {
+#pjfbkxlpgj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -649,7 +649,7 @@ Table&nbsp;5.1
   border-top-width: 0;
 }
 
-#magtywwxio .gt_heading {
+#pjfbkxlpgj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -661,13 +661,13 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#magtywwxio .gt_bottom_border {
+#pjfbkxlpgj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#magtywwxio .gt_col_headings {
+#pjfbkxlpgj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -682,7 +682,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#magtywwxio .gt_col_heading {
+#pjfbkxlpgj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -702,7 +702,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#magtywwxio .gt_column_spanner_outer {
+#pjfbkxlpgj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -714,15 +714,15 @@ Table&nbsp;5.1
   padding-right: 4px;
 }
 
-#magtywwxio .gt_column_spanner_outer:first-child {
+#pjfbkxlpgj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#magtywwxio .gt_column_spanner_outer:last-child {
+#pjfbkxlpgj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#magtywwxio .gt_column_spanner {
+#pjfbkxlpgj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -734,11 +734,11 @@ Table&nbsp;5.1
   width: 100%;
 }
 
-#magtywwxio .gt_spanner_row {
+#pjfbkxlpgj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#magtywwxio .gt_group_heading {
+#pjfbkxlpgj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -764,7 +764,7 @@ Table&nbsp;5.1
   text-align: left;
 }
 
-#magtywwxio .gt_empty_group_heading {
+#pjfbkxlpgj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -779,15 +779,15 @@ Table&nbsp;5.1
   vertical-align: middle;
 }
 
-#magtywwxio .gt_from_md > :first-child {
+#pjfbkxlpgj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#magtywwxio .gt_from_md > :last-child {
+#pjfbkxlpgj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#magtywwxio .gt_row {
+#pjfbkxlpgj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -806,7 +806,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#magtywwxio .gt_stub {
+#pjfbkxlpgj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -819,7 +819,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#magtywwxio .gt_stub_row_group {
+#pjfbkxlpgj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -833,15 +833,15 @@ Table&nbsp;5.1
   vertical-align: top;
 }
 
-#magtywwxio .gt_row_group_first td {
+#pjfbkxlpgj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#magtywwxio .gt_row_group_first th {
+#pjfbkxlpgj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#magtywwxio .gt_summary_row {
+#pjfbkxlpgj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -851,16 +851,16 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#magtywwxio .gt_first_summary_row {
+#pjfbkxlpgj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#magtywwxio .gt_first_summary_row.thick {
+#pjfbkxlpgj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#magtywwxio .gt_last_summary_row {
+#pjfbkxlpgj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -870,7 +870,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#magtywwxio .gt_grand_summary_row {
+#pjfbkxlpgj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -880,7 +880,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#magtywwxio .gt_first_grand_summary_row {
+#pjfbkxlpgj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -890,7 +890,7 @@ Table&nbsp;5.1
   border-top-color: #D3D3D3;
 }
 
-#magtywwxio .gt_last_grand_summary_row_top {
+#pjfbkxlpgj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -900,11 +900,11 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#magtywwxio .gt_striped {
+#pjfbkxlpgj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#magtywwxio .gt_table_body {
+#pjfbkxlpgj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -913,7 +913,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#magtywwxio .gt_footnotes {
+#pjfbkxlpgj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -927,7 +927,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#magtywwxio .gt_footnote {
+#pjfbkxlpgj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -936,7 +936,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#magtywwxio .gt_sourcenotes {
+#pjfbkxlpgj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -950,7 +950,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#magtywwxio .gt_sourcenote {
+#pjfbkxlpgj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -958,72 +958,72 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#magtywwxio .gt_left {
+#pjfbkxlpgj .gt_left {
   text-align: left;
 }
 
-#magtywwxio .gt_center {
+#pjfbkxlpgj .gt_center {
   text-align: center;
 }
 
-#magtywwxio .gt_right {
+#pjfbkxlpgj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#magtywwxio .gt_font_normal {
+#pjfbkxlpgj .gt_font_normal {
   font-weight: normal;
 }
 
-#magtywwxio .gt_font_bold {
+#pjfbkxlpgj .gt_font_bold {
   font-weight: bold;
 }
 
-#magtywwxio .gt_font_italic {
+#pjfbkxlpgj .gt_font_italic {
   font-style: italic;
 }
 
-#magtywwxio .gt_super {
+#pjfbkxlpgj .gt_super {
   font-size: 65%;
 }
 
-#magtywwxio .gt_footnote_marks {
+#pjfbkxlpgj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#magtywwxio .gt_asterisk {
+#pjfbkxlpgj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#magtywwxio .gt_indent_1 {
+#pjfbkxlpgj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#magtywwxio .gt_indent_2 {
+#pjfbkxlpgj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#magtywwxio .gt_indent_3 {
+#pjfbkxlpgj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#magtywwxio .gt_indent_4 {
+#pjfbkxlpgj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#magtywwxio .gt_indent_5 {
+#pjfbkxlpgj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#magtywwxio .katex-display {
+#pjfbkxlpgj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#magtywwxio div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#pjfbkxlpgj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1080,7 +1080,7 @@ N = 52<span class="gt_footnote_marks" style="white-space:nowrap;font-style:itali
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Using <code>slice_sample()</code> from Week 8, take a 10% random subsample of <code>nhanes</code> (remember to <code>set.seed()</code> first, so the subsample is reproducible) and re-run the <code>chol ~ gender</code> t-test from earlier in this chapter on it. Compare the p-value and the confidence interval to the ones from the full sample. Write one sentence on what changed and one sentence on what this means for judging whether a small p-value reflects a large effect or simply a large sample.</p>
+<p>Using <code>slice_sample()</code> from Chapter 4, take a 10% random subsample of <code>nhanes</code> (remember to <code>set.seed()</code> first, so the subsample is reproducible) and re-run the <code>chol ~ gender</code> t-test from earlier in this chapter on it. Compare the p-value and the confidence interval to the ones from the full sample. Write one sentence on what changed and one sentence on what this means for judging whether a small p-value reflects a large effect or simply a large sample.</p>
 </div>
 </div>
 </section>
@@ -1170,7 +1170,7 @@ sample estimates:
             47.89355             47.16813 </code></pre>
 </div>
 </div>
-<p>This time R’s interval is already positive, and that’s informative: the difference is still men minus women, so a positive interval means the first group is the higher one. Men in this sample were on average about 0.7 years older than women (95% CI: 0.4 to 1.1 years, p &lt; 0.001), and no signs need reversing to say so. The difference is statistically significant but tiny relative to a population averaging around 47 years old. With a sample this large, tens of thousands of participants, even a very small true difference will produce a small p-value. Statistical significance here is not the same as a practically important difference, and it doesn’t really contradict Week 7’s impression that age looked similar across the two groups.</p>
+<p>This time R’s interval is already positive, and that’s informative: the difference is still men minus women, so a positive interval means the first group is the higher one. Men in this sample were on average about 0.7 years older than women (95% CI: 0.4 to 1.1 years, p &lt; 0.001), and no signs need reversing to say so. The difference is statistically significant but tiny relative to a population averaging around 47 years old. With a sample this large, tens of thousands of participants, even a very small true difference will produce a small p-value. Statistical significance here is not the same as a practically important difference, and it doesn’t really contradict Chapter 3’s impression that age looked similar across the two groups.</p>
 <p><strong>Exercise 2</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>sed_above_median <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
@@ -1712,8 +1712,8 @@ attr(,"method")
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../chapters/08-estimation.html" class="pagination-link" aria-label="Estimation, precision, and study size (Week 8)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (Week 8)</span></span>
+      <a href="../chapters/08-estimation.html" class="pagination-link" aria-label="Estimation, precision, and sample size (Week 8)">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and sample size (Week 8)</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

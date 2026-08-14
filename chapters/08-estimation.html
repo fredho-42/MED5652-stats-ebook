@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; Estimation, precision, and study size (Week 8) – IES Statistical Practicals</title>
+<title>4&nbsp; Estimation, precision, and sample size (Week 8) – IES Statistical Practicals</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -118,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/08-estimation.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (Week 8)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/08-estimation.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and sample size (Week 8)</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/08-estimation.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (Week 8)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and sample size (Week 8)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -233,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-08-estimation" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (Week 8)</span></span></h1>
+<h1 class="title"><span id="sec-08-estimation" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and sample size (Week 8)</span></span></h1>
 </div>
 
 
@@ -264,8 +264,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">4.2</span> Setup</h2>
-<p>As in Week 7, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary. This chapter also brings in a second dataset for the first time: <code>strep_tb</code>. Unlike <code>nhanes_mph</code>, <code>strep_tb</code> is built into the <code>medicaldata</code> package.</p>
-<p><code>medicaldata</code> is the first package this book uses that doesn’t come with the tidyverse, so it almost certainly isn’t on your machine yet. As Week 4 explained, installing a package and loading it are two different actions, and you have to install the package before you can load it. Run <code>install.packages("medicaldata")</code> once in the console. Once it’s installed, <code>library(medicaldata)</code> below works for this session, exactly like every other package we load.</p>
+<p>As in Chapter 3, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary. This chapter also brings in a second dataset for the first time: <code>strep_tb</code>. Unlike <code>nhanes_mph</code>, <code>strep_tb</code> is built into the <code>medicaldata</code> package.</p>
+<p><code>medicaldata</code> is the first package this book uses that doesn’t come with the tidyverse, so it almost certainly isn’t on your machine yet. As Chapter 1 explained, installing a package and loading it are two different actions, and you have to install the package before you can load it. Run <code>install.packages("medicaldata")</code> once in the console. Once it’s installed, <code>library(medicaldata)</code> below works for this session, exactly like every other package we load.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
@@ -299,11 +299,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>))</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This is the same recode we introduced in Week 7. See Week 7 for the reasoning behind each variable. We repeat it here, unchanged, so this chapter stands on its own too.</p>
+<p>This is the same recode we introduced in Chapter 3. See Chapter 3 for the reasoning behind each variable. We repeat it here, unchanged, so this chapter stands on its own too.</p>
 </section>
 <section id="point-estimate-and-standard-error-by-hand" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="point-estimate-and-standard-error-by-hand"><span class="header-section-number">4.3</span> Point estimate and standard error, by hand</h2>
-<p>A point estimate is our ‘best guess’ of the data. The most commonly used point estimate to describe data is the mean, a ‘location’ descriptor. However, a point estimate on its own says nothing about how precise it is. The standard error attaches a precision to it, and we calculate it from two quantities already familiar from Week 7: the standard deviation, <code>sd()</code>, and the sample size, <code>n()</code>. Let’s apply this to sedentary time (<code>sed</code>):</p>
+<p>A point estimate is our ‘best guess’ of the data. The most commonly used point estimate to describe data is the mean, a ‘location’ descriptor. However, a point estimate on its own says nothing about how precise it is. The standard error attaches a precision to it, and we calculate it from two quantities already familiar from Chapter 3: the standard deviation, <code>sd()</code>, and the sample size, <code>n()</code>. Let’s apply this to sedentary time (<code>sed</code>):</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sed_stats <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sed)) <span class="sc">|&gt;</span></span>
@@ -324,7 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>This code chunk should look familiar by now. It takes the <code>nhanes</code> data, excludes people without <code>sed</code> using <code>filter()</code>, then calculates the whole-sample mean, SD, and sample size using <code>summarise()</code>. Lastly, based on those, it calculates the SE.</p>
 <p><code>sqrt()</code> is base R’s square root function. The standard error of a mean is the standard deviation divided by the square root of the sample size. As <code>n</code> grows, the denominator grows and the standard error shrinks. That’s the algebra behind the seminar’s precision argument.</p>
-<p><code>sed</code> was shown in Week 7 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn’t disqualify it from a confidence interval on its <em>mean</em>, because of the Central Limit Theorem. As the sample size grows, the <em>sampling distribution</em> gets closer to a bell-shaped normal distribution.</p>
+<p><code>sed</code> was shown in Chapter 3 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn’t disqualify it from a confidence interval on its <em>mean</em>, because of the Central Limit Theorem. As the sample size grows, the <em>sampling distribution</em> gets closer to a bell-shaped normal distribution.</p>
 </section>
 <section id="from-standard-error-to-a-confidence-interval" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="from-standard-error-to-a-confidence-interval"><span class="header-section-number">4.4</span> From standard error to a confidence interval</h2>
@@ -361,7 +361,7 @@ mean of x
  6.564277 </code></pre>
 </div>
 </div>
-<p><code>t.test()</code> also reports a test statistic, degrees of freedom, and a p-value. These belong to a hypothesis test, which is Week 9’s subject. For now, look only at the confidence interval, and check that it closely matches the interval we calculated by hand above.</p>
+<p><code>t.test()</code> also reports a test statistic, degrees of freedom, and a p-value. These belong to a hypothesis test, which is Chapter 5’s subject. For now, look only at the confidence interval, and check that it closely matches the interval we calculated by hand above.</p>
 <p>One thing <code>t.test()</code> does quietly is it ignores all missing values. We passed it <code>nhanes$sed</code> whole, missing values and all, with no <code>filter()</code> and no <code>na.rm = TRUE</code>, and it ran anyway. It drops missing values itself, before calculating. The evidence is in the output: the degrees of freedom are 34,433, one less than the 34,434 participants we filtered down to by hand, which is why the two intervals agree at all. So whenever we run a <code>t.test()</code> in R, we should count the missing values ourselves.</p>
 <p>The two intervals are close but not identical, because <code>t.test()</code> doesn’t use a fixed multiplier of 1.96. It uses a value from the t-distribution, which is usually a better match to the actual sampling distribution, since it depends on the sample size through its degrees of freedom (<code>n - 1</code>). For a sample size this large, the normal and t-distributions are very similar and shouldn’t make a material difference. In practice, we’d use <code>t.test()</code> rather than working this out by hand every time, but the formula above is exactly what it’s doing underneath.</p>
 <section id="saying-what-the-interval-means-and-what-it-doesnt" class="level3" data-number="4.4.1">
@@ -402,7 +402,7 @@ $ improved            &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE
 </div>
 </div>
 <p><code>arm</code> and <code>gender</code> are already factors. <code>improved</code>, the outcome we care about here, is <strong>logical</strong>: <code>TRUE</code> or <code>FALSE</code>, rather than a factor. R stores <code>TRUE</code> and <code>FALSE</code> as 1 and 0, which will matter again shortly.</p>
-<p>Below we will look at the proportion of the outcome. <code>table()</code>, already met in Week 7, counts how many patients fall into each category of <code>improved</code>, and <code>prop.table()</code> converts those counts to proportions:</p>
+<p>Below we will look at the proportion of the outcome. <code>table()</code>, already met in Chapter 3, counts how many patients fall into each category of <code>improved</code>, and <code>prop.table()</code> converts those counts to proportions:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(strep_tb<span class="sc">$</span>improved)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -494,7 +494,7 @@ sample estimates:
 </div>
 </div>
 <p>Notice there’s no <code>$</code> anywhere in that call, even though <code>chol</code> and <code>gender</code> both are only found inside <code>nhanes</code>. The <code>data =</code> argument tells <code>t.test()</code> which data frame to search for names like <code>chol</code> and <code>gender</code>, so it looks them up there itself instead of us pulling each one out by hand first with <code>$</code>. <code>$</code> is still the right tool for getting a single column on its own, the way <code>nhanes$sed</code> was above; a formula’s <code>data =</code> argument does that lookup for every variable named in the formula at once.</p>
-<p>This is the same pairing we showed descriptively in Week 7’s boxplot and Table 1: cholesterol by gender. Now it’s attached to a confidence interval for the <em>difference</em> in means between the two groups. By default, <code>t.test()</code> doesn’t assume the two groups have equal variance, i.e.&nbsp;<em>Welch’s t-test</em>. That’s a sensible default and not something we need to adjust here.</p>
+<p>This is the same pairing we showed descriptively in Chapter 3’s boxplot and Table 1: cholesterol by gender. Now it’s attached to a confidence interval for the <em>difference</em> in means between the two groups. By default, <code>t.test()</code> doesn’t assume the two groups have equal variance, i.e.&nbsp;<em>Welch’s t-test</em>. That’s a sensible default and not something we need to adjust here.</p>
 <section id="which-way-round-is-the-difference" class="level3" data-number="4.6.1">
 <h3 data-number="4.6.1" class="anchored" data-anchor-id="which-way-round-is-the-difference"><span class="header-section-number">4.6.1</span> Which way round is the difference?</h3>
 <p>Both ends of that interval are negative, and a negative difference in cholesterol isn’t obviously meaningful until we know what has been subtracted from what. R tells us, on the line beginning “alternative hypothesis”: <em>true difference in means between group Male and group Female</em>. So it has taken the men’s mean and subtracted the women’s.</p>
@@ -511,7 +511,7 @@ sample estimates:
 </section>
 <section id="confidence-interval-for-a-difference-in-proportions" class="level2" data-number="4.7">
 <h2 data-number="4.7" class="anchored" data-anchor-id="confidence-interval-for-a-difference-in-proportions"><span class="header-section-number">4.7</span> Confidence interval for a difference in proportions</h2>
-<p>The same idea extends to two proportions: how many improved in each trial arm. <code>group_by()</code> and <code>summarise()</code>, already familiar from Week 7, give us the count and the number improved in each arm:</p>
+<p>The same idea extends to two proportions: how many improved in each trial arm. <code>group_by()</code> and <code>summarise()</code>, already familiar from Chapter 3, give us the count and the number improved in each arm:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>strep_arm_summary <span class="ot">&lt;-</span> strep_tb <span class="sc">|&gt;</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(arm) <span class="sc">|&gt;</span></span>
@@ -556,8 +556,8 @@ sample estimates:
 <pre><code>[1] "Streptomycin" "Control"     </code></pre>
 </div>
 </div>
-<p><code>"Streptomycin"</code> is first, so <code>prop 1</code> is the streptomycin arm and <code>prop 2</code> is the control arm, and the difference runs streptomycin minus control. Both ends of the interval are positive, which therefore says the streptomycin arm improved <em>more</em>. Had the two levels been the other way round, every number in that interval would have carried a minus sign and meant exactly the same thing. Week 9 puts this same factor the other way round on purpose, so it’s worth having looked at the levels here first.</p>
-<p>Two things in that output are worth explaining. First, the heading says “with continuity correction”: <code>prop.test()</code> applies a small adjustment by default that nudges the p-value up and the interval slightly wider. Week 9 explains what it does, so leave it for now, but notice that the p-value printed here, 0.0004, is the one that adjustment produces. Second, that p-value itself belongs to a hypothesis test, which is still Week 9’s subject.</p>
+<p><code>"Streptomycin"</code> is first, so <code>prop 1</code> is the streptomycin arm and <code>prop 2</code> is the control arm, and the difference runs streptomycin minus control. Both ends of the interval are positive, which therefore says the streptomycin arm improved <em>more</em>. Had the two levels been the other way round, every number in that interval would have carried a minus sign and meant exactly the same thing. Chapter 5 puts this same factor the other way round on purpose, so it’s worth having looked at the levels here first.</p>
+<p>Two things in that output are worth explaining. First, the heading says “with continuity correction”: <code>prop.test()</code> applies a small adjustment by default that nudges the p-value up and the interval slightly wider. Chapter 5 explains what it does, so leave it for now, but notice that the p-value printed here, 0.0004, is the one that adjustment produces. Second, that p-value itself belongs to a hypothesis test, which is still Chapter 5’s subject.</p>
 <p>Because <code>strep_tb</code> is a randomised trial rather than an observational study, a difference this large and this precisely estimated supports a causal reading in a way that an association in <code>nhanes_mph</code> would not. We can quite safely conclude, from the findings, that streptomycin improved the proportion of patients with X-ray improvement by about 36 percentage points, compared with bed rest alone. We say percentage points rather than percent here: percent would describe how much bigger one proportion is relative to the other, not the size of the gap between them, which is what this interval actually estimates.</p>
 </section>
 <section id="width-and-sample-size-without-programming" class="level2" data-number="4.8">
@@ -628,7 +628,7 @@ mean of x
 </div>
 </div>
 <p>The point estimates are similar across all three, because all three are samples from the same population. But the confidence interval widens as the sample size drops.</p>
-<p>That’s hard to see across three blocks of output, so let’s put the three intervals in one small table. A <code>t.test()</code> result isn’t a data frame, but <code>$</code> still works on it, pulling out one named piece at a time exactly as it pulls one column out of a data frame. <code>tt_full$conf.int</code> is the pair of numbers at the ends of the interval, and <code>[1]</code> and <code>[2]</code> take the lower and the upper one, the same square-bracket indexing we used in Week 5. <code>data.frame()</code>, from Week 4, builds the table out of them, and <code>mutate()</code> adds the column we actually care about:</p>
+<p>That’s hard to see across three blocks of output, so let’s put the three intervals in one small table. A <code>t.test()</code> result isn’t a data frame, but <code>$</code> still works on it, pulling out one named piece at a time exactly as it pulls one column out of a data frame. <code>tt_full$conf.int</code> is the pair of numbers at the ends of the interval, and <code>[1]</code> and <code>[2]</code> take the lower and the upper one, the same square-bracket indexing we used in Chapter 2. <code>data.frame()</code>, from Chapter 1, builds the table out of them, and <code>mutate()</code> adds the column we actually care about:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>widths <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> <span class="fu">c</span>(<span class="st">"Full"</span>, <span class="st">"50% subset"</span>, <span class="st">"10% subset"</span>),</span>
@@ -866,7 +866,7 @@ sample estimates:
 <p><code>smoking</code> still has three levels after the <code>filter()</code>, but only two of them have any rows left, and <code>t.test()</code> rebuilds the factor from the data it’s actually given, so the empty third group drops out on its own.</p>
 <p>Check the direction before reading the interval, as above. <code>"Never"</code> comes first in <code>smoking</code>’s levels, so R has subtracted current smokers from never smokers, and the difference is never minus current.</p>
 <p>Mean total cholesterol was -0.028 mmol/L in never smokers compared with current smokers (95% CI: -0.056 to 0.001 mmol/L), so a little lower on average in those who had never smoked. Notice that the estimate sits inside its own interval, which is always worth checking. If it doesn’t, something is wrong, likely a sign has been flipped somewhere. The interval includes zero, so these data are consistent with no difference between the two groups, though they don’t rule out a small one either.</p>
-<p>The two intervals mean different things. The first is about a single quantity, mean cholesterol, and says how precisely this sample pins it down. The second is about a <em>comparison</em> between two groups, and the value that matters in it is zero: an interval containing zero is one where the data can’t establish which group is higher. From Week 9 onward, almost every interval in this course is of the second kind.</p>
+<p>The two intervals mean different things. The first is about a single quantity, mean cholesterol, and says how precisely this sample pins it down. The second is about a <em>comparison</em> between two groups, and the value that matters in it is zero: an interval containing zero is one where the data can’t establish which group is higher. From Chapter 5 onward, almost every interval in this course is of the second kind.</p>
 <p><strong>Exercise 2</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>cav_stats <span class="ot">&lt;-</span> strep_tb <span class="sc">|&gt;</span></span>

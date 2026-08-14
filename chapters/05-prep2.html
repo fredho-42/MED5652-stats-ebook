@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/08-estimation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (Week 8)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and sample size (Week 8)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -258,7 +258,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This chapter covers what makes a dataset usable, how to tell R where a file lives, and how to check what actually came in after reading it. In this chapter we take a spreadsheet apart, import real data for the first time, spot what’s missing, and end with a saved script we re-run from a fresh session to prove it works. Week 6 is reading week; Week 7 picks up from here.</p>
+<p>This chapter covers what makes a dataset usable, how to tell R where a file lives, and how to check what actually came in after reading it. In this chapter we take a spreadsheet apart, import real data for the first time, spot what’s missing, and end with a saved script we re-run from a fresh session to prove it works. Week 6 is reading week; Chapter 3 picks up from here.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">2.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -272,7 +272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">2.2</span> Setup</h2>
-<p>There’s nothing to read in yet, so, as in Week 4, this chunk only sets the console’s print width.</p>
+<p>There’s nothing to read in yet, so, as in Chapter 1, this chunk only sets the console’s print width.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">width =</span> <span class="dv">76</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -320,14 +320,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="read_csv-and-here" class="level3" data-number="2.5.1">
 <h3 data-number="2.5.1" class="anchored" data-anchor-id="read_csv-and-here"><span class="header-section-number">2.5.1</span> <code>read_csv()</code> and <code>here()</code></h3>
 <p><code>readr</code>’s <code>read_csv()</code> reads a <code>.csv</code> file into R as a data frame. It needs a path telling it exactly where that file is, using the path skills from earlier in this chapter. Building that path with <code>here()</code>, from the <code>here</code> package, means the same code works on any machine, regardless of where the project folder actually sits on that machine’s disk: <code>here()</code> starts from the project folder and adds the pieces you give it, one folder at a time.</p>
-<p>This chapter needs three packages: <code>readr</code> for reading files, <code>here</code> for building paths, and <code>ggplot2</code> for the plot at the end. As Week 4 explained, installing a package and loading it are two different actions, so unless you’ve installed these already, run this once in the console, not inside this document:</p>
+<p>This chapter needs three packages: <code>readr</code> for reading files, <code>here</code> for building paths, and <code>ggplot2</code> for the plot at the end. As Chapter 1 explained, installing a package and loading it are two different actions, so unless you’ve installed these already, run this once in the console, not inside this document:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"readr"</span>, <span class="st">"here"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>After that, <code>library()</code> is all we need, in this session and every session after it:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p><code>library(here)</code> prints one line when it loads, which this book hides because it’s too wide to fit the page. In your own console it says <code>here() starts at ...</code> followed by the full path to your project folder. That’s worth reading the first time you see it, because it’s <code>here()</code> telling you exactly which folder it will build every path from. If that path isn’t the project folder you built in Week 4, nothing below will find its files, and this is where you’d find that out.</p>
+<p><code>library(here)</code> prints one line when it loads, which this book hides because it’s too wide to fit the page. In your own console it says <code>here() starts at ...</code> followed by the full path to your project folder. That’s worth reading the first time you see it, because it’s <code>here()</code> telling you exactly which folder it will build every path from. If that path isn’t the project folder you built in Chapter 1, nothing below will find its files, and this is where you’d find that out.</p>
 </section>
 <section id="four-things-that-go-wrong" class="level3" data-number="2.5.2">
 <h3 data-number="2.5.2" class="anchored" data-anchor-id="four-things-that-go-wrong"><span class="header-section-number">2.5.2</span> Four things that go wrong</h3>
@@ -341,7 +341,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   not exist.</code></pre>
 </div>
 </div>
-<p>The real file is called <code>mph_nhanes_20241107.csv</code>, no <code>_data</code> in the name. R’s message states plainly that the file doesn’t exist at the path it tried, which is exactly what Week 4’s “file does not exist” error type looks like with a real file behind it.</p>
+<p>The real file is called <code>mph_nhanes_20241107.csv</code>, no <code>_data</code> in the name. R’s message states plainly that the file doesn’t exist at the path it tried, which is exactly what Chapter 1’s “file does not exist” error type looks like with a real file behind it.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -385,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>No error, but nothing usable either: one column, zero rows, and a column name that’s a fragment of raw XML. An <code>.xlsx</code> file is actually a small zip archive of several XML files bundled together, and <code>read_csv()</code> has gone looking inside that archive and started reading one of those XML files as if it were plain text. This is the quietest kind of import failure there is: nothing crashes, nothing complains, and the result still looks like a data frame at a glance. Always check what actually came in, which is exactly what the next section is for.</p>
-<p>Put right, all four attempts above collapse into the one call we actually want, and this is the real import we use for the rest of this book. The file holds <code>nhanes_mph</code>, an extract of a large American health survey in which adults were interviewed and then given a physical examination. Week 7 introduces it properly. For today we only need it to be a real file with real data in it:</p>
+<p>Put right, all four attempts above collapse into the one call we actually want, and this is the real import we use for the rest of this book. The file holds <code>nhanes_mph</code>, an extract of a large American health survey in which adults were interviewed and then given a physical examination. Chapter 3 introduces it properly. For today we only need it to be a real file with real data in it:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -502,7 +502,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 # ℹ 17 more rows</code></pre>
 </div>
 </div>
-<p>The dictionary’s first column is called <code>Variable names</code>, with a space in it, so referring to it needs backticks, exactly as Week 4 covered. <code>%in%</code>, from the same chapter, tests whether each value is a member of a set. Put inside square brackets after a data frame’s column, with the row’s index implied, this keeps only the rows where the condition is true:</p>
+<p>The dictionary’s first column is called <code>Variable names</code>, with a space in it, so referring to it needs backticks, exactly as Chapter 1 covered. <code>%in%</code>, from the same chapter, tests whether each value is a member of a set. Put inside square brackets after a data frame’s column, with the row’s index implied, this keeps only the rows where the condition is true:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dictionary[dictionary<span class="sc">$</span><span class="st">`</span><span class="at">Variable names</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"chol"</span>, <span class="st">"smoking"</span>), ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -514,7 +514,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 3 chol             Total cholesterol (mmol/L)             </code></pre>
 </div>
 </div>
-<p>That’s the habit worth building now: when a column’s meaning isn’t obvious from its name, the answer lives in this file, not in a guess. Week 7 uses this same file to build proper factors out of six of these columns; for today, just knowing how to look one up is enough.</p>
+<p>That’s the habit worth building now: when a column’s meaning isn’t obvious from its name, the answer lives in this file, not in a guess. Chapter 3 uses this same file to build proper factors out of six of these columns; for today, just knowing how to look one up is enough.</p>
 </section>
 </section>
 <section id="a-first-analysis-and-your-first-script" class="level2" data-number="2.6">
@@ -527,11 +527,11 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <pre><code>[1] 4.973316</code></pre>
 </div>
 </div>
-<p><code>chol</code> is total cholesterol, in mmol/L, and 2,589 participants have no value recorded for it. <code>na.rm = TRUE</code> drops those missing values before averaging the rest, exactly as it did back in Week 4’s <code>mean()</code> example. Leave it out and the whole calculation returns <code>NA</code>, since R won’t silently guess what a missing value should have been.</p>
+<p><code>chol</code> is total cholesterol, in mmol/L, and 2,589 participants have no value recorded for it. <code>na.rm = TRUE</code> drops those missing values before averaging the rest, exactly as it did back in Chapter 1’s <code>mean()</code> example. Leave it out and the whole calculation returns <code>NA</code>, since R won’t silently guess what a missing value should have been.</p>
 </section>
 <section id="a-first-taste-of-a-grouped-summary" class="level3" data-number="2.6.2">
 <h3 data-number="2.6.2" class="anchored" data-anchor-id="a-first-taste-of-a-grouped-summary"><span class="header-section-number">2.6.2</span> A first taste of a grouped summary</h3>
-<p><code>nhanes$chol</code> pulls the whole cholesterol column out as a bare vector, as <code>$</code> did in Week 4. Adding square brackets straight after it, with a condition inside, keeps only the values where that condition is <code>TRUE</code>:</p>
+<p><code>nhanes$chol</code> pulls the whole cholesterol column out as a bare vector, as <code>$</code> did in Chapter 1. Adding square brackets straight after it, with a condition inside, keeps only the values where that condition is <code>TRUE</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nhanes<span class="sc">$</span>chol[nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="st">"Never"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -544,7 +544,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
   1.530   4.220   4.890   4.996   5.660  15.900     882 </code></pre>
 </div>
 </div>
-<p>That’s a genuine grouped summary, built entirely from tools already familiar: <code>$</code>, <code>==</code>, and now <code>[</code> and <code>]</code> with a condition inside it. It works, but it’s clunky already with just two groups, and <code>smoking</code> has three. Week 7 introduces <code>group_by()</code> and <code>summarise()</code>, a far nicer way to do exactly this for as many groups as we like, in one line instead of several. This is only a preview of what’s coming, not the tool we’ll actually use going forward.</p>
+<p>That’s a genuine grouped summary, built entirely from tools already familiar: <code>$</code>, <code>==</code>, and now <code>[</code> and <code>]</code> with a condition inside it. It works, but it’s clunky already with just two groups, and <code>smoking</code> has three. Chapter 3 introduces <code>group_by()</code> and <code>summarise()</code>, a far nicer way to do exactly this for as many groups as we like, in one line instead of several. This is only a preview of what’s coming, not the tool we’ll actually use going forward.</p>
 </section>
 <section id="a-first-taste-of-a-plot" class="level3" data-number="2.6.3">
 <h3 data-number="2.6.3" class="anchored" data-anchor-id="a-first-taste-of-a-plot"><span class="header-section-number">2.6.3</span> A first taste of a plot</h3>
@@ -565,7 +565,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 </div>
 </div>
 </div>
-<p><code>ggplot2</code> code is joined with <code>+</code>, not the pipe. That’s a real inconsistency in R, not a mistake in this book, and Week 7 explains why and unpacks the rest of the grammar properly. For today, just notice the shape: cholesterol piles up around 4 to 6 mmol/L, with a long tail of higher values trailing off to the right.</p>
+<p><code>ggplot2</code> code is joined with <code>+</code>, not the pipe. That’s a real inconsistency in R, not a mistake in this book, and Chapter 3 explains why and unpacks the rest of the grammar properly. For today, just notice the shape: cholesterol piles up around 4 to 6 mmol/L, with a long tail of higher values trailing off to the right.</p>
 </section>
 <section id="that-warning-above-the-plot" class="level3" data-number="2.6.4">
 <h3 data-number="2.6.4" class="anchored" data-anchor-id="that-warning-above-the-plot"><span class="header-section-number">2.6.4</span> That warning above the plot</h3>
@@ -577,13 +577,13 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 </section>
 <section id="from-console-to-script" class="level3" data-number="2.6.5">
 <h3 data-number="2.6.5" class="anchored" data-anchor-id="from-console-to-script"><span class="header-section-number">2.6.5</span> From console to script</h3>
-<p>Everything we’ve done so far in this chapter has been one line at a time. That’s the right way to <em>try</em> something: type it in the console, look at what comes back, fix it if it’s wrong. But Week 4 already made the argument against leaving it there. We will need to do this again, and we will not remember what we typed.</p>
+<p>Everything we’ve done so far in this chapter has been one line at a time. That’s the right way to <em>try</em> something: type it in the console, look at what comes back, fix it if it’s wrong. But Chapter 1 already made the argument against leaving it there. We will need to do this again, and we will not remember what we typed.</p>
 <p>So the working habit for the rest of this course is two steps, not one. Try the line in the console until it does what we want. Then move the line that worked into a script, and save it. The console is where we experiment; the script is what we keep.</p>
 <p>To build one now:</p>
 <ol type="1">
 <li>In RStudio, go to <strong>File → New File → R Script</strong>, or key in <strong>Ctrl+Shift+N</strong> or <strong>Cmd+Shift+N</strong>. A blank file opens in the source pane, top-left.</li>
 <li>Type the lines you want to keep. For a first script, that’s the <code>library()</code> calls, the <code>read_csv()</code> line, one summary, and one plot.</li>
-<li>Save it into the <code>scripts/</code> folder you built in Week 4, with a name that follows its conventions: no spaces, no <code>&amp;</code> or <code>#</code>, something that says what it does. <code>first_analysis.R</code> is fine. <code>Untitled1.R</code> is not.</li>
+<li>Save it into the <code>scripts/</code> folder you built in Chapter 1, with a name that follows its conventions: no spaces, no <code>&amp;</code> or <code>#</code>, something that says what it does. <code>first_analysis.R</code> is fine. <code>Untitled1.R</code> is not.</li>
 </ol>
 <p>Here’s what a complete first script looks like, start to finish. Nothing in it is new; it’s the pieces from earlier in this chapter, collected in the order they need to run:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
@@ -603,7 +603,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <h3 data-number="2.6.6" class="anchored" data-anchor-id="proving-it-actually-works"><span class="header-section-number">2.6.6</span> Proving it actually works</h3>
 <p>Here’s the part people skip, and it’s the part that matters. A script that runs on your machine right now, in a session where you’ve been typing for an hour, is not yet proof of anything. Half of what it needs might already be sitting in memory from something you typed and forgot.</p>
 <p>So test it properly. In RStudio, go to <strong>Session → Restart R</strong>. That throws away every object and every loaded package, leaving you with an empty session, exactly like the one a colleague, a marker, or you-in-six-months would start from. Now run your script from the top.</p>
-<p>If it runs clean, the script is genuinely self-contained. If it fails, the error tells us precisely what we’d forgotten to write down, and the fix belongs <em>in the script</em>, not typed into the console again. That restart is the reproducibility argument from Week 4, made concrete: not “scripts are good practice” but “here is how we find out whether ours actually is one.”</p>
+<p>If it runs clean, the script is genuinely self-contained. If it fails, the error tells us precisely what we’d forgotten to write down, and the fix belongs <em>in the script</em>, not typed into the console again. That restart is the reproducibility argument from Chapter 1, made concrete: not “scripts are good practice” but “here is how we find out whether ours actually is one.”</p>
 </section>
 </section>
 <section id="exercises" class="level2" data-number="2.7">
@@ -743,14 +743,14 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> wal_r)) <span class="sc">+</span></span>
 <span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The two lines people most often leave out are the ones that were already true before they started: <code>library(readr)</code> and the <code>read_csv()</code> call. Both had been run earlier in the session, so <code>nhanes</code> existed and <code>read_csv()</code> worked, and neither felt like part of “the analysis.” After a restart, neither is true any more, and the script fails on its first real line with <code>could not find function "read_csv"</code> or <code>object 'nhanes' not found</code>, both of which Week 4 covered. That’s exactly what the restart is for: it finds the assumptions we didn’t know we were making.</p>
+<p>The two lines people most often leave out are the ones that were already true before they started: <code>library(readr)</code> and the <code>read_csv()</code> call. Both had been run earlier in the session, so <code>nhanes</code> existed and <code>read_csv()</code> worked, and neither felt like part of “the analysis.” After a restart, neither is true any more, and the script fails on its first real line with <code>could not find function "read_csv"</code> or <code>object 'nhanes' not found</code>, both of which Chapter 1 covered. That’s exactly what the restart is for: it finds the assumptions we didn’t know we were making.</p>
 <p><strong>Self-check answers</strong></p>
 <ol type="1">
 <li><strong>c.</strong> <code>mhp</code> versus <code>mph</code> is a plain typo in the filename, not a folder problem, a file-type problem, or a backslash problem.</li>
 <li><strong>b.</strong> <code>dim()</code> returns row and column counts. <code>names()</code> returns the column names themselves. Neither substitutes for the other.</li>
 <li><strong>c.</strong> <code>is.na()</code> marks each missing value <code>TRUE</code>, and <code>sum()</code> adds those up. The number is a count of participants with no recorded value, nothing about the values that are present.</li>
 <li><strong>b.</strong> <code>mph_nhanes_20241107.csv</code> and <code>mph_nhanes_20241107_dictionary.csv</code> are two separate files on disk, each holding a different table, so each needs its own <code>read_csv()</code> call.</li>
-<li><strong>c.</strong> <code>.xlsx</code> is a zip archive of XML files, not a CSV, so <code>read_csv()</code> produces nonsense rather than a real dataset. The absence of an error is exactly the trap: always check what actually came in after reading a file, not just whether it “worked.” <code>dim()</code>, used earlier in this chapter, is one way to do that. Week 7 introduces a second, <code>glimpse()</code> from <code>dplyr</code>, which shows every column with its type and first few values in one compact layout, better suited to a wide dataset like <code>nhanes_mph</code> than <code>dim()</code> alone.</li>
+<li><strong>c.</strong> <code>.xlsx</code> is a zip archive of XML files, not a CSV, so <code>read_csv()</code> produces nonsense rather than a real dataset. The absence of an error is exactly the trap: always check what actually came in after reading a file, not just whether it “worked.” <code>dim()</code>, used earlier in this chapter, is one way to do that. Chapter 3 introduces a second, <code>glimpse()</code> from <code>dplyr</code>, which shows every column with its type and first few values in one compact layout, better suited to a wide dataset like <code>nhanes_mph</code> than <code>dim()</code> alone.</li>
 </ol>
 <p><strong>Writing exercise (sample answer)</strong></p>
 <p>Participants reported a mean of 0.21 hours/day of walking outside work (<code>wal_r</code>), based on the 34,418 participants with a value recorded, with 7,347 participants who had a missing value. The distribution is heavily right-skewed: most participants reported no walking outside work at all, and a small number reported several hours a day, pulling the mean above what a typical participant’s value actually looks like.</p>
