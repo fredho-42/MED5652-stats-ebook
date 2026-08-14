@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>6&nbsp; Correlation and simple linear regression (IES Week 10) – IES Statistical Practicals</title>
+<title>6&nbsp; Correlation and simple linear regression (Week 10) – IES Statistical Practicals</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -118,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/10-regression.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Correlation and simple linear regression (IES Week 10)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/10-regression.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Correlation and simple linear regression (Week 10)</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -154,43 +154,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/04-prep1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R and R Studio (IES Week 4)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R and R Studio (Week 4)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/05-prep2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data and data handling (IES Week 5)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data and data handling (Week 5)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/07-descriptive.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Describing and visualising data (IES Week 7)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Describing and visualising data (Week 7)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/08-estimation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (IES Week 8)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Estimation, precision, and study size (Week 8)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/09-comparison.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hypothesis tests and measures of association (IES Week 9)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hypothesis tests and measures of association (Week 9)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/10-regression.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Correlation and simple linear regression (IES Week 10)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Correlation and simple linear regression (Week 10)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../chapters/11-adjustment.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (IES Week 11)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (Week 11)</span></span></a>
   </div>
 </li>
     </ul>
@@ -221,7 +221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-10-regression" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Correlation and simple linear regression (IES Week 10)</span></span></h1>
+<h1 class="title"><span id="sec-10-regression" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Correlation and simple linear regression (Week 10)</span></span></h1>
 </div>
 
 
@@ -238,10 +238,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This week centres on how a continuous outcome varies with a continuous predictor, in contrast with Weeks 8 and 9, where a continuous outcome was compared across the two groups of a binary variable. The tools include scatterplots, Pearson’s correlation coefficient, and simple linear regression, specified as Y = α + βX + ε. Simple linear regression also introduces residuals, the intercept, the slope, and R². We discuss and check the model’s assumptions. In this session we fit that model in R, check it properly, and use it to predict.</p>
+<p>This chapter centres on how a continuous outcome varies with a continuous predictor, in contrast with Weeks 8 and 9, where a continuous outcome was compared across the two groups of a binary variable. The tools include scatterplots, Pearson’s correlation coefficient, and simple linear regression, specified as Y = α + βX + ε. Simple linear regression also introduces residuals, the intercept, the slope, and R². We discuss and check the model’s assumptions. In this chapter we fit that model in R, check it properly, and use it to predict.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">6.1</span> Chapter intended learning outcomes</h2>
-<p>By the end of this session you will be able to:</p>
+<p>By the end of this chapter you will be able to:</p>
 <ol type="1">
 <li>Produce and interpret a scatterplot with a fitted regression line</li>
 <li>Fit a simple linear regression with <code>lm()</code></li>
@@ -1110,13 +1110,13 @@ vpa_r       -0.2006789 -0.1389139</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../chapters/09-comparison.html" class="pagination-link" aria-label="Hypothesis tests and measures of association (IES Week 9)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hypothesis tests and measures of association (IES Week 9)</span></span>
+      <a href="../chapters/09-comparison.html" class="pagination-link" aria-label="Hypothesis tests and measures of association (Week 9)">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hypothesis tests and measures of association (Week 9)</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../chapters/11-adjustment.html" class="pagination-link" aria-label="Multiple linear and logistic regression (IES Week 11)">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (IES Week 11)</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../chapters/11-adjustment.html" class="pagination-link" aria-label="Multiple linear and logistic regression (Week 11)">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (Week 11)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
