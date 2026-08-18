@@ -240,9 +240,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><strong>The problem.</strong> Chapter 4 taught us to attach a confidence interval to an estimate, or to the difference between two groups, so we could say how precise it was. But we often want to know whether a difference is ‘real’ or is just chance. The interval from Chapter 4 answers that indirectly, by showing whether the null value falls inside it. A hypothesis test answers it head on, and reported alongside the interval rather than instead of it, that is what this chapter builds. And once a difference looks real, how large is it? The risk ratio and the odds ratio from the epidemiology half answer that, and here each one gets a confidence interval and a p-value attached.</p>
+<p>Chapter 4 taught us to attach a confidence interval to an estimate, or to the difference between two groups, so we could say how precise it was. But we often want to know whether a difference is ‘real’ or is just chance. The interval from Chapter 4 answers that indirectly, by showing whether the null value falls inside it. A hypothesis test answers it head on, and reported alongside the interval rather than instead of it, that is what this chapter builds. And once a difference looks real, how large is it? The risk ratio and the odds ratio from the epidemiology half answer that, and here each one gets a confidence interval and a p-value attached.</p>
 <p>So we start with the logic of a test: a null and an alternative hypothesis, a test statistic turned into a p-value, and precision about what a p-value actually is. Then we run the tests themselves, choosing between them from the structure of the data: an independent-samples t-test for two separate groups, a paired t-test for two measurements taken on the same person, a non-parametric alternative when the distribution won’t support either, and a chi-squared test for a two-way table of counts. Along the way it becomes clear that a confidence interval and a hypothesis test carry the same information, which is why the reporting standard from here on is an effect size, a 95% confidence interval, and a p-value, together. We finish on risk ratios and odds ratios, and practise writing up each result the way a public health journal expects.</p>
-<p>Every ILO below is a piece of answering that.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">5.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -580,23 +579,23 @@ Table&nbsp;5.1
 </figcaption>
 <div aria-describedby="tbl-summary-addp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="kdudgeqbrv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kdudgeqbrv table {
+<div id="fijebyacnf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fijebyacnf table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#kdudgeqbrv thead, #kdudgeqbrv tbody, #kdudgeqbrv tfoot, #kdudgeqbrv tr, #kdudgeqbrv td, #kdudgeqbrv th {
+#fijebyacnf thead, #fijebyacnf tbody, #fijebyacnf tfoot, #fijebyacnf tr, #fijebyacnf td, #fijebyacnf th {
   border-style: none;
 }
 
-#kdudgeqbrv p {
+#fijebyacnf p {
   margin: 0;
   padding: 0;
 }
 
-#kdudgeqbrv .gt_table {
+#fijebyacnf .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -622,12 +621,12 @@ Table&nbsp;5.1
   border-left-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_caption {
+#fijebyacnf .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kdudgeqbrv .gt_title {
+#fijebyacnf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -639,7 +638,7 @@ Table&nbsp;5.1
   border-bottom-width: 0;
 }
 
-#kdudgeqbrv .gt_subtitle {
+#fijebyacnf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -651,7 +650,7 @@ Table&nbsp;5.1
   border-top-width: 0;
 }
 
-#kdudgeqbrv .gt_heading {
+#fijebyacnf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -663,13 +662,13 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_bottom_border {
+#fijebyacnf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_col_headings {
+#fijebyacnf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -684,7 +683,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_col_heading {
+#fijebyacnf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -704,7 +703,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#kdudgeqbrv .gt_column_spanner_outer {
+#fijebyacnf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -716,15 +715,15 @@ Table&nbsp;5.1
   padding-right: 4px;
 }
 
-#kdudgeqbrv .gt_column_spanner_outer:first-child {
+#fijebyacnf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kdudgeqbrv .gt_column_spanner_outer:last-child {
+#fijebyacnf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kdudgeqbrv .gt_column_spanner {
+#fijebyacnf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -736,11 +735,11 @@ Table&nbsp;5.1
   width: 100%;
 }
 
-#kdudgeqbrv .gt_spanner_row {
+#fijebyacnf .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#kdudgeqbrv .gt_group_heading {
+#fijebyacnf .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -766,7 +765,7 @@ Table&nbsp;5.1
   text-align: left;
 }
 
-#kdudgeqbrv .gt_empty_group_heading {
+#fijebyacnf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -781,15 +780,15 @@ Table&nbsp;5.1
   vertical-align: middle;
 }
 
-#kdudgeqbrv .gt_from_md > :first-child {
+#fijebyacnf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kdudgeqbrv .gt_from_md > :last-child {
+#fijebyacnf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kdudgeqbrv .gt_row {
+#fijebyacnf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -808,7 +807,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#kdudgeqbrv .gt_stub {
+#fijebyacnf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -821,7 +820,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#kdudgeqbrv .gt_stub_row_group {
+#fijebyacnf .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -835,15 +834,15 @@ Table&nbsp;5.1
   vertical-align: top;
 }
 
-#kdudgeqbrv .gt_row_group_first td {
+#fijebyacnf .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kdudgeqbrv .gt_row_group_first th {
+#fijebyacnf .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#kdudgeqbrv .gt_summary_row {
+#fijebyacnf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -853,16 +852,16 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#kdudgeqbrv .gt_first_summary_row {
+#fijebyacnf .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_first_summary_row.thick {
+#fijebyacnf .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kdudgeqbrv .gt_last_summary_row {
+#fijebyacnf .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -872,7 +871,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_grand_summary_row {
+#fijebyacnf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -882,7 +881,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#kdudgeqbrv .gt_first_grand_summary_row {
+#fijebyacnf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -892,7 +891,7 @@ Table&nbsp;5.1
   border-top-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_last_grand_summary_row_top {
+#fijebyacnf .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -902,11 +901,11 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_striped {
+#fijebyacnf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#kdudgeqbrv .gt_table_body {
+#fijebyacnf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -915,7 +914,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_footnotes {
+#fijebyacnf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -929,7 +928,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_footnote {
+#fijebyacnf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -938,7 +937,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#kdudgeqbrv .gt_sourcenotes {
+#fijebyacnf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -952,7 +951,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#kdudgeqbrv .gt_sourcenote {
+#fijebyacnf .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -960,72 +959,72 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#kdudgeqbrv .gt_left {
+#fijebyacnf .gt_left {
   text-align: left;
 }
 
-#kdudgeqbrv .gt_center {
+#fijebyacnf .gt_center {
   text-align: center;
 }
 
-#kdudgeqbrv .gt_right {
+#fijebyacnf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kdudgeqbrv .gt_font_normal {
+#fijebyacnf .gt_font_normal {
   font-weight: normal;
 }
 
-#kdudgeqbrv .gt_font_bold {
+#fijebyacnf .gt_font_bold {
   font-weight: bold;
 }
 
-#kdudgeqbrv .gt_font_italic {
+#fijebyacnf .gt_font_italic {
   font-style: italic;
 }
 
-#kdudgeqbrv .gt_super {
+#fijebyacnf .gt_super {
   font-size: 65%;
 }
 
-#kdudgeqbrv .gt_footnote_marks {
+#fijebyacnf .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#kdudgeqbrv .gt_asterisk {
+#fijebyacnf .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kdudgeqbrv .gt_indent_1 {
+#fijebyacnf .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kdudgeqbrv .gt_indent_2 {
+#fijebyacnf .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kdudgeqbrv .gt_indent_3 {
+#fijebyacnf .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kdudgeqbrv .gt_indent_4 {
+#fijebyacnf .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kdudgeqbrv .gt_indent_5 {
+#fijebyacnf .gt_indent_5 {
   text-indent: 25px;
 }
 
-#kdudgeqbrv .katex-display {
+#fijebyacnf .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#kdudgeqbrv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fijebyacnf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>

@@ -225,7 +225,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-pipe" id="toc-the-pipe" class="nav-link" data-scroll-target="#the-pipe"><span class="header-section-number">1.14</span> The pipe</a></li>
   <li><a href="#reading-errors" id="toc-reading-errors" class="nav-link" data-scroll-target="#reading-errors"><span class="header-section-number">1.15</span> Reading errors</a></li>
   <li><a href="#getting-help" id="toc-getting-help" class="nav-link" data-scroll-target="#getting-help"><span class="header-section-number">1.16</span> Getting help</a></li>
-  <li><a href="#the-finished-log" id="toc-the-finished-log" class="nav-link" data-scroll-target="#the-finished-log"><span class="header-section-number">1.17</span> The finished log</a></li>
+  <li><a href="#the-finished-log" id="toc-the-finished-log" class="nav-link" data-scroll-target="#the-finished-log"><span class="header-section-number">1.17</span> The finished log</a>
+  <ul class="collapse">
+  <li><a href="#saving-the-log" id="toc-saving-the-log" class="nav-link" data-scroll-target="#saving-the-log"><span class="header-section-number">1.17.1</span> Saving the log</a></li>
+  </ul></li>
   <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">1.18</span> Exercises</a></li>
   <li><a href="#self-check" id="toc-self-check" class="nav-link" data-scroll-target="#self-check"><span class="header-section-number">1.19</span> Self-check</a></li>
   </ul>
@@ -253,9 +256,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><strong>The problem.</strong> We all know how to work with a spreadsheet, but a spreadsheet is not the best way to record, manage, and analyse data. A copy-and-paste error in an Excel-based model contributed to JPMorgan Chase’s $6 billion loss in 2012, and Public Health England failed to log over 15,000 positive coronavirus test results in 2020, because they used an older Excel format template. The list goes on. A spreadsheet is useful for looking at the data and for some simple calculations, but is not designed to be reproducible, because the work done in one doesn’t normally get tracked. Instead, in public health and statistics, we often use statistical software for data management and analysis, as the record is clearer and can make the process more reproducible. This is one of the many reasons why we learn R to manage, handle, and analyse statistical data. As an example, we will examine how we can properly interact with R and RStudio, and use it to build a toy clinic record.</p>
+<p>We all know how to work with a spreadsheet, but a spreadsheet is not the best way to record, manage, and analyse data. A copy-and-paste error in an Excel-based model contributed to JPMorgan Chase’s $6 billion loss in 2012, and Public Health England failed to log over 15,000 positive coronavirus test results in 2020, because they used an older Excel format template. The list goes on. A spreadsheet is useful for looking at the data and for some simple calculations, but it isn’t designed for reproducible work: the work done in one doesn’t normally get tracked, and there’s no way to tell what has been done to a file just by looking at it. Instead, in public health and statistics, we often use statistical software for data management and analysis, as the record is clearer and can make the process more reproducible. This is one of the many reasons why we learn R to manage, handle, and analyse statistical data. As an example, we will examine how we can properly interact with R and RStudio, and use it to build a toy clinic record.</p>
 <p>Doing that systematically starts with somewhere to keep the work. So we install R and RStudio, build a project folder, and see why a saved script, rather than a line typed into the console and lost, is what makes an analysis repeatable at all. Then we learn how R holds data: objects, the types of value they store, the functions that act on them, and how to read the handful of error messages we’ll all meet in the next ten weeks. We build every piece of it into a small clinic visit log, one column at a time, until we have a dataset of our own to ask questions of. Nothing here is statistics yet, but it’s the foundation everything after it stands on.</p>
-<p>Every ILO below is one piece of getting there.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">1.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -333,7 +335,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="the-log-were-going-to-build" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="the-log-were-going-to-build"><span class="header-section-number">1.5</span> The log we’re going to build</h2>
-<p>From here on, every section in this chapter adds one real piece to a small dataset: a clinic visit log for four patients, invented purely to practise on. By the end of the chapter we’ll have this:</p>
+<p>From here on, every section in this chapter adds one real piece to a small dataset: a toy clinic visit log for four patients. By the end of the chapter we’ll have this:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -425,7 +427,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="data-types" class="level2" data-number="1.8">
 <h2 data-number="1.8" class="anchored" data-anchor-id="data-types"><span class="header-section-number">1.8</span> Data types</h2>
-<p>R keeps track of what kind of value an object holds, and it matters: R decides what it will let us do with a value based on its type, refusing to average text the way it refuses to average a factor’s labels, so knowing a column’s type is knowing what’s even possible on it. <code>class()</code> reports it, and our own log is the fastest way to see two of the four:</p>
+<p>R keeps track of what kind of value an object holds, and it matters: R decides what it will let us do with a value based on its type, for example refusing to calculate a mean for text. Knowing a column’s type is knowing what’s possible on it. <code>class()</code> reports it, and our own log is the fastest way to see two of the four:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(visits<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -761,7 +763,16 @@ such file or directory</code></pre>
 <pre><code>[1] 5.4</code></pre>
 </div>
 </div>
+<section id="saving-the-log" class="level3" data-number="1.17.1">
+<h3 data-number="1.17.1" class="anchored" data-anchor-id="saving-the-log"><span class="header-section-number">1.17.1</span> Saving the log</h3>
+<p>Everything in <code>visits</code> only exists inside this R session, in memory. Close RStudio without saving it out, and it’s gone, the same way a value typed straight into the console disappeared the moment we moved on. <code>write.csv()</code>, from base R, does the opposite of <code>read.csv()</code> from the Reading errors section above: it takes an object and a file path, and writes the object out as a real CSV file on disk.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(visits, <span class="st">"visits.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>row.names = FALSE</code> is worth explaining rather than copying without thinking about it. Left out, <code>write.csv()</code> adds an extra column at the front of the file, numbering the rows 1 to 4. That’s not part of our data, just R’s own internal row labels leaking into the file, and it would show up as a stray, unlabelled column the moment the file is opened. <code>FALSE</code> tells <code>write.csv()</code> to leave it out and write only the columns we actually built.</p>
+<p>That line just wrote a real file, <code>visits.csv</code>, sitting on disk the moment this page rendered, independent of R and of this book. In our own project, following the <code>data</code>/<code>scripts</code>/<code>outputs</code> structure from earlier in this chapter, this is exactly what the <code>outputs</code> subfolder is for: a file we saved out, not one we’re about to read back in. Opening it, in a spreadsheet application or a plain text editor, shows exactly what <code>visits</code> held in R: patient IDs, ages, smoking status, weight, and cholesterol, one row per patient, values separated by commas, no formatting or formulas hidden behind them. That’s the whole idea of a CSV file, and Chapter 2 explains why it matters properly, the moment we start reading files back in rather than writing them out.</p>
 <p>Every idea used to build this log, a vector, a data frame, <code>$</code>, a comparison, loading a package, the pipe, comes back constantly from Chapter 2 onward. Only the data changes: Chapter 2 brings in this same clinic’s real log, all eight patients, exactly as messily kept as real logs actually are.</p>
+</section>
 </section>
 <section id="exercises" class="level2" data-number="1.18">
 <h2 data-number="1.18" class="anchored" data-anchor-id="exercises"><span class="header-section-number">1.18</span> Exercises</h2>
@@ -823,34 +834,34 @@ such file or directory</code></pre>
 <div class="callout-body-container callout-body">
 <p><strong>Exercise 1</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>height_cm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">177</span>, <span class="dv">155</span>, <span class="dv">168</span>, <span class="dv">181</span>)</span>
-<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>height_cm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>height_cm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">177</span>, <span class="dv">155</span>, <span class="dv">168</span>, <span class="dv">181</span>)</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>height_cm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 177 155 168 181</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(height_cm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(height_cm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "numeric"</code></pre>
 </div>
 </div>
 <p><strong>Exercise 2</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(visits<span class="sc">$</span>chol, <span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(visits<span class="sc">$</span>chol, <span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  5  6 NA  5</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>visits<span class="sc">$</span>chol <span class="sc">&gt;</span> <span class="dv">5</span> <span class="sc">&amp;</span> visits<span class="sc">$</span>smoker <span class="sc">==</span> <span class="st">"Yes"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>visits<span class="sc">$</span>chol <span class="sc">&gt;</span> <span class="dv">5</span> <span class="sc">&amp;</span> visits<span class="sc">$</span>smoker <span class="sc">==</span> <span class="st">"Yes"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE  TRUE FALSE FALSE</code></pre>
 </div>
 </div>
 <p><code>?round</code>’s Usage section reads <code>round(x, digits = 0)</code>, so <code>digits</code> defaults to 0: leave it out and R rounds to the nearest whole number. Running it both ways confirms that:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(visits<span class="sc">$</span>chol)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(visits<span class="sc">$</span>chol)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  5  6 NA  5</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(visits<span class="sc">$</span>chol, <span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(visits<span class="sc">$</span>chol, <span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  5  6 NA  5</code></pre>
 </div>
@@ -858,20 +869,20 @@ such file or directory</code></pre>
 <p>The two lines give identical results, which is what a default argument means in practice. The help page is the fastest way to find out what a function does when we don’t tell it, and it’s always right for the version of R we actually have installed.</p>
 <p><strong>Exercise 3</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>visits <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(visits, height_cm)</span>
-<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>bmi <span class="ot">&lt;-</span> visits<span class="sc">$</span>weight_kg <span class="sc">/</span> (visits<span class="sc">$</span>height_cm <span class="sc">/</span> <span class="dv">100</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>bmi</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>visits <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(visits, height_cm)</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>bmi <span class="ot">&lt;-</span> visits<span class="sc">$</span>weight_kg <span class="sc">/</span> (visits<span class="sc">$</span>height_cm <span class="sc">/</span> <span class="dv">100</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>bmi</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 22.98190 36.62851 23.03005 18.00922</code></pre>
 </div>
 </div>
 <p><strong>Exercise 4</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>visits<span class="sc">$</span>age <span class="sc">|&gt;</span> <span class="fu">mean</span>() <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>visits<span class="sc">$</span>age <span class="sc">|&gt;</span> <span class="fu">mean</span>() <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 42</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(visits, patient_id, smoker)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(visits, patient_id, smoker)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  patient_id smoker
 1        P01     No
