@@ -258,7 +258,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This chapter covers what makes a dataset usable, how to tell R where a file lives, and how to check what actually came in after reading it. In this chapter we take a spreadsheet apart, import real data for the first time, spot what’s missing, and end with a saved script we re-run from a fresh session to prove it works. Week 6 is reading week; Chapter 3 picks up from here.</p>
+<p><strong>The problem.</strong> Chapter 1 stressed the importance of having reproducible work in statistics and public health. It also taught R’s basic syntax on a handful of patients we typed in ourselves: a small, clean dataset, tidy by design. Real data almost never arrives that way. It’s a spreadsheet that’s been edited by hand for years, messy and full of errors. How do we turn a real, messy file into something R can work with reliably, and prove that our process actually works, not just this once but every time we run it?</p>
+<p>Answering that runs in three steps. First we take a real, messy clinic spreadsheet apart: the same clinic setting as Chapter 1’s hand-typed log, but a version that has lived in the real world and been edited only by hand in Excel. We work out what makes a dataset usable, restructure it, and save it as a CSV. Then we step up to real data, learning how to tell R where a file lives, what the common import failures look like, and how to check what actually came in rather than what we expected. Last we collect the lines that worked into an R script, so the whole data pipeline, the process that manages and transforms our data, is written down and can be run again from nothing. Week 6 is reading week; Chapter 3 picks up from here.</p>
+<p>Every ILO below is a step in that.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">2.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -272,10 +274,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="setup" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">2.2</span> Setup</h2>
-<p>There’s nothing to read in yet, so, as in Chapter 1, this chunk only sets the console’s print width.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">width =</span> <span class="dv">76</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<p>There’s nothing to read in yet, so there’s nothing to set up in this chapter.</p>
 </section>
 <section id="tidy-data-in-a-spreadsheet" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="tidy-data-in-a-spreadsheet"><span class="header-section-number">2.3</span> Tidy data, in a spreadsheet</h2>
@@ -285,13 +284,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-breaks-an-import" class="level3" data-number="2.3.2">
 <h3 data-number="2.3.2" class="anchored" data-anchor-id="what-breaks-an-import"><span class="header-section-number">2.3.2</span> What breaks an import</h3>
-<ul>
-<li><strong>Merged cells.</strong> A heading merged across several columns looks fine to a person, but when R reads the underlying columns back out, most of them come back empty, because the merge only stored the value in one of the cells it covers.</li>
-<li><strong>Units mixed into the value, and inconsistent with each other.</strong> Most of a Weight or Height column might be plain numbers, <code>72</code>, <code>1.70</code>, and so on, but one row breaks the pattern: <code>195 lbs</code> and <code>6 ft</code> instead of kilograms and metres, or a height like <code>178</code> sitting uncommented among a column of metres, really centimetres in disguise. R reads a whole column as text the moment a single cell in it isn’t a bare number, so it only takes one row like this to turn an otherwise clean numeric column into text throughout.</li>
-<li><strong>Blank rows used for spacing.</strong> A blank row inserted purely to separate two sections becomes a row of missing values, <code>NA</code>, in every column, once imported.</li>
-<li><strong>Notes written in a stray cell</strong>, off to the side of the actual table, with no column of their own. This can be a note about one specific patient, or a caption meant to explain something elsewhere in the sheet that never made it into a proper column.</li>
-<li><strong>More than one table on a single sheet.</strong> R expects a sheet to be one table. A second, unrelated table lower down the same sheet gets read as more rows of the first table, and the result makes no sense.</li>
-</ul>
+<p>Picture reading the sheet in the screenshot below the way a person would, working down it row by row, and watching where it stops behaving like one clean table.</p>
+<p>Row 1 is a title, “Clinic Visit Log - Week 12”, stretched across six columns as one merged cell. A heading merged like that looks fine to a person, but when R reads the underlying columns back out, most of them come back empty, because the merge only stored the value in one of the cells it covers. Row 2 does the same thing on a smaller scale, merging “Measurements” across just the Weight and Height columns, so a proper header for either one only turns up in row 3.</p>
+<p>Read on down the Weight and Height columns themselves and one row breaks the pattern. Most patients are plain numbers, kilograms and metres. One row is text instead: <code>195 lbs</code> and <code>6 ft</code>. R reads a whole column as text the moment a single cell in it isn’t a bare number, so it only takes one row like that to turn an otherwise clean numeric column into text throughout, no matter how many other rows are perfectly formed. This is the same problem Chapter 1’s <code>round()</code> example was quietly solving for us by hand, turning a raw scale reading into a clean whole-kilogram number before it ever went in the log; nobody has done that here, and R has no way to do it on our behalf.</p>
+<p>Off to the side, in a cell with no column of its own, sits a note about one specific patient’s missed follow-up, disconnected from the table it’s actually about. Further down, after a blank row inserted purely for visual spacing, which becomes a row of missing values, <code>NA</code>, in every column the moment it’s imported, sits a second, smaller table: a follow-up schedule, unrelated to the patient log above it. R expects one table per sheet, so this second table gets read as more rows of the first one, and the result makes no sense.</p>
 <p><strong>Spreadsheet exercise (ILO 1).</strong> <code>data/05-prep2-messy-clinic.xlsx</code> is a small, made-up clinic visit log, built specifically to have every one of these problems at once. Open it in Excel, or whatever spreadsheet software you have.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -304,7 +300,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="finding-a-file-and-telling-r-where-it-is" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="finding-a-file-and-telling-r-where-it-is"><span class="header-section-number">2.4</span> Finding a file, and telling R where it is</h2>
-<p>Before we can read anything into R, we need to know exactly where the file we want actually lives. This is the file system skill everything from here on assumes.</p>
+<p>We just saved a clean CSV in the exercise above. Before we can read it, or anything else, into R, we need to know exactly where the file we want actually lives. This is the file system skill everything from here on assumes.</p>
 <p><strong>Where downloads go.</strong> When you download a file from a browser, most browsers save it into a folder called <code>Downloads</code> by default, without asking. On Windows that’s usually <code>C:\Users\yourname\Downloads</code>; on a Mac it’s usually <code>/Users/yourname/Downloads</code>. If you can’t find a file you just downloaded, that folder is the first place to check, and it’s worth confirming where your own browser is set to save to, since some let you change it.</p>
 <p><strong>Reading a path.</strong> A file path is a set of directions from somewhere fixed down to one specific file, one folder at a time, separated by slashes. <code>data/mph_nhanes_20241107.csv</code> reads as ‘the folder called <code>data</code>, then inside it the file called <code>mph_nhanes_20241107.csv</code>.’ A longer path just has more folders to walk through before reaching the file.</p>
 <p><strong>Copying a path.</strong> We’ll rarely type a full path out by hand; instead, we copy it straight from the file browser.</p>
@@ -321,20 +317,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="2.5.1" class="anchored" data-anchor-id="read_csv-and-here"><span class="header-section-number">2.5.1</span> <code>read_csv()</code> and <code>here()</code></h3>
 <p><code>readr</code>’s <code>read_csv()</code> reads a <code>.csv</code> file into R as a data frame. It needs a path telling it exactly where that file is, using the path skills from earlier in this chapter. Building that path with <code>here()</code>, from the <code>here</code> package, means the same code works on any machine, regardless of where the project folder actually sits on that machine’s disk: <code>here()</code> starts from the project folder and adds the pieces you give it, one folder at a time.</p>
 <p>This chapter needs three packages: <code>readr</code> for reading files, <code>here</code> for building paths, and <code>ggplot2</code> for the plot at the end. As Chapter 1 explained, installing a package and loading it are two different actions, so unless you’ve installed these already, run this once in the console, not inside this document:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"readr"</span>, <span class="st">"here"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"readr"</span>, <span class="st">"here"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>After that, <code>library()</code> is all we need, in this session and every session after it:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><code>library(here)</code> prints one line when it loads, which this book hides because it’s too wide to fit the page. In your own console it says <code>here() starts at ...</code> followed by the full path to your project folder. That’s worth reading the first time you see it, because it’s <code>here()</code> telling you exactly which folder it will build every path from. If that path isn’t the project folder you built in Chapter 1, nothing below will find its files, and this is where you’d find that out.</p>
 </section>
 <section id="four-things-that-go-wrong" class="level3" data-number="2.5.2">
 <h3 data-number="2.5.2" class="anchored" data-anchor-id="four-things-that-go-wrong"><span class="header-section-number">2.5.2</span> Four things that go wrong</h3>
-<p>Almost every import problem we’ll see is one of four things.</p>
+<p>With the path skills just covered, we’re ready to actually read a file in, and the fastest way to get comfortable with that is watching it fail a few ways on purpose first. Almost every import problem we’ll see is one of four things.</p>
 <p><strong>A wrong filename.</strong> Close, but not exact:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_data.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_data.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error:
 ! '/projects/ies_stats_ebook/data/mph_nhanes_20241107_data.csv' does
@@ -343,11 +339,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The real file is called <code>mph_nhanes_20241107.csv</code>, no <code>_data</code> in the name. R’s message states plainly that the file doesn’t exist at the path it tried, which is exactly what Chapter 1’s “file does not exist” error type looks like with a real file behind it.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>A path pasted straight from Windows Explorer.</strong> Shift+right-click → <em>Copy as path</em>, from earlier in this chapter, gives you a full path using backslashes, for example <code>C:\Users\yourname\Documents\new_folder\mph_nhanes_20241107.csv</code>. Paste that directly into R as a string, without changing anything:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="st">"C:\Users\yourname\Documents</span><span class="sc">\n</span><span class="st">ew_folder\mph_nhanes_20241107.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="st">"C:\Users\yourname\Documents</span><span class="sc">\n</span><span class="st">ew_folder\mph_nhanes_20241107.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error: '\U' used without hex digits in character string (&lt;input&gt;:1:14)</code></pre>
 </div>
@@ -355,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This isn’t even a “file not found” error. It never gets that far. <code>\U</code> is one of a handful of backslash sequences R’s parser treats specially inside a string, and <code>\Users</code> isn’t a valid one, so R refuses to parse the string at all. Every Windows path copied this way starts with <code>C:\Users\...</code>, so this isn’t a rare edge case, it’s the default shape of a pasted Windows path. The fix from earlier in this chapter still applies: replace every backslash with a forward slash before using a path in R. Better still, once the path is inside the project folder, <code>here()</code> avoids the problem entirely, since we never type the backslash-filled part of the path at all.</p>
 <p><strong>The right file, wrong location.</strong> Forgetting which subfolder the file lives in:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error:
 ! '/projects/ies_stats_ebook/mph_nhanes_20241107.csv' does not
@@ -364,37 +360,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The filename is exactly right this time. What’s missing is <code>"data"</code>, the subfolder it actually lives in. R’s error message looks identical to the wrong-filename case above, which is worth noticing: the message tells us <em>that</em> nothing was found at that path, not <em>why</em> the path was wrong. We have to check that ourselves.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p><strong>The wrong file type.</strong> <code>data/05-prep2-messy-clinic.xlsx</code>, from the exercise above, is an Excel file, not a CSV. Reading it with <code>read_csv()</code> doesn’t throw an error at all.</p>
+<p><strong>The wrong file type.</strong> <code>data/05-prep2-messy-clinic.xlsx</code>, our own clinic file from the exercise above, is an Excel file, not a CSV. Reading it with <code>read_csv()</code> doesn’t throw an error at all.</p>
 <p>To see what actually came in, we need three functions. <code>dim()</code> reports how many rows and columns a dataset has, and <code>names()</code> lists its column names. Both get a proper introduction in the next section, where we use them on real data; here they’re just the quickest way to look. <code>substr()</code>, from base R, takes a piece of text and keeps only part of it, given a starting and an ending position: <code>substr(x, 1, 50)</code> keeps the first 50 characters and throws the rest away. We need it because the column name that comes back is far too long to print in full.</p>
 <p>There’s one extra argument in the call below, <code>show_col_types = FALSE</code>, and it’s worth saying what it switches off rather than letting it slide past. <code>read_csv()</code> normally prints a short report of what it found and what type it guessed for each column. We meet that report properly in a moment, on the real data file, where it’s useful. Here it would just be several lines of nonsense about a file that hasn’t imported, so we turn it off to keep the broken result below the only thing on screen. That’s the only reason it’s there.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>messy_attempt <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"05-prep2-messy-clinic.xlsx"</span>),</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>messy_attempt <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"05-prep2-messy-clinic.xlsx"</span>),</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Multiple files in zip: reading '[Content_Types].xml'</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(messy_attempt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(messy_attempt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1 1</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">substr</span>(<span class="fu">names</span>(messy_attempt), <span class="dv">1</span>, <span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">substr</span>(<span class="fu">names</span>(messy_attempt), <span class="dv">1</span>, <span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"y"</code></pre>
 </div>
 </div>
 <p>No error, but nothing usable either: one column, zero rows, and a column name that’s a fragment of raw XML. An <code>.xlsx</code> file is actually a small zip archive of several XML files bundled together, and <code>read_csv()</code> has gone looking inside that archive and started reading one of those XML files as if it were plain text. This is the quietest kind of import failure there is: nothing crashes, nothing complains, and the result still looks like a data frame at a glance. Always check what actually came in, which is exactly what the next section is for.</p>
-<p>Put right, all four attempts above collapse into the one call we actually want, and this is the real import we use for the rest of this book. The file holds <code>nhanes_mph</code>, an extract of a large American health survey in which adults were interviewed and then given a physical examination. Chapter 3 introduces it properly. For today we only need it to be a real file with real data in it:</p>
+<p>Put right, all four attempts above collapse into the one call we actually want, and this is the real import we use for the rest of this book. But first, notice what we’re about to leave behind: four patients, hand typed in Chapter 1, were only ever enough to practise R’s syntax on. No real public health question gets answered from four people. The file we’re about to read holds <code>nhanes_mph</code> instead, an extract of a large American health survey in which adults were interviewed and then given a physical examination, tens of thousands of them rather than four. Chapter 3 introduces it properly. For today we only need it to be a real file with real data in it, at the scale our toy log never had:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>It’s worth noting that we don’t necessarily need to use the <code>here</code> package. We can use an absolute or a relative path instead, as below. However, if the RStudio project is set up as recommended, using <code>here</code> or a relative path is easier to work with.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"./data/mph_nhanes_20241107.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"./data/mph_nhanes_20241107.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"C:/Users/yourname/Documents/ies_mph/data/mph_nhanes_20241107.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"C:/Users/yourname/Documents/ies_mph/data/mph_nhanes_20241107.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>An absolute path like that one only works on the machine it was written on, since it names a specific person’s folder by name. <code>here()</code> avoids exactly that problem: it finds the project folder wherever it happens to sit, which is why this book uses it throughout and why the restart test later in this chapter only works if your script uses <code>here()</code> rather than a path like the one above.</p>
 </section>
@@ -421,11 +417,11 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <h3 data-number="2.5.4" class="anchored" data-anchor-id="a-first-look"><span class="header-section-number">2.5.4</span> A first look</h3>
 <p>The message already told us the size and the column types. Four functions let us check that against what we actually have.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(nhanes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(nhanes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 41765    27</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(nhanes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(nhanes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "SEQN"     "age"      "gender"   "eth"      "edu"      "smoking" 
  [7] "alc_wk"   "vpa_w"    "mpa_w"    "wal_r"    "vpa_r"    "mpa_r"   
@@ -436,7 +432,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 </div>
 <p><code>dim()</code> gives rows, then columns. <code>names()</code> lists every column name, in order, useful for checking a name before we type it.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(nhanes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(nhanes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 27
    SEQN   age gender   eth   edu smoking  alc_wk vpa_w mpa_w wal_r vpa_r
@@ -455,7 +451,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 </div>
 <p><code>head()</code> prints the first six rows, so we can eyeball what real values actually look like.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nhanes<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nhanes<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   18.00   31.00   46.00   47.52   63.00   85.00 </code></pre>
@@ -472,7 +468,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <h3 data-number="2.5.6" class="anchored" data-anchor-id="spotting-missing-data"><span class="header-section-number">2.5.6</span> Spotting missing data</h3>
 <p><code>is.na()</code> checks each value in a vector and returns <code>TRUE</code> where it’s missing, <code>FALSE</code> where it isn’t. <code>sum()</code> on that result counts the <code>TRUE</code>s, since R treats <code>TRUE</code> as 1 and <code>FALSE</code> as 0 when we add them up.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>vpa_w))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>vpa_w))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 7354</code></pre>
 </div>
@@ -483,8 +479,8 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <h3 data-number="2.5.7" class="anchored" data-anchor-id="using-the-dictionary-file"><span class="header-section-number">2.5.7</span> Using the dictionary file</h3>
 <p><code>nhanes_mph</code> comes with a dictionary which names every column and states what it means. Reading it prints the same column specification message we just unpacked, saying two columns of text this time instead of twenty-seven columns of mixed types. This book hides it from here on, since it says the same kind of thing every time and we’ve now read one properly. You’ll still see it in your own console, and it’s still worth a glance:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dictionary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_dictionary.csv"</span>))</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>dictionary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>dictionary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_dictionary.csv"</span>))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>dictionary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 27 × 2
    `Variable names` Description                                             
@@ -504,7 +500,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 </div>
 <p>The dictionary’s first column is called <code>Variable names</code>, with a space in it, so referring to it needs backticks, exactly as Chapter 1 covered. <code>%in%</code>, from the same chapter, tests whether each value is a member of a set. Put inside square brackets after a data frame’s column, with the row’s index implied, this keeps only the rows where the condition is true:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dictionary[dictionary<span class="sc">$</span><span class="st">`</span><span class="at">Variable names</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"chol"</span>, <span class="st">"smoking"</span>), ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dictionary[dictionary<span class="sc">$</span><span class="st">`</span><span class="at">Variable names</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"chol"</span>, <span class="st">"smoking"</span>), ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   `Variable names` Description                            
@@ -522,23 +518,23 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <section id="one-summary-statistic" class="level3" data-number="2.6.1">
 <h3 data-number="2.6.1" class="anchored" data-anchor-id="one-summary-statistic"><span class="header-section-number">2.6.1</span> One summary statistic</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>chol, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>chol, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4.973316</code></pre>
 </div>
 </div>
-<p><code>chol</code> is total cholesterol, in mmol/L, and 2,589 participants have no value recorded for it. <code>na.rm = TRUE</code> drops those missing values before averaging the rest, exactly as it did back in Chapter 1’s <code>mean()</code> example. Leave it out and the whole calculation returns <code>NA</code>, since R won’t silently guess what a missing value should have been.</p>
+<p><code>chol</code> is total cholesterol, in mmol/L, and 2,589 participants have no value recorded for it. <code>na.rm = TRUE</code> drops those missing values before averaging the rest, exactly as it did back in Chapter 1’s <code>mean()</code> example on our own clinic log. Leave it out and the whole calculation returns <code>NA</code>, since R won’t silently guess what a missing value should have been.</p>
 </section>
 <section id="a-first-taste-of-a-grouped-summary" class="level3" data-number="2.6.2">
 <h3 data-number="2.6.2" class="anchored" data-anchor-id="a-first-taste-of-a-grouped-summary"><span class="header-section-number">2.6.2</span> A first taste of a grouped summary</h3>
 <p><code>nhanes$chol</code> pulls the whole cholesterol column out as a bare vector, as <code>$</code> did in Chapter 1. Adding square brackets straight after it, with a condition inside, keeps only the values where that condition is <code>TRUE</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nhanes<span class="sc">$</span>chol[nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="st">"Never"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nhanes<span class="sc">$</span>chol[nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="st">"Never"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.     NAs 
   1.780   4.220   4.890   4.968   5.610  15.830    1839 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nhanes<span class="sc">$</span>chol[nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="st">"Current"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nhanes<span class="sc">$</span>chol[nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="st">"Current"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.     NAs 
   1.530   4.220   4.890   4.996   5.660  15.900     882 </code></pre>
@@ -549,10 +545,10 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <section id="a-first-taste-of-a-plot" class="level3" data-number="2.6.3">
 <h3 data-number="2.6.3" class="anchored" data-anchor-id="a-first-taste-of-a-plot"><span class="header-section-number">2.6.3</span> A first taste of a plot</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> chol)) <span class="sc">+</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> chol)) <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2589 rows containing non-finite outside the scale range
 (`stat_bin()`).</code></pre>
@@ -586,17 +582,17 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <li>Save it into the <code>scripts/</code> folder you built in Chapter 1, with a name that follows its conventions: no spaces, no <code>&amp;</code> or <code>#</code>, something that says what it does. <code>first_analysis.R</code> is fine. <code>Untitled1.R</code> is not.</li>
 </ol>
 <p>Here’s what a complete first script looks like, start to finish. Nothing in it is new; it’s the pieces from earlier in this chapter, collected in the order they need to run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>chol, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>chol))</span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> chol)) <span class="sc">+</span></span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>chol, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>chol))</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> chol)) <span class="sc">+</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Notice the shape of it. The <code>library()</code> calls come first, because nothing below them works until the packages are loaded. The <code>read_csv()</code> line comes next, because every line after it needs <code>nhanes</code> to exist. A script runs top to bottom, so the order isn’t decoration, it’s the thing that makes it work.</p>
 </section>
 <section id="proving-it-actually-works" class="level3" data-number="2.6.6">
@@ -604,12 +600,13 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <p>Here’s the part people skip, and it’s the part that matters. A script that runs on your machine right now, in a session where you’ve been typing for an hour, is not yet proof of anything. Half of what it needs might already be sitting in memory from something you typed and forgot.</p>
 <p>So test it properly. In RStudio, go to <strong>Session → Restart R</strong>. That throws away every object and every loaded package, leaving you with an empty session, exactly like the one a colleague, a marker, or you-in-six-months would start from. Now run your script from the top.</p>
 <p>If it runs clean, the script is genuinely self-contained. If it fails, the error tells us precisely what we’d forgotten to write down, and the fix belongs <em>in the script</em>, not typed into the console again. That restart is the reproducibility argument from Chapter 1, made concrete: not “scripts are good practice” but “here is how we find out whether ours actually is one.”</p>
+<p>That’s the script this whole chapter has been building toward, starting all the way back with a merged title row that wouldn’t import cleanly: not just an import that runs once, but one a stranger, or you in six months, could pick up cold and trust. Chapter 3 starts from exactly this point, with <code>nhanes</code> already read in and ready.</p>
 </section>
 </section>
 <section id="exercises" class="level2" data-number="2.7">
 <h2 data-number="2.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.7</span> Exercises</h2>
 <p><strong>Exercise 1</strong> (ILO 2). This <code>read_csv()</code> call is supposed to read the dictionary file but doesn’t work:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_dictionary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_dictionary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Work out what’s wrong with the path and write the corrected call.</p>
 <p><strong>Exercise 2</strong> (ILO 3). Check <code>mpa_w</code> (moderate physical activity at work): find its type with <code>class()</code>, and count how many values are missing with <code>is.na()</code> and <code>sum()</code>.</p>
 <p><strong>Exercise 3</strong> (ILO 4). Produce one summary statistic and one plot for <code>wal_r</code> (walking, hours/day, outside work). Remember <code>na.rm = TRUE</code> if it turns out to have missing values.</p>
@@ -675,7 +672,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <p>The fixes needed, matching every problem in the sheet: split the merged title row and the merged “Measurements” sub-header back into one header row naming every column individually; convert every patient’s weight and height to the same units (kilograms and metres), then move those units out of the values and into the column names instead (<code>weight_kg</code>, <code>height_m</code>), leaving plain numbers behind; add a proper Smoker column holding an actual word (“Yes”/“No”), decoded from which rows were highlighted and the caption that explained what the highlighting meant; delete both blank spacer rows; delete or relocate the stray note about Patient 5’s missed follow-up, since it belongs in its own column, or nowhere in this table at all; and either delete the second table (the follow-up schedule) or save it as its own, separate CSV file, since one sheet should hold one table.</p>
 <p><strong>Exercise 1</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_dictionary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_dictionary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 27 × 2
    `Variable names` Description                                             
@@ -696,28 +693,28 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 <p>The folder and filename were both fine. The problem was the letters <code>mph</code> typed as <code>mhp</code>.</p>
 <p><strong>Exercise 2</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(nhanes<span class="sc">$</span>mpa_w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(nhanes<span class="sc">$</span>mpa_w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "numeric"</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>mpa_w))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>mpa_w))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 7391</code></pre>
 </div>
 </div>
 <p><strong>Exercise 3</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>wal_r, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>wal_r, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2060187</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>wal_r))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>wal_r))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 7347</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> wal_r)) <span class="sc">+</span></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> wal_r)) <span class="sc">+</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 7347 rows containing non-finite outside the scale range
 (`stat_bin()`).</code></pre>
@@ -732,17 +729,17 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 </div>
 <p><strong>Exercise 4</strong></p>
 <p>The finished script, in full. Saved as <code>scripts/wal_r_analysis.R</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>wal_r, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>wal_r))</span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> wal_r)) <span class="sc">+</span></span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nhanes<span class="sc">$</span>wal_r, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(nhanes<span class="sc">$</span>wal_r))</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> wal_r)) <span class="sc">+</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The two lines people most often leave out are the ones that were already true before they started: <code>library(readr)</code> and the <code>read_csv()</code> call. Both had been run earlier in the session, so <code>nhanes</code> existed and <code>read_csv()</code> worked, and neither felt like part of “the analysis.” After a restart, neither is true any more, and the script fails on its first real line with <code>could not find function "read_csv"</code> or <code>object 'nhanes' not found</code>, both of which Chapter 1 covered. That’s exactly what the restart is for: it finds the assumptions we didn’t know we were making.</p>
 <p><strong>Self-check answers</strong></p>
 <ol type="1">
