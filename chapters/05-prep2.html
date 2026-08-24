@@ -282,8 +282,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>By the end of this chapter you will be able to:</p>
 <ol type="1">
 <li>Identify features of a spreadsheet that will prevent it being analysed, and restructure it</li>
-<li>Import a CSV into R using a correctly specified path, and diagnose and resolve the most common import failures</li>
-<li>Inspect an imported dataset’s dimensions, variable names, types, and missing values</li>
+<li>Import a CSV into R using <code>readr::read_csv()</code> and a correctly specified path built with <code>here::here()</code>, and diagnose and resolve the most common import failures</li>
+<li>Inspect an imported dataset’s dimensions, variable names, and types with <code>dim()</code>, <code>names()</code>, and <code>dplyr::glimpse()</code>, and its missing values with <code>is.na()</code></li>
 <li>Write, save, and re-run an R script that imports data, summarises it, and produces a plot</li>
 <li>Locate a downloaded file on your own operating system, construct or copy a valid path to it, and explain what a CSV file physically contains</li>
 </ol>

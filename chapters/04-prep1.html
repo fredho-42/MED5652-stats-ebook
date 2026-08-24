@@ -283,7 +283,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Work in RStudio using a Project and a saved script, and explain why we script rather than work in the console</li>
 <li>Create objects by assignment, and recognise R’s basic data types and structures (numeric, character, logical, factor, vector, data frame)</li>
 <li>Call a function using named arguments, explain what a default value is, and find its help page</li>
-<li>Write and read a short piped sequence that includes a logical condition and extracts a column from a data frame</li>
+<li>Write and read a short piped sequence that includes a logical condition and extracts a column from a data frame using <code>$</code> and <code>dplyr</code>’s <code>select()</code></li>
 <li>Diagnose a failed line of code from its error message</li>
 <li>Build a project folder, following sensible file and folder naming conventions</li>
 </ol>
@@ -579,6 +579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Loading a package sometimes prints a short message, often about functions it’s replacing from another package. It’s suppressed here since it doesn’t matter yet, but there’s no need to worry if one appears later in the course.</p>
+<p>That message points at a real ambiguity: once two loaded packages both define a function with the same name, R has to pick one, and it’s not always the one we meant. <code>package::function()</code> sidesteps the whole problem. Writing <code>dplyr::select()</code> instead of just <code>select()</code> calls <code>select()</code> from <code>dplyr</code> directly, by name, whichever packages happen to be loaded, and without needing <code>library()</code> to have loaded that package first at all. We’ll use this notation in prose from here on whenever it’s worth being explicit about which package a function comes from.</p>
 </section>
 <section id="versus-select" class="level2" data-number="1.12">
 <h2 data-number="1.12" class="anchored" data-anchor-id="versus-select"><span class="header-section-number">1.12</span> <code>$</code> versus <code>select()</code></h2>

@@ -233,7 +233,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This appendix is a reference, not a chapter to work through. Once we have already met a package, a function, a piece of syntax, or a statistical term in its proper place, this is where we come back to look it up. Every entry names the chapter that actually teaches it, because a one-line description here is a reminder, not a replacement for that fuller explanation.</p>
+<p>This appendix is a reference: packages, functions, R syntax, and statistical terms used across the ebook, each with a short, simplified description and the chapter where the fuller explanation lives.</p>
 <section id="packages" class="level2">
 <h2 class="anchored" data-anchor-id="packages">Packages</h2>
 <table class="caption-top table">
@@ -246,7 +246,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Package</th>
 <th>What it’s for</th>
-<th>First loaded</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -262,7 +262,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>readr</code></td>
-<td>Reading a CSV file into R. Faster than base R’s own version, and doesn’t silently guess wrong.</td>
+<td>Reading data files (e.g.&nbsp;CSV) into R. Faster than base R’s own version, and doesn’t silently guess wrong.</td>
 <td>Chapter 2</td>
 </tr>
 <tr class="even">
@@ -287,7 +287,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>epitools</code></td>
-<td>Risk ratios and odds ratios with confidence intervals, from a 2x2 table.</td>
+<td>Risk ratios and odds ratios with confidence intervals, from a contingency table.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="odd">
@@ -317,13 +317,13 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>c()</code></td>
-<td>Combines values into a vector.</td>
+<td>Combines single values (“scalars”) into a vector.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="even">
@@ -348,7 +348,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>install.packages()</code></td>
-<td>Downloads a package onto this computer, once. Never run inside a chunk.</td>
+<td>Downloads a package onto this computer. It only needs to be run once per computer.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="odd">
@@ -362,28 +362,28 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 1</td>
 </tr>
 <tr class="odd">
-<td><code>select()</code></td>
-<td>From <code>dplyr</code>. Keeps only the named columns.</td>
-<td>Chapter 1</td>
-</tr>
-<tr class="even">
 <td><code>is.na()</code></td>
 <td>Tests whether each value is missing.</td>
 <td>Chapter 2</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>names()</code></td>
 <td>Lists a data frame’s column names.</td>
 <td>Chapter 2</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>dim()</code></td>
 <td>Reports the number of rows and columns.</td>
 <td>Chapter 2</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>head()</code></td>
 <td>Prints the first few rows of a data frame.</td>
+<td>Chapter 2</td>
+</tr>
+<tr class="odd">
+<td><code>substr()</code></td>
+<td>Extracts characters from a fixed position in a text string.</td>
 <td>Chapter 2</td>
 </tr>
 <tr class="even">
@@ -398,7 +398,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>list()</code></td>
-<td>Bundles several settings together, one per item.</td>
+<td>Bundles several (different) objects together.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="odd">
@@ -416,11 +416,6 @@ ul.task-list li input[type="checkbox"] {
 <td>Converts a value to a continuous number.</td>
 <td>Chapter 6</td>
 </tr>
-<tr class="even">
-<td><code>substr()</code></td>
-<td>Extracts characters from a fixed position in a text string.</td>
-<td>Chapter 2</td>
-</tr>
 </tbody>
 </table>
 </section>
@@ -436,13 +431,13 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>mean()</code></td>
-<td>Calculates the arithmetic mean. <code>na.rm = TRUE</code> drops missing values first.</td>
+<td>Calculates the arithmetic mean. <code>na.rm = TRUE</code> drops missing values before calculation.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="even">
@@ -452,7 +447,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>sum()</code></td>
-<td>Adds values, or counts <code>TRUE</code>s when given a logical condition.</td>
+<td>Adds values, or counts the number of <code>TRUE</code>s when given a logical condition.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="even">
@@ -472,7 +467,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>IQR()</code></td>
-<td>Calculates the interquartile range.</td>
+<td>Calculates the interquartile range (3rd quartile - 1st quartile).</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
@@ -515,7 +510,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -551,7 +546,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>fisher.test()</code></td>
-<td>Fisher’s exact test, used in place of the chi-squared test when expected cell counts are small.</td>
+<td>Fisher’s exact test.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
@@ -604,7 +599,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -633,7 +628,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -657,66 +652,71 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td><code>select()</code></td>
+<td>Keeps only the named columns. Another package, <code>MASS</code>, defines a different function with the same name; this book never loads <code>MASS</code>, so <code>select()</code> always means <code>dplyr</code>’s version.</td>
+<td>Chapter 1</td>
+</tr>
+<tr class="even">
 <td><code>glimpse()</code></td>
 <td>Prints every column of a data frame, its type, and a preview of its values, one row per column.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>filter()</code></td>
 <td>Keeps only the rows that match a condition.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>mutate()</code></td>
 <td>Adds a new column, or changes an existing one.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>arrange()</code></td>
 <td>Sorts rows by one or more columns. <code>desc()</code> reverses the order.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>desc()</code></td>
 <td>Reverses the sort order inside <code>arrange()</code>, high to low.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>slice()</code></td>
 <td>Keeps rows by their position.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>group_by()</code></td>
-<td>Splits a data frame into groups, so the next step runs once per group.</td>
+<td>Groups a data frame’s rows by one or more variables, so the next step runs once per group.</td>
+<td>Chapter 3</td>
+</tr>
+<tr class="odd">
+<td><code>summarise()</code></td>
+<td>Collapses each group (or the whole data frame, if ungrouped) into a row of summary statistics.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
-<td><code>summarise()</code></td>
-<td>Collapses each group (or the whole data frame) into one row of summary statistics.</td>
-<td>Chapter 3</td>
-</tr>
-<tr class="odd">
 <td><code>n()</code></td>
 <td>Counts rows, used inside <code>summarise()</code>.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>slice_sample()</code></td>
 <td>Keeps a random subset of rows. <code>prop =</code> states the fraction to keep.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>pull()</code></td>
 <td>Extracts one column as a plain vector, rather than a one-column data frame.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>case_when()</code></td>
 <td>Builds a new column from a list of conditions, checked in order.</td>
 <td>Chapter 7</td>
@@ -736,7 +736,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -747,7 +747,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>aes()</code></td>
-<td>Maps a variable onto a visual property: x, y, fill, or colour.</td>
+<td>Maps a variable from the data onto a visual property in the plot, e.g.&nbsp;x, y, fill, or colour.</td>
 <td>Chapter 2</td>
 </tr>
 <tr class="odd">
@@ -815,7 +815,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -859,7 +859,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -888,18 +888,18 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Function</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>riskratio()</code></td>
-<td>Takes a 2x2 table and calculates the risk ratio, with a confidence interval.</td>
+<td>Takes an r x 2 table and calculates the risk ratio, with a confidence interval. r is the number of levels in the exposure variable.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
 <td><code>oddsratio()</code></td>
-<td>Takes a 2x2 table and calculates the odds ratio. <code>method = "wald"</code> matches the ± 1.96 x SE formula behind a confidence interval built by hand.</td>
+<td>Takes an r x 2 table and calculates the odds ratio. <code>method = "wald"</code> matches the ± 1.96 x SE formula behind a confidence interval built by hand.</td>
 <td>Chapter 5</td>
 </tr>
 </tbody>
@@ -918,7 +918,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Symbol</th>
 <th>What it does</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -943,84 +943,84 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 1</td>
 </tr>
 <tr class="odd">
-<td><code>!</code></td>
-<td>Negates a condition.</td>
-<td>Chapter 1</td>
-</tr>
-<tr class="even">
-<td><code>&amp;</code></td>
-<td>Combines two conditions, both must be true.</td>
-<td>Chapter 1</td>
-</tr>
-<tr class="odd">
-<td><code>|</code></td>
-<td>Combines two conditions, either must be true.</td>
-<td>Chapter 1</td>
-</tr>
-<tr class="even">
 <td><code>%in%</code></td>
 <td>Tests whether each value appears anywhere in a set.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>==</code> <code>!=</code></td>
 <td>Equal to, not equal to.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td>
 <td>Less than, greater than, and their “or equal to” versions.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>""</code></td>
-<td>Marks a value as text. Numbers, <code>TRUE</code>/<code>FALSE</code>, and object or column names don’t take quotes.</td>
+<td>Marks a value as text. Numbers, <code>TRUE</code>/<code>FALSE</code>, and object or column names don’t take quotes. <code>"20"</code> will be recognised as text in R.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="even">
-<td>backticks</td>
+<tr class="odd">
+<td><code>`</code></td>
 <td>A different kind of quoting mark, needed for a column name containing a space or other unusual character.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>?</code></td>
 <td>Followed by a function name, opens that function’s help page.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>#</code></td>
 <td>Starts a comment in an R script: everything after it on the line is ignored when the code runs.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>#|</code></td>
 <td>A chunk option, inside a code chunk: sets things like a chunk’s label or whether its output shows.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>NA</code></td>
 <td>R’s code for a missing value.</td>
 <td>Chapter 1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>TRUE</code> / <code>FALSE</code></td>
 <td>The two logical values. Always written in full in this book, never abbreviated to <code>T</code>/<code>F</code>.</td>
 <td>Chapter 1</td>
 </tr>
+<tr class="odd">
+<td><code>!</code></td>
+<td>Negates a condition. <code>!TRUE</code> is <code>FALSE</code>.</td>
+<td>Chapter 1</td>
+</tr>
 <tr class="even">
+<td><code>&amp;</code></td>
+<td>Combines two conditions, both must be true. <code>TRUE &amp; TRUE</code> is <code>TRUE</code>; <code>TRUE &amp; FALSE</code> is <code>FALSE</code>.</td>
+<td>Chapter 1</td>
+</tr>
+<tr class="odd">
+<td><code>|</code></td>
+<td>Combines two conditions, either must be true. <code>TRUE | TRUE</code> is <code>TRUE</code>; <code>TRUE | FALSE</code> is <code>TRUE</code>.</td>
+<td>Chapter 1</td>
+</tr>
+<tr class="even">
+<td><code>::</code></td>
+<td>Calls a function from a named package directly, without loading the whole package with <code>library()</code> first, as in <code>dplyr::select()</code>.</td>
+<td>Chapter 1</td>
+</tr>
+<tr class="odd">
 <td><code>+</code></td>
 <td>Inside <code>ggplot2</code>, joins plot layers together, not arithmetic addition.</td>
 <td>Chapter 2</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>~</code></td>
 <td>A formula: separates an outcome (left) from a predictor (right), as in <code>t.test(chol ~ gender)</code>.</td>
 <td>Chapter 5</td>
-</tr>
-<tr class="even">
-<td><code>::</code></td>
-<td>Calls a function from a named package directly, without loading the whole package with <code>library()</code> first, as in <code>broom::augment()</code>.</td>
-<td>Chapter 6</td>
 </tr>
 </tbody>
 </table>
@@ -1039,7 +1039,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Term</th>
 <th>What it means</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
@@ -1060,7 +1060,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Reference level</td>
-<td>The category everything else in a table or model is compared against.</td>
+<td>The category everything else in a table or model is compared against. In R the default is the first level in a factor.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="odd">
@@ -1069,23 +1069,28 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
-<td>Standard deviation (SD), interquartile range (IQR)</td>
-<td>Two measures of a distribution’s spread, paired with the mean and the median respectively.</td>
+<td>Standard deviation (SD)</td>
+<td>A measure of a distribution’s spread, usually paired with the mean. When used without context an SD can be assumed to describe the population.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="odd">
-<td>Skew</td>
-<td>A distribution with a longer tail on one side, where the mean and median pull apart.</td>
+<td>Interquartile range (IQR)</td>
+<td>Another measure of a distribution’s spread, usually paired with the median.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
+<td>Skew</td>
+<td>A distribution with a longer tail on one side, where the mean and median differ.</td>
+<td>Chapter 3</td>
+</tr>
+<tr class="odd">
 <td>Complete-case</td>
 <td>An analysis that keeps only the rows with no missing value on any variable it uses.</td>
 <td>Chapter 3</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Table 1</td>
-<td>The standard first table of a paper: participant characteristics, often stratified by group.</td>
+<td>The semi-standard first table of a paper: participant characteristics, often stratified by group.</td>
 <td>Chapter 3</td>
 </tr>
 </tbody>
@@ -1103,33 +1108,53 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Term</th>
 <th>What it means</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Population, sample</td>
-<td>The whole group we want to know about, and the smaller group we actually measured.</td>
+<td>Population</td>
+<td>The entire group of individuals or items we want to draw conclusions about.</td>
+<td>Chapter 4</td>
+</tr>
+<tr class="even">
+<td>Population distribution</td>
+<td>How a specific measurement or characteristic is spread out across the entire population.</td>
+<td>Chapter 4</td>
+</tr>
+<tr class="odd">
+<td>Sample</td>
+<td>A subset of individuals drawn from the population, which we actually observe and measure.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="even">
 <td>Point estimate</td>
-<td>A single number, calculated from a sample, standing in for the population value.</td>
+<td>A single number calculated from a sample (e.g.&nbsp;a sample mean or proportion), used as our best guess for the unknown population value.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="odd">
-<td>Standard error (SE)</td>
-<td>Describes the precision of an estimate, unlike the standard deviation, which describes the spread of the data.</td>
+<td>Sampling distribution</td>
+<td>The theoretical distribution of point estimates we would get if we took infinite independent samples of the exact same size from the population.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="even">
-<td>Central limit theorem (CLT)</td>
-<td>The seminar’s demonstration that an estimate’s own sampling distribution becomes approximately normal as sample size grows, whatever shape the underlying data has.</td>
+<td>Standard error (SE)</td>
+<td>The standard deviation of the sampling distribution. It measures the precision of our point estimate, smaller SE means more precise, and does not describe the variability of individuals in the population, which is what the standard deviation is for.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="odd">
+<td>Central limit theorem (CLT)</td>
+<td>The rule stating that if our sample size is large enough, the sampling distribution of the mean will be approximately normal, regardless of the underlying population’s shape.</td>
+<td>Chapter 4</td>
+</tr>
+<tr class="even">
 <td>Confidence interval (CI)</td>
-<td>A range of values, built from a point estimate and its standard error, that quantifies an estimate’s precision.</td>
+<td>A range of values, built around a point estimate and based on the standard error, that quantifies our uncertainty about the true population parameter. Also known as an “interval estimate”.</td>
+<td>Chapter 4</td>
+</tr>
+<tr class="odd">
+<td>95% CI</td>
+<td>If we repeated our sampling process indefinitely, 95% of the calculated intervals would contain the true population value. It is incorrect to say “there is a 95% chance our specific interval holds the true value”.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="even">
@@ -1152,48 +1177,48 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Term</th>
 <th>What it means</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Null hypothesis</td>
-<td>The claim a hypothesis test starts by assuming: no difference, no association.</td>
+<td>The baseline assumption in a statistical test, typically stating there is no effect, no difference, or no association between variables in the population.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
 <td>p-value</td>
-<td>The probability of a result at least this extreme, if the null hypothesis were true. Never reported alone in this book, always alongside an effect size and a confidence interval.</td>
+<td>The probability of observing a result as extreme as, or more extreme than, the one calculated from our sample, assuming the null hypothesis is completely true. As good practice, we should always report point and interval estimates along with p-values.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="odd">
 <td>Parametric, non-parametric</td>
-<td>A test that assumes a particular distribution (parametric, like the t-test), against one that doesn’t (non-parametric, like the Wilcoxon test).</td>
+<td>Parametric tests assume the underlying population data follows a specific distribution (e.g.&nbsp;t-distribution, in t-tests). Non-parametric tests make no such assumptions and often rely on ranking the data (e.g.&nbsp;Wilcoxon tests).</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
 <td>Paired, independent samples</td>
-<td>Two measurements on the same person or unit (paired), against measurements on two separate groups (independent).</td>
+<td>Paired (or dependent) samples involve measurements linked to each other (e.g.&nbsp;pre/post tests on the same patient, or matched twins). Independent samples involve completely separate, unrelated groups.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="odd">
-<td>2x2 table</td>
-<td>A cross-tabulation of two binary variables, the standard layout for calculating a risk ratio or odds ratio by hand.</td>
+<td>2x2 (contingency) table</td>
+<td>A table summarising the relationship between two binary variables. In epidemiology, exposure is typically on the rows and the disease/outcome is on the columns.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
 <td>Risk, risk ratio</td>
-<td>The proportion of a group who experience an outcome, and the ratio of that proportion between two groups.</td>
+<td>Risk is the probability of an event occurring: the number of cases divided by the total group. The risk ratio (or relative risk) divides the risk in the exposed group by the risk in the unexposed group.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="odd">
 <td>Odds, odds ratio</td>
-<td>The ratio of an outcome happening to it not happening, and the ratio of that quantity between two groups.</td>
+<td>Odds compare the probability of an event happening to it not happening: the probability divided by 1 minus the probability. The odds ratio divides the odds of the outcome in the exposed group by the odds in the unexposed group.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
 <td>Null value</td>
-<td>The value of an effect size that means “no association”: 0 for a difference, 1 for a ratio.</td>
+<td>The mathematical value representing the null hypothesis. For differences (e.g.&nbsp;risk difference), the null is 0. For ratios (e.g.&nbsp;RR, OR), the null is 1.</td>
 <td>Chapter 5</td>
 </tr>
 </tbody>
@@ -1211,13 +1236,23 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Term</th>
 <th>What it means</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Correlation (Pearson’s r, Spearman’s rho)</td>
-<td>A single number summarising how closely two continuous variables move together. Pearson’s r assumes a linear relationship; Spearman’s rho doesn’t.</td>
+<td>Correlation</td>
+<td>A statistic ranging from -1 to +1 that measures the strength and direction of association between two continuous variables.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="even">
+<td>Pearson’s r</td>
+<td>A parametric measure of the degree of a strictly linear relationship between two continuous variables. It is highly sensitive to outliers.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="odd">
+<td>Spearman’s rho</td>
+<td>A non-parametric measure of the degree of a monotonic relationship, where the variables move in the same direction but not necessarily at a constant rate. It is rank-based and more robust to outliers.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="even">
@@ -1226,8 +1261,18 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 6</td>
 </tr>
 <tr class="odd">
-<td>Intercept, slope, coefficient</td>
-<td>The fitted line’s value at zero, how much the outcome changes per unit of a predictor, and the general name for both.</td>
+<td>Intercept</td>
+<td>The fitted line’s value at zero.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="even">
+<td>Slope</td>
+<td>How much the outcome changes per unit of a predictor.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="odd">
+<td>Coefficient</td>
+<td>The general name for intercept and slope.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="even">
@@ -1270,18 +1315,18 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Term</th>
 <th>What it means</th>
-<th>First met</th>
+<th>First appearance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Confounder</td>
-<td>A variable that’s a common cause of both the exposure and the outcome, distorting the crude association between them unless adjusted for.</td>
+<td>A variable that’s a common cause of both the exposure and the outcome, distorting the crude association between them unless properly adjusted for.</td>
 <td>Chapter 7</td>
 </tr>
 <tr class="even">
 <td>Mediator</td>
-<td>A variable that sits on the causal path between an exposure and an outcome. Adjusting for one, unlike a confounder, removes part of the real effect rather than a distortion.</td>
+<td>A variable that sits on the causal path between an exposure and an outcome. Adjusting for one, unlike a confounder, removes part of the real effect rather than a distortion, which is why the same variable can’t be treated both ways.</td>
 <td>Chapter 7</td>
 </tr>
 <tr class="odd">
@@ -1311,7 +1356,6 @@ ul.task-list li input[type="checkbox"] {
 <section id="where-to-look-things-up" class="level2">
 <h2 class="anchored" data-anchor-id="where-to-look-things-up">Where to look things up</h2>
 <p><code>?</code> followed by a function name, typed into the console, opens that function’s help page, covered properly in Chapter 1. It’s usually faster than searching online, and it’s always correct for the version of R actually installed. RStudio also keeps a set of cheat sheets under <strong>Help → Cheatsheets</strong>, one per major package.</p>
-<p>This appendix stays deliberately thin. For the reasoning behind any entry here, the fuller explanation lives in the chapter named beside it.</p>
 
 
 </section>
