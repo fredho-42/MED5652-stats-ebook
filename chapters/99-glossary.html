@@ -516,7 +516,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td><code>t.test()</code></td>
-<td>A t-test: a confidence interval and p-value for a mean, or for the difference between two means.</td>
+<td>A t-test: a confidence interval and p-value for a mean, or for the difference between two means. <code>paired = TRUE</code> runs a paired test; <code>var.equal = TRUE</code> assumes the two groups share one variance, the same assumption <code>lm()</code> makes of a binary predictor.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="even">
@@ -536,7 +536,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>wilcox.test()</code></td>
-<td>The Wilcoxon signed-rank test, a non-parametric alternative to the paired t-test.</td>
+<td>The Wilcoxon signed-rank test, a non-parametric alternative to a one-sample or paired t-test. <code>mu</code> sets the reference value for a one-sample test; <code>paired = TRUE</code> runs the paired version.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
@@ -1020,7 +1020,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td><code>~</code></td>
 <td>A formula: separates an outcome (left) from a predictor (right), as in <code>t.test(chol ~ gender)</code>.</td>
-<td>Chapter 5</td>
+<td>Chapter 4</td>
 </tr>
 </tbody>
 </table>
@@ -1045,17 +1045,17 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td>Categorical variable</td>
-<td>A variable whose values are named categories, not numbers. Nominal categories have no order (<code>gender</code>); ordinal categories do (<code>edu</code>).</td>
+<td>A variable that puts each observation into one of a fixed set of groups. Nominal categories have no order (<code>gender</code>); ordinal categories do (<code>edu</code>); binary is a two-category special case (<code>blm.cvd</code>), even where R has stored it as the numbers 0 and 1.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
 <td>Numeric variable</td>
-<td>A variable whose values are numbers: binary (0/1), count (0, 1, 2, 3, …), or continuous (12.1, 13.5, …).</td>
+<td>A variable whose values are numbers, in one of two shapes: count (0, 1, 2, 3, …) or continuous (12.1, 13.5, …). A binary variable coded 0/1 is categorical, not numeric, whatever class R has stored it as.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="odd">
 <td>Factor</td>
-<td>R’s way of storing a categorical variable, as a set of named levels.</td>
+<td>R’s way of storing a categorical variable, as a set of named levels. What class R stores a variable as (<code>glimpse()</code>’s <code>&lt;dbl&gt;</code>, <code>&lt;chr&gt;</code>, or a factor) is a separate question from what the variable statistically is.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
@@ -1187,36 +1187,41 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
+<td>Alternative hypothesis</td>
+<td>The statement a test weighs the null hypothesis against: that there is an effect, a difference, or an association. A test never proves the null hypothesis true; it only asks whether the sample is surprising enough to reject it in favour of the alternative.</td>
+<td>Chapter 5</td>
+</tr>
+<tr class="odd">
 <td>p-value</td>
 <td>The probability of observing a result as extreme as, or more extreme than, the one calculated from our sample, assuming the null hypothesis is completely true. As good practice, we should always report point and interval estimates along with p-values.</td>
 <td>Chapter 5</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Parametric, non-parametric</td>
 <td>Parametric tests assume the underlying population data follows a specific distribution (e.g.&nbsp;t-distribution, in t-tests). Non-parametric tests make no such assumptions and often rely on ranking the data (e.g.&nbsp;Wilcoxon tests).</td>
 <td>Chapter 5</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Paired, independent samples</td>
 <td>Paired (or dependent) samples involve measurements linked to each other (e.g.&nbsp;pre/post tests on the same patient, or matched twins). Independent samples involve completely separate, unrelated groups.</td>
 <td>Chapter 5</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>2x2 (contingency) table</td>
 <td>A table summarising the relationship between two binary variables. In epidemiology, exposure is typically on the rows and the disease/outcome is on the columns.</td>
 <td>Chapter 5</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Risk, risk ratio</td>
 <td>Risk is the probability of an event occurring: the number of cases divided by the total group. The risk ratio (or relative risk) divides the risk in the exposed group by the risk in the unexposed group.</td>
 <td>Chapter 5</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Odds, odds ratio</td>
 <td>Odds compare the probability of an event happening to it not happening: the probability divided by 1 minus the probability. The odds ratio divides the odds of the outcome in the exposed group by the odds in the unexposed group.</td>
 <td>Chapter 5</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Null value</td>
 <td>The mathematical value representing the null hypothesis. For differences (e.g.&nbsp;risk difference), the null is 0. For ratios (e.g.&nbsp;RR, OR), the null is 1.</td>
 <td>Chapter 5</td>

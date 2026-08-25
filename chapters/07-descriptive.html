@@ -262,15 +262,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Chapter 2 got a real dataset into R and confirmed it had imported correctly. But confirming a column exists isn’t the same as knowing what it actually looks like. With tens of thousands of participants, we can’t just scroll through the way we could with a handful of rows and get a feel for the data. How do we describe a variable properly in R, using descriptive statistics and graphs?</p>
-<p>Describing a variable properly starts with knowing what kind of variable it is, since a mean and an SD suit a continuous variable while a count or a percentage suits a categorical one. So we sort our variables into types first. Then we learn to cut a dataset down to the part a question is actually about, summarise it overall and group by group, and tabulate a categorical variable one way or two ways at once. Then we plot it, because shape is what decides between a mean and SD and a median and IQR, and no table shows shape. We finish on a Table 1, the participant-characteristics table that opens most published health research, and on writing in prose what it shows.</p>
+<p>Describing a variable properly starts with knowing what kind of variable it is, since a mean and an SD suit a continuous variable while a count or a percentage suits a categorical one. So we sort our variables into types first, then describe them with summary statistics, and visualise them with plots for a look at their distributions. We finish on a “Table 1”, the participant-characteristics table that opens most published health research, and on writing in prose what it shows.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">3.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
 <ol type="1">
+<li>Classify a variable as nominal, ordinal, binary, count, or continuous, and distinguish its statistical type from the class R has stored it as</li>
 <li>Use <code>dplyr</code>’s <code>select()</code>, <code>filter()</code>, <code>mutate()</code>, and <code>arrange()</code> to manipulate a dataset, and produce grouped summaries with <code>group_by()</code> and <code>summarise()</code></li>
 <li>Construct frequency and cross-tabulations using <code>table()</code> and <code>prop.table()</code></li>
 <li>Build histograms, boxplots, bar charts, and scatterplots using <code>ggplot2</code></li>
-<li>Modify a plot’s bin width, scale, and labels, and describe the effect on interpretation</li>
+<li>Modify a plot’s bin width, scale, and labels, and evaluate the effect on interpretation</li>
 <li>Convert a character variable to a factor using <code>factor()</code> and set its reference level using <code>relevel()</code></li>
 <li>Produce a basic “Table 1” of participant characteristics using <code>gtsummary::tbl_summary()</code>, and describe it in writing</li>
 </ol>
@@ -281,22 +282,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>nhanes_mph</code> is a curated extract of it, prepared specifically for this course: 41,765 adults aged 18 to 85, described by 27 variables. Those cover demographics, education, smoking and alcohol, physical activity split by domain, sedentary time, total cholesterol, depression symptoms, and whether the participant died during follow-up. The full list is in the dictionary file, which we read in alongside the data below and use throughout.</p>
 <section id="one-simplification" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="one-simplification"><span class="header-section-number">3.2.1</span> One simplification</h3>
-<p>NHANES is not a simple random sample of Americans. It’s a <strong>complex survey</strong>. Some groups are deliberately sampled more heavily than others, participants are recruited in geographic clusters rather than one at a time, and every participant carries a survey weight saying how many people in the population they stand for. Analysed properly, all of that has to go into the calculation.</p>
-<p>This course ignores it. We treat <code>nhanes_mph</code> as though it were a simple cohort: every participant counts once, and counts the same. That’s a real simplification, and it means the numbers we produce here would not be the right numbers to publish as estimates representative of the US population. We do it because the statistical ideas this course teaches are hard enough to learn once, without learning them and survey weighting at the same time. Survey weights will not be covered in the MPH curriculum.</p>
+<p>NHANES is not a simple random sample of Americans. It’s a <strong>complex survey</strong>. Some groups are deliberately sampled more heavily than others in certain years, and participants are recruited in geographic clusters rather than one at a time. Every participant also carries a survey weight, saying how many people in the population they stand for. Ideally, all of that would go into the calculation, to get an estimate representative of the US population. This course treats <code>nhanes_mph</code> as though it were a simple cohort instead: every participant counts once, and counts the same. That’s a real simplification, and it means the numbers we produce here would not be the right numbers to publish as population estimates. Survey weights will not be covered anywhere in the MPH curriculum, not deferred to Advanced Statistics.</p>
 </section>
 </section>
 <section id="variable-types" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="variable-types"><span class="header-section-number">3.3</span> Variable types</h2>
-<p>The seminar classified every variable into one of two broad kinds, categorical or numeric, and it’s worth having the vocabulary straight before we start describing any of them.</p>
-<p>A <strong>categorical</strong> variable puts each participant into one of a fixed set of groups. <code>gender</code> and <code>eth</code> are <strong>nominal</strong>: the categories have no natural order. <code>phq.c</code>, depression classification, is <strong>ordinal</strong>: normal, mild symptoms, and possible depression run in a genuine order, even though the gap between them isn’t a measured distance.</p>
-<p>A <strong>numeric</strong> variable is a number, and numbers come in three shapes that matter differently for analysis. <code>blm.cvd</code>, baseline cardiovascular disease, is <strong>binary</strong>: it only ever takes the value 0 or 1. <code>phq</code>, the raw depression symptom score behind <code>phq.c</code>, is a <strong>count</strong>: whole numbers only, 0 through 6. <code>chol</code>, <code>age</code>, and <code>sed</code> are <strong>continuous</strong>: any value in a range is possible, 4.7 mmol/L as easily as 4.71.</p>
-<p>That distinction matters from here on. A mean and an SD, or a median and an IQR, describe a <strong>continuous</strong> variable. A <strong>binary</strong> or <strong>count</strong> variable, however few its possible values, still gets summarised as a proportion or a frequency table, not as a mean. This book says <em>continuous</em> from here on when that’s specifically what’s meant, rather than the vaguer <em>numeric</em>, since numeric alone doesn’t say which of the three shapes above a variable has.</p>
-<p>A binary numeric variable and a categorical one with two categories describe the same kind of fact, present or absent, and that’s exactly why <code>blm.cvd</code> gets turned into a factor in the setup below, alongside the five columns that were categorical from the start. Recoding it doesn’t change what it is; it just replaces <code>0</code>/<code>1</code> with labels a reader can understand without the dictionary open, which is also why a result in this book should never show <code>blm.cvd = 1</code>.</p>
+<p>The seminar classified every variable into two broad kinds, categorical and numeric.</p>
+<p>A <strong>categorical</strong> variable puts each participant into one of a fixed set of groups. <code>gender</code> and <code>eth</code> are <strong>nominal</strong>: the categories have no natural order. <code>phq.c</code>, depression classification, is <strong>ordinal</strong>: normal, mild symptoms, and possible depression run in a genuine order, even though the gap between them isn’t a measured distance. <code>blm.cvd</code>, baseline cardiovascular disease, is <strong>binary</strong>: a two-category special case of categorical, present or absent, even though in the data it takes the value 0 or 1.</p>
+<p>A <strong>numeric</strong> variable is a number, and numbers come in two shapes that matter differently for analysis. <code>phq</code>, the raw depression symptom score behind <code>phq.c</code>, is a <strong>count</strong> (sometimes called discrete): whole numbers only, 0 through 6. <code>chol</code>, <code>age</code>, and <code>sed</code> are <strong>continuous</strong>: any value in a range is possible, 4.7 mmol/L as easily as 4.71.</p>
+<p>The type decides the summary and the plot. A mean and an SD, or a median and an IQR, describe a <strong>continuous</strong> variable. A <strong>categorical</strong> variable, however few its categories, is summarised as a proportion or a frequency table instead: for a binary variable like <code>blm.cvd</code>, the proportion of 1s and the mean of its 0/1 values come out as exactly the same number, but we still call it a proportion, since what it summarises is a category, not a measurement. This book says <em>continuous</em> from here on when that’s specifically what’s meant, not the vaguer <em>numeric</em>, since numeric alone doesn’t say whether a variable is a count or continuous.</p>
+<p>A binary variable and a nominal variable with two categories describe the same kind of fact, present or absent. That’s exactly why <code>blm.cvd</code> gets turned into a factor in the setup below, alongside the five columns that were categorical from the start. Recoding it doesn’t change what it is; it just replaces <code>0</code>/<code>1</code> with labels a reader can understand without the dictionary open, which is also why a result in this book should never show <code>blm.cvd = 1</code>.</p>
 </section>
 <section id="setup" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="setup"><span class="header-section-number">3.4</span> Setup</h2>
 <p>As in Chapter 2, we read the data with <code>read_csv()</code> from the <code>readr</code> package. We build the file path with <code>here()</code> from the <code>here</code> package. This builds a path from the project folder down to the file, so the code runs on any machine no matter where the project sits. <code>nhanes_mph</code> arrives as two files: the data, and a separate dictionary that describes every variable. Both are plain CSV files, so we read both with <code>read_csv()</code>.</p>
-<p>This chapter loads one package new to the book: <code>gtsummary</code>, for building tables. <code>dplyr</code>, for manipulating data, was loaded back in Chapter 1, and <code>ggplot2</code>, for plotting, in Chapter 2, so both are already familiar. As Chapter 1 explained, installing a package and loading it are two different actions, so if you haven’t installed <code>gtsummary</code> already, run this once in the console. You don’t need to put it in the script.</p>
+<p>This chapter loads one package new to the book: <code>gtsummary</code>, for building tables. <code>dplyr</code>, for manipulating data, was loaded back in Chapter 1, and <code>ggplot2</code>, for plotting, in Chapter 2, so both are already familiar. Installing and loading it are still the two separate actions Chapter 1 distinguished, so if <code>gtsummary</code> isn’t installed already, run this once in the console. You don’t need to put it in the script.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"gtsummary"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>After that, the <code>library()</code> calls below are all we need, this session and every session after it.</p>
 <div class="cell">
@@ -345,7 +345,7 @@ $ ucod_ht  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 0, NA, NA, NA, NA, NA
 $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24…</code></pre>
 </div>
 </div>
-<p>Six columns describe a category but aren’t usable as one yet: <code>gender</code>, <code>eth</code>, <code>edu</code>, <code>smoking</code>, <code>phq.c</code>, and <code>blm.cvd</code>. Some of them, like <code>gender</code>, are plain integers standing in for a label. Others are more mixed. <code>glimpse()</code> shows <code>smoking</code> and <code>phq.c</code> as character columns, not numbers at all. Whatever the raw form, we should consult the data documentation, e.g.&nbsp;the data dictionary, whenever possible.</p>
+<p>Six columns describe a category but aren’t usable as one yet: <code>gender</code>, <code>eth</code>, <code>edu</code>, <code>smoking</code>, <code>phq.c</code>, and <code>blm.cvd</code>. <code>glimpse()</code> reports how R has <strong>stored</strong> each column, which is a different question from what the variable statistically <strong>is</strong>. <code>blm.cvd</code> is binary, so categorical, but R read its 0s and 1s as numbers and lists it as <code>&lt;dbl&gt;</code>; <code>gender</code> and <code>edu</code> are the same, plain integers standing in for a label. <code>smoking</code> and <code>phq.c</code> are categorical too, just stored as text: <code>glimpse()</code> lists both as <code>&lt;chr&gt;</code>, not numbers at all. Whichever way R happened to store a column, the variable’s statistical type doesn’t change, and R can’t infer one from the other just by looking at it. Whatever the raw form, we should consult the data documentation, e.g.&nbsp;the data dictionary, whenever possible.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dictionary <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">Variable names</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"gender"</span>, <span class="st">"eth"</span>, <span class="st">"edu"</span>, <span class="st">"smoking"</span>, <span class="st">"phq.c"</span>, <span class="st">"blm.cvd"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -362,7 +362,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </div>
 </div>
 <p>The dictionary gives a numeric code against each category for <code>gender</code>, <code>eth</code>, <code>edu</code>, and <code>blm.cvd</code>: <code>1=Male; 2=Female</code>, and so on. Those are the four we have to translate. For <code>smoking</code> and <code>phq.c</code> it just lists the categories, and <code>glimpse()</code> already told us why no translation is needed: they don’t arrive as bare numbers at all. <code>smoking</code> is already the text “Never”, “Previous”, or “Current”. <code>phq.c</code> is already a label too, with the original code number kept at the front of the string, for example <code>"0 Normal"</code>. The dictionary isn’t exhaustive, either. <code>dth</code>, the death indicator we use in Chapter 7, has not had a coding given to it. But by programming convention, <code>0</code> is no (or the logical <code>FALSE</code>), and <code>1</code> is yes (or the logical <code>TRUE</code>).</p>
-<p>We turn every one of the six into a factor with <code>mutate()</code> and <code>factor()</code>, whether the raw values are numbers or text. <code>factor()</code> takes the raw values (<code>levels</code>) and the labels we want to give them (<code>labels</code>), in matching order. The labels are ours to choose, and we take one small liberty below: the dictionary abbreviates <code>eth</code>’s first category to “Mexican”, and we write it out as “Mexican American”, the full NHANES category name. One of the six, <code>phq.c</code>, is ordinal: its categories run from normal to possible depression in a natural order, so we build it with <code>ordered = TRUE</code>. <code>gender</code>, <code>eth</code>, <code>smoking</code>, and <code>blm.cvd</code> are nominal, with no natural order, so they’re plain factors for the more familiar reason. By default, the first level listed becomes the <em>reference</em> level. This is the category everything else gets compared against once regression starts, in Chapter 7. For now the choice mostly affects how a bar chart or table orders its categories, but it’s worth setting deliberately from the start rather than accepting whatever order R guesses.</p>
+<p>We turn every one of the six into a factor with <code>mutate()</code> and <code>factor()</code>, whether the raw values are numbers or text. <code>factor()</code> takes the raw values (<code>levels</code>) and the labels we want to give them (<code>labels</code>), in matching order. The labels are ours to choose, and we take one small liberty below: the dictionary abbreviates <code>eth</code>’s first category to “Mexican”, and we write it out as “Mexican American”, the full NHANES category name. One of the six, <code>phq.c</code>, is ordinal: its categories run from normal to possible depression in a natural order, so we build it with <code>ordered = TRUE</code>. <code>gender</code>, <code>eth</code>, <code>smoking</code>, and <code>blm.cvd</code> are nominal, with no natural order, so they’re plain factors for the more familiar reason. By default, the first level listed becomes the <em>reference</em> level, the category everything else gets compared against. The next section says more about what that means and why it’s set deliberately.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -423,7 +423,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </section>
 <section id="checking-and-setting-a-reference-level" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="checking-and-setting-a-reference-level"><span class="header-section-number">3.5</span> Checking and setting a reference level</h2>
-<p>The reference level decides which category a table or a chart reads everything else against, so it’s a reporting choice before it’s a modelling one, and worth having deliberately from here rather than only once regression starts. Let’s actually examine the levels in a factor. <code>levels()</code>, from base R, lists a factor’s categories in their current order:</p>
+<p>The reference level decides which category a table or a chart reads everything else against. It’s a reporting choice before it’s a modelling one, so we set it deliberately from here, not only once a categorical predictor enters a regression model in Chapter 6. Let’s examine the levels in a factor. <code>levels()</code>, from base R, lists a factor’s categories in their current order:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(nhanes<span class="sc">$</span>smoking)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -441,12 +441,12 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </div>
 </div>
 <p><code>"White"</code> has moved to the front, so it would now be the reference, with the other four groups read against it. The rest keep their order, just shifted along.</p>
-<p>Notice we assigned the result to a new object, <code>eth_white_ref</code>, rather than writing it back into <code>nhanes</code>. That’s deliberate: every chapter in this book rebuilds <code>nhanes</code> with the same recode, so if we changed this factor here, this chapter’s <code>nhanes</code> would stop matching the one later chapters build, and a table or model would come out different for no visible reason. When we’re demonstrating something, we work on a copy.</p>
-<p>Right now the reference level only decides the order categories appear in a table, or along a bar chart’s axis. In Chapter 7 it decides what every coefficient in a regression model means, so it’s worth having the habit in place well before it starts to matter.</p>
+<p>Notice we assigned the result to a new object, <code>eth_white_ref</code>, rather than writing it back into <code>nhanes</code>. That’s deliberate. Every chapter in this book rebuilds <code>nhanes</code> with the same recode. If we changed this factor here, this chapter’s <code>nhanes</code> would stop matching the one later chapters build, and a table or model would come out different for no visible reason. When we’re demonstrating something, we work on a copy.</p>
+<p>Right now the reference level only decides the order categories appear in a table, or along a bar chart’s axis. Once a categorical predictor enters a regression model in Chapter 6, it decides what every coefficient means.</p>
 </section>
 <section id="manipulating-a-dataset-the-dplyr-verbs" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="manipulating-a-dataset-the-dplyr-verbs"><span class="header-section-number">3.6</span> Manipulating a dataset: the <code>dplyr</code> verbs</h2>
-<p>A public health question is almost never about everyone in a dataset at once, and these four verbs are how we get from the whole file down to the subgroup, the columns, and the order a question actually asks about. Four verbs from <code>dplyr</code> cover most of what we need to get from a raw dataset to the piece of it we actually want to look at.</p>
+<p>A public health question is almost never about everyone in a dataset at once. Four verbs from <code>dplyr</code> cover most of what we need to get from the raw dataset down to the subgroup, the columns, and the order a question actually asks about.</p>
 <p><code>select()</code> keeps only the named columns:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span> <span class="fu">select</span>(age, gender, sed, chol)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -584,7 +584,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </div>
 </div>
 <p><code>filter()</code> here takes two conditions separated by a comma, which means the same as <code>&amp;</code>: a row only stays if both are true. That’s a shorter way to write <code>filter(!is.na(gender) &amp; !is.na(chol))</code>, and it’s the form used throughout this book whenever several conditions apply at once.</p>
-<p>Four of those functions are new. <code>mean()</code> we already met in Chapter 1. <code>sd()</code>, from base R, returns the standard deviation: a measure of how spread out the values are, in the same units as the variable itself. <code>median()</code>, also base R, returns the middle value once everything is sorted, so half the participants sit below it and half above. <code>quantile()</code>, also base R, calculates any quantile we ask for: <code>probs = 0.25</code> and <code>probs = 0.75</code> ask for the first and third quartile, the two values the interquartile range sits between. There’s a separate function, <code>IQR()</code>, that returns just the gap between them as a single number, in the same units as the variable itself, rather than the two quartiles. We’ll use it in the worked example below.</p>
+<p>Four of those functions are new. <code>mean()</code> we already met in Chapter 1. <code>sd()</code>, from base R, returns the standard deviation: a measure of how spread out the values are, in the same units as the variable itself. <code>median()</code>, also base R, returns the middle value once everything is sorted, so half the participants sit below it and half above. <code>quantile()</code>, also base R, calculates any quantile we ask for: <code>probs = 0.25</code> and <code>probs = 0.75</code> ask for the first and third quartile, the two values the interquartile range sits between. There’s a separate function, <code>IQR()</code>, that returns just the gap between them as a single number, in the same units as the variable itself, instead of the two quartiles. We’ll use it in the worked example below.</p>
 <p><code>na.rm = TRUE</code> tells the functions to drop missing values before calculating. Without it, any <code>NA</code> in a column makes the whole result <code>NA</code>. The <code>filter()</code> step above drops rows where <code>gender</code> or <code>chol</code> itself is missing, so the group sizes reported in <code>n</code> reflect exactly the rows the means are calculated from. <code>n()</code>, used inside <code>summarise()</code>, counts the rows in each group.</p>
 <p>The <code>gender</code> half of that filter turns out to change nothing: every participant in this extract has a gender recorded. The <code>chol</code> half of the same filter is doing real work: 2,589 participants have no cholesterol value, and without it they’d be counted in <code>n</code> while contributing nothing to the mean.</p>
 <p>Whether we report the mean and SD or the median and IQR depends on shape. A skewed distribution gets misrepresented by a mean, because the mean gets pulled toward the tail. A rule of thumb is to look at the shape before choosing. We’ll build the plot we need for that in a moment, but categorical variables need a different kind of summary first: a count, not a mean.</p>
@@ -600,7 +600,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
    23394     9468     8580 </code></pre>
 </div>
 </div>
-<p><code>table()</code> drops <code>NA</code> values by default rather than counting them as their own category, so this count is out of everyone with a recorded smoking status, not out of everyone in the dataset. Raw counts are hard to compare across groups of different sizes, so we usually want percentages instead. <code>prop.table()</code>, also from base R, takes a table and turns its counts into proportions of the total:</p>
+<p><code>table()</code> drops <code>NA</code> values by default, not counting them as their own category, so this count is out of everyone with a recorded smoking status, not out of everyone in the dataset. Raw counts are hard to compare across groups of different sizes, so we usually want percentages instead. <code>prop.table()</code>, also from base R, takes a table and turns its counts into proportions of the total:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(nhanes<span class="sc">$</span>smoking) <span class="sc">|&gt;</span> <span class="fu">prop.table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -648,7 +648,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </section>
 <section id="plotting-with-ggplot2" class="level2" data-number="3.9">
 <h2 data-number="3.9" class="anchored" data-anchor-id="plotting-with-ggplot2"><span class="header-section-number">3.9</span> Plotting with <code>ggplot2</code></h2>
-<p>Every <code>ggplot2</code> plot is built from the same three pieces: the <strong>data</strong>, the <strong>aesthetic mapping</strong> (<code>aes()</code>, which decides which variables go on which axis or colour), and the <strong>geometry</strong> (<code>geom_*()</code>, which decides what kind of shape represents the data). These pieces are joined with <code>+</code>, not the pipe <code>|&gt;</code> we’ve been using so far. This looks like an inconsistency but actually means something different: <code>x() |&gt; y()</code> passes the output of <code>x()</code> as an input to <code>y()</code>, while <code>+</code> in <code>ggplot2</code> means <strong>layering</strong>, an idea introduced by Leland Wilkinson’s book <em>The Grammar of Graphics</em>. Very briefly, a plot can be thought of as layers stacked on top of one another. The foundational layer is the data (<code>ggplot(nhanes, ...)</code> below), followed by the aesthetics that dictate which variables go into which presentation elements, for example the x-axis, the y-axis, colour, or fill (<code>aes(x = sed)</code> below), and then the geometric objects (<code>geom_histogram()</code> below). That’s a different job from what the pipe does.</p>
+<p>Every <code>ggplot2</code> plot is built from the same three pieces: the <strong>data</strong>, the <strong>aesthetic mapping</strong> (<code>aes()</code>, which decides which variables go on which axis or colour), and the <strong>geometry</strong> (<code>geom_*()</code>, which decides what kind of shape represents the data). These pieces are joined with <code>+</code>, not the pipe <code>|&gt;</code> we’ve been using so far, because <code>+</code> does a different job. <code>x() |&gt; y()</code> passes the output of <code>x()</code> as an input to <code>y()</code>. <code>+</code> in <code>ggplot2</code> means <strong>layering</strong> instead, an idea introduced by Leland Wilkinson’s book <em>The Grammar of Graphics</em>: a plot is built as layers stacked on top of one another, data first (<code>ggplot(nhanes, ...)</code> below), then the aesthetic mapping (<code>aes(x = sed)</code> below), then the geometry (<code>geom_histogram()</code> below).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> sed)) <span class="sc">+</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
@@ -665,7 +665,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </div>
 </div>
 </div>
-<p>To explain this code further: <code>ggplot()</code> names the data and the mapping, <code>geom_histogram()</code> says to draw it as a histogram, and <code>labs()</code> sets the axis labels. <code>labs()</code> is worth using every single time. Left out, the axes are labelled with the raw column name, so this one would have read <code>sed</code> rather than “Sedentary time (hours/day)”, and people outside the course will have to guess what that is. We expect you to produce plots and tables that are properly labelled and as self-explanatory as possible.</p>
+<p><code>ggplot()</code> names the data and the mapping, <code>geom_histogram()</code> says to draw it as a histogram, and <code>labs()</code> sets the axis labels. Use <code>labs()</code> every time: left out, the axes are labelled with the raw column name, so this one would have read <code>sed</code> instead of “Sedentary time (hours/day)”, and anyone outside the course would have to guess what that means.</p>
 <p>That warning about removed rows is the one Chapter 2 explained: <code>sed</code> has 7,331 missing values, so <code>ggplot2</code> left them out and said so. It will appear above most plots in this chapter, with a different number each time depending on the variable. Glance at the number, check it’s the size we expect, and carry on.</p>
 <p><code>ggplot2</code> is highly versatile and can produce nearly any plot we need. Some examples below:</p>
 <p>A bar chart of smoking status:</p>
@@ -699,7 +699,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </div>
 </div>
 </div>
-<p>This is useful for examining the relationship between a continuous variable and a categorical one. The code is similar, but with explicit filtering on the data so that participants with missing gender aren’t plotted, and the x and y axis variables are both specified. <code>geom_boxplot()</code> replaces the <code>geom_histogram()</code> from above.</p>
+<p>This is useful for examining the relationship between a continuous variable and a categorical one. The code is similar, but with two differences: it explicitly filters out participants with missing gender, and it names both the x and y axis variables. <code>geom_boxplot()</code> replaces the <code>geom_histogram()</code> from above.</p>
 <p>A scatterplot of cholesterol against age:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
@@ -742,23 +742,23 @@ range (`geom_point()`).</code></pre>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender, eth, smoking, chol) <span class="sc">|&gt;</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="naxhksziyn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#naxhksziyn table {
+<div id="rfwegzgclo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rfwegzgclo table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#naxhksziyn thead, #naxhksziyn tbody, #naxhksziyn tfoot, #naxhksziyn tr, #naxhksziyn td, #naxhksziyn th {
+#rfwegzgclo thead, #rfwegzgclo tbody, #rfwegzgclo tfoot, #rfwegzgclo tr, #rfwegzgclo td, #rfwegzgclo th {
   border-style: none;
 }
 
-#naxhksziyn p {
+#rfwegzgclo p {
   margin: 0;
   padding: 0;
 }
 
-#naxhksziyn .gt_table {
+#rfwegzgclo .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -784,12 +784,12 @@ range (`geom_point()`).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_caption {
+#rfwegzgclo .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#naxhksziyn .gt_title {
+#rfwegzgclo .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -801,7 +801,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-width: 0;
 }
 
-#naxhksziyn .gt_subtitle {
+#rfwegzgclo .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -813,7 +813,7 @@ range (`geom_point()`).</code></pre>
   border-top-width: 0;
 }
 
-#naxhksziyn .gt_heading {
+#rfwegzgclo .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -825,13 +825,13 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_bottom_border {
+#rfwegzgclo .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_col_headings {
+#rfwegzgclo .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -846,7 +846,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_col_heading {
+#rfwegzgclo .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -866,7 +866,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#naxhksziyn .gt_column_spanner_outer {
+#rfwegzgclo .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -878,15 +878,15 @@ range (`geom_point()`).</code></pre>
   padding-right: 4px;
 }
 
-#naxhksziyn .gt_column_spanner_outer:first-child {
+#rfwegzgclo .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#naxhksziyn .gt_column_spanner_outer:last-child {
+#rfwegzgclo .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#naxhksziyn .gt_column_spanner {
+#rfwegzgclo .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -898,11 +898,11 @@ range (`geom_point()`).</code></pre>
   width: 100%;
 }
 
-#naxhksziyn .gt_spanner_row {
+#rfwegzgclo .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#naxhksziyn .gt_group_heading {
+#rfwegzgclo .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -928,7 +928,7 @@ range (`geom_point()`).</code></pre>
   text-align: left;
 }
 
-#naxhksziyn .gt_empty_group_heading {
+#rfwegzgclo .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -943,15 +943,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: middle;
 }
 
-#naxhksziyn .gt_from_md > :first-child {
+#rfwegzgclo .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#naxhksziyn .gt_from_md > :last-child {
+#rfwegzgclo .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#naxhksziyn .gt_row {
+#rfwegzgclo .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -970,7 +970,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#naxhksziyn .gt_stub {
+#rfwegzgclo .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -983,7 +983,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#naxhksziyn .gt_stub_row_group {
+#rfwegzgclo .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -997,15 +997,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: top;
 }
 
-#naxhksziyn .gt_row_group_first td {
+#rfwegzgclo .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#naxhksziyn .gt_row_group_first th {
+#rfwegzgclo .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#naxhksziyn .gt_summary_row {
+#rfwegzgclo .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1015,16 +1015,16 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#naxhksziyn .gt_first_summary_row {
+#rfwegzgclo .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_first_summary_row.thick {
+#rfwegzgclo .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#naxhksziyn .gt_last_summary_row {
+#rfwegzgclo .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1034,7 +1034,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_grand_summary_row {
+#rfwegzgclo .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1044,7 +1044,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#naxhksziyn .gt_first_grand_summary_row {
+#rfwegzgclo .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1054,7 +1054,7 @@ range (`geom_point()`).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_last_grand_summary_row_top {
+#rfwegzgclo .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1064,11 +1064,11 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_striped {
+#rfwegzgclo .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#naxhksziyn .gt_table_body {
+#rfwegzgclo .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1077,7 +1077,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_footnotes {
+#rfwegzgclo .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1091,7 +1091,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_footnote {
+#rfwegzgclo .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1100,7 +1100,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#naxhksziyn .gt_sourcenotes {
+#rfwegzgclo .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1114,7 +1114,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#naxhksziyn .gt_sourcenote {
+#rfwegzgclo .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1122,72 +1122,72 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#naxhksziyn .gt_left {
+#rfwegzgclo .gt_left {
   text-align: left;
 }
 
-#naxhksziyn .gt_center {
+#rfwegzgclo .gt_center {
   text-align: center;
 }
 
-#naxhksziyn .gt_right {
+#rfwegzgclo .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#naxhksziyn .gt_font_normal {
+#rfwegzgclo .gt_font_normal {
   font-weight: normal;
 }
 
-#naxhksziyn .gt_font_bold {
+#rfwegzgclo .gt_font_bold {
   font-weight: bold;
 }
 
-#naxhksziyn .gt_font_italic {
+#rfwegzgclo .gt_font_italic {
   font-style: italic;
 }
 
-#naxhksziyn .gt_super {
+#rfwegzgclo .gt_super {
   font-size: 65%;
 }
 
-#naxhksziyn .gt_footnote_marks {
+#rfwegzgclo .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#naxhksziyn .gt_asterisk {
+#rfwegzgclo .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#naxhksziyn .gt_indent_1 {
+#rfwegzgclo .gt_indent_1 {
   text-indent: 5px;
 }
 
-#naxhksziyn .gt_indent_2 {
+#rfwegzgclo .gt_indent_2 {
   text-indent: 10px;
 }
 
-#naxhksziyn .gt_indent_3 {
+#rfwegzgclo .gt_indent_3 {
   text-indent: 15px;
 }
 
-#naxhksziyn .gt_indent_4 {
+#rfwegzgclo .gt_indent_4 {
   text-indent: 20px;
 }
 
-#naxhksziyn .gt_indent_5 {
+#rfwegzgclo .gt_indent_5 {
   text-indent: 25px;
 }
 
-#naxhksziyn .katex-display {
+#rfwegzgclo .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#naxhksziyn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#rfwegzgclo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1292,23 +1292,23 @@ range (`geom_point()`).</code></pre>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender, eth, smoking, chol) <span class="sc">|&gt;</span></span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="uhyweafjlm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#uhyweafjlm table {
+<div id="vkriibegod" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vkriibegod table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#uhyweafjlm thead, #uhyweafjlm tbody, #uhyweafjlm tfoot, #uhyweafjlm tr, #uhyweafjlm td, #uhyweafjlm th {
+#vkriibegod thead, #vkriibegod tbody, #vkriibegod tfoot, #vkriibegod tr, #vkriibegod td, #vkriibegod th {
   border-style: none;
 }
 
-#uhyweafjlm p {
+#vkriibegod p {
   margin: 0;
   padding: 0;
 }
 
-#uhyweafjlm .gt_table {
+#vkriibegod .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1334,12 +1334,12 @@ range (`geom_point()`).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_caption {
+#vkriibegod .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#uhyweafjlm .gt_title {
+#vkriibegod .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1351,7 +1351,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-width: 0;
 }
 
-#uhyweafjlm .gt_subtitle {
+#vkriibegod .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1363,7 +1363,7 @@ range (`geom_point()`).</code></pre>
   border-top-width: 0;
 }
 
-#uhyweafjlm .gt_heading {
+#vkriibegod .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1375,13 +1375,13 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_bottom_border {
+#vkriibegod .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_col_headings {
+#vkriibegod .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1396,7 +1396,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_col_heading {
+#vkriibegod .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1416,7 +1416,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#uhyweafjlm .gt_column_spanner_outer {
+#vkriibegod .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1428,15 +1428,15 @@ range (`geom_point()`).</code></pre>
   padding-right: 4px;
 }
 
-#uhyweafjlm .gt_column_spanner_outer:first-child {
+#vkriibegod .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uhyweafjlm .gt_column_spanner_outer:last-child {
+#vkriibegod .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uhyweafjlm .gt_column_spanner {
+#vkriibegod .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1448,11 +1448,11 @@ range (`geom_point()`).</code></pre>
   width: 100%;
 }
 
-#uhyweafjlm .gt_spanner_row {
+#vkriibegod .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#uhyweafjlm .gt_group_heading {
+#vkriibegod .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1478,7 +1478,7 @@ range (`geom_point()`).</code></pre>
   text-align: left;
 }
 
-#uhyweafjlm .gt_empty_group_heading {
+#vkriibegod .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1493,15 +1493,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: middle;
 }
 
-#uhyweafjlm .gt_from_md > :first-child {
+#vkriibegod .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uhyweafjlm .gt_from_md > :last-child {
+#vkriibegod .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uhyweafjlm .gt_row {
+#vkriibegod .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1520,7 +1520,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#uhyweafjlm .gt_stub {
+#vkriibegod .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1533,7 +1533,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#uhyweafjlm .gt_stub_row_group {
+#vkriibegod .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1547,15 +1547,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: top;
 }
 
-#uhyweafjlm .gt_row_group_first td {
+#vkriibegod .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uhyweafjlm .gt_row_group_first th {
+#vkriibegod .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#uhyweafjlm .gt_summary_row {
+#vkriibegod .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1565,16 +1565,16 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#uhyweafjlm .gt_first_summary_row {
+#vkriibegod .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_first_summary_row.thick {
+#vkriibegod .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uhyweafjlm .gt_last_summary_row {
+#vkriibegod .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1584,7 +1584,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_grand_summary_row {
+#vkriibegod .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1594,7 +1594,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#uhyweafjlm .gt_first_grand_summary_row {
+#vkriibegod .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1604,7 +1604,7 @@ range (`geom_point()`).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_last_grand_summary_row_top {
+#vkriibegod .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1614,11 +1614,11 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_striped {
+#vkriibegod .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uhyweafjlm .gt_table_body {
+#vkriibegod .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1627,7 +1627,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_footnotes {
+#vkriibegod .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1641,7 +1641,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_footnote {
+#vkriibegod .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1650,7 +1650,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#uhyweafjlm .gt_sourcenotes {
+#vkriibegod .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1664,7 +1664,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#uhyweafjlm .gt_sourcenote {
+#vkriibegod .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1672,72 +1672,72 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#uhyweafjlm .gt_left {
+#vkriibegod .gt_left {
   text-align: left;
 }
 
-#uhyweafjlm .gt_center {
+#vkriibegod .gt_center {
   text-align: center;
 }
 
-#uhyweafjlm .gt_right {
+#vkriibegod .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uhyweafjlm .gt_font_normal {
+#vkriibegod .gt_font_normal {
   font-weight: normal;
 }
 
-#uhyweafjlm .gt_font_bold {
+#vkriibegod .gt_font_bold {
   font-weight: bold;
 }
 
-#uhyweafjlm .gt_font_italic {
+#vkriibegod .gt_font_italic {
   font-style: italic;
 }
 
-#uhyweafjlm .gt_super {
+#vkriibegod .gt_super {
   font-size: 65%;
 }
 
-#uhyweafjlm .gt_footnote_marks {
+#vkriibegod .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#uhyweafjlm .gt_asterisk {
+#vkriibegod .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uhyweafjlm .gt_indent_1 {
+#vkriibegod .gt_indent_1 {
   text-indent: 5px;
 }
 
-#uhyweafjlm .gt_indent_2 {
+#vkriibegod .gt_indent_2 {
   text-indent: 10px;
 }
 
-#uhyweafjlm .gt_indent_3 {
+#vkriibegod .gt_indent_3 {
   text-indent: 15px;
 }
 
-#uhyweafjlm .gt_indent_4 {
+#vkriibegod .gt_indent_4 {
   text-indent: 20px;
 }
 
-#uhyweafjlm .gt_indent_5 {
+#vkriibegod .gt_indent_5 {
   text-indent: 25px;
 }
 
-#uhyweafjlm .katex-display {
+#vkriibegod .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#uhyweafjlm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#vkriibegod div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1852,23 +1852,23 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>)</span>
 <span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="voewyvpllj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#voewyvpllj table {
+<div id="rtmilydosg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rtmilydosg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#voewyvpllj thead, #voewyvpllj tbody, #voewyvpllj tfoot, #voewyvpllj tr, #voewyvpllj td, #voewyvpllj th {
+#rtmilydosg thead, #rtmilydosg tbody, #rtmilydosg tfoot, #rtmilydosg tr, #rtmilydosg td, #rtmilydosg th {
   border-style: none;
 }
 
-#voewyvpllj p {
+#rtmilydosg p {
   margin: 0;
   padding: 0;
 }
 
-#voewyvpllj .gt_table {
+#rtmilydosg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1894,12 +1894,12 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-left-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_caption {
+#rtmilydosg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#voewyvpllj .gt_title {
+#rtmilydosg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1911,7 +1911,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-width: 0;
 }
 
-#voewyvpllj .gt_subtitle {
+#rtmilydosg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1923,7 +1923,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-width: 0;
 }
 
-#voewyvpllj .gt_heading {
+#rtmilydosg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1935,13 +1935,13 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_bottom_border {
+#rtmilydosg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_col_headings {
+#rtmilydosg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1956,7 +1956,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_col_heading {
+#rtmilydosg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1976,7 +1976,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#voewyvpllj .gt_column_spanner_outer {
+#rtmilydosg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1988,15 +1988,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 4px;
 }
 
-#voewyvpllj .gt_column_spanner_outer:first-child {
+#rtmilydosg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#voewyvpllj .gt_column_spanner_outer:last-child {
+#rtmilydosg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#voewyvpllj .gt_column_spanner {
+#rtmilydosg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2008,11 +2008,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   width: 100%;
 }
 
-#voewyvpllj .gt_spanner_row {
+#rtmilydosg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#voewyvpllj .gt_group_heading {
+#rtmilydosg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2038,7 +2038,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   text-align: left;
 }
 
-#voewyvpllj .gt_empty_group_heading {
+#rtmilydosg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2053,15 +2053,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: middle;
 }
 
-#voewyvpllj .gt_from_md > :first-child {
+#rtmilydosg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#voewyvpllj .gt_from_md > :last-child {
+#rtmilydosg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#voewyvpllj .gt_row {
+#rtmilydosg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2080,7 +2080,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#voewyvpllj .gt_stub {
+#rtmilydosg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2093,7 +2093,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#voewyvpllj .gt_stub_row_group {
+#rtmilydosg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2107,15 +2107,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: top;
 }
 
-#voewyvpllj .gt_row_group_first td {
+#rtmilydosg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#voewyvpllj .gt_row_group_first th {
+#rtmilydosg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#voewyvpllj .gt_summary_row {
+#rtmilydosg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2125,16 +2125,16 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#voewyvpllj .gt_first_summary_row {
+#rtmilydosg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_first_summary_row.thick {
+#rtmilydosg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#voewyvpllj .gt_last_summary_row {
+#rtmilydosg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2144,7 +2144,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_grand_summary_row {
+#rtmilydosg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2154,7 +2154,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#voewyvpllj .gt_first_grand_summary_row {
+#rtmilydosg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2164,7 +2164,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_last_grand_summary_row_top {
+#rtmilydosg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2174,11 +2174,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_striped {
+#rtmilydosg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#voewyvpllj .gt_table_body {
+#rtmilydosg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2187,7 +2187,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_footnotes {
+#rtmilydosg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2201,7 +2201,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_footnote {
+#rtmilydosg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2210,7 +2210,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#voewyvpllj .gt_sourcenotes {
+#rtmilydosg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2224,7 +2224,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#voewyvpllj .gt_sourcenote {
+#rtmilydosg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2232,72 +2232,72 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#voewyvpllj .gt_left {
+#rtmilydosg .gt_left {
   text-align: left;
 }
 
-#voewyvpllj .gt_center {
+#rtmilydosg .gt_center {
   text-align: center;
 }
 
-#voewyvpllj .gt_right {
+#rtmilydosg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#voewyvpllj .gt_font_normal {
+#rtmilydosg .gt_font_normal {
   font-weight: normal;
 }
 
-#voewyvpllj .gt_font_bold {
+#rtmilydosg .gt_font_bold {
   font-weight: bold;
 }
 
-#voewyvpllj .gt_font_italic {
+#rtmilydosg .gt_font_italic {
   font-style: italic;
 }
 
-#voewyvpllj .gt_super {
+#rtmilydosg .gt_super {
   font-size: 65%;
 }
 
-#voewyvpllj .gt_footnote_marks {
+#rtmilydosg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#voewyvpllj .gt_asterisk {
+#rtmilydosg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#voewyvpllj .gt_indent_1 {
+#rtmilydosg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#voewyvpllj .gt_indent_2 {
+#rtmilydosg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#voewyvpllj .gt_indent_3 {
+#rtmilydosg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#voewyvpllj .gt_indent_4 {
+#rtmilydosg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#voewyvpllj .gt_indent_5 {
+#rtmilydosg .gt_indent_5 {
   text-indent: 25px;
 }
 
-#voewyvpllj .katex-display {
+#rtmilydosg .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#voewyvpllj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#rtmilydosg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2403,11 +2403,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 </div>
 </div>
 </div>
-<p>Three things in that line are new. <code>list()</code>, from base R, bundles several settings together, one per variable or group of variables, which is what <code>statistic</code> needs when there’s more than one display rule to give. <code>all_continuous()</code>, from <code>gtsummary</code>, means “every continuous variable in this table”, so one line covers both <code>age</code> and <code>chol</code> at once rather than naming each separately. And <code>"{mean} ({sd})"</code> is a piece of text with slots in it: <code>gtsummary</code> works out the mean and the standard deviation for each variable, then drops each number into the spot where its name appears in curly braces, so it comes out as something like <code>47.3 (18.1)</code>. Everything outside the braces, here a space and a pair of round brackets, is printed exactly as written. <code>tbl_summary()</code> is highly customisable. We can change the statistic for any specific variable, or format different variables differently. That’s outside the scope of this course, and left as an exploration exercise for anyone interested.</p>
+<p>Three things in that line are new. <code>list()</code>, from base R, bundles several settings together, one per variable or group of variables, which is what <code>statistic</code> needs when there’s more than one display rule to give. <code>all_continuous()</code>, from <code>gtsummary</code>, means “every continuous variable in this table”, so one line covers both <code>age</code> and <code>chol</code> at once rather than naming each separately. The <code>~</code> between it and the text that follows just pairs the two: which variables, and what to show for them. This book properly introduces <code>~</code> as formula syntax in Chapter 4; here it’s doing a related but different job, pairing a selection with a display rule rather than an outcome with a predictor. And <code>"{mean} ({sd})"</code> is a piece of text with slots in it. <code>gtsummary</code> works out the mean and the standard deviation for each variable, then drops each number into the spot where its name appears in curly braces. It comes out as something like <code>47.3 (18.1)</code>. Everything outside the braces, here a space and a pair of round brackets, is printed exactly as written. <code>tbl_summary()</code> is highly customisable. We can change the statistic for any specific variable, or format different variables differently. That’s outside the scope of this course, and left as an exploration exercise for anyone interested.</p>
 </section>
 <section id="worked-example-describing-age" class="level2" data-number="3.11">
 <h2 data-number="3.11" class="anchored" data-anchor-id="worked-example-describing-age"><span class="header-section-number">3.11</span> Worked example: describing age</h2>
-<p>Let’s bring the tools above together on a research question: how old are the participants in this sample, and how much does that vary? We’ll use <code>age</code>, a variable not touched elsewhere in this chapter.</p>
+<p>How old are the participants in this sample, and how much does that vary? <code>age</code> hasn’t come up elsewhere in this chapter, so it’s a clean place to put everything above to work at once.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
@@ -2453,23 +2453,23 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender) <span class="sc">|&gt;</span></span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="lyvlgkfgtb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lyvlgkfgtb table {
+<div id="rifpliijcc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rifpliijcc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lyvlgkfgtb thead, #lyvlgkfgtb tbody, #lyvlgkfgtb tfoot, #lyvlgkfgtb tr, #lyvlgkfgtb td, #lyvlgkfgtb th {
+#rifpliijcc thead, #rifpliijcc tbody, #rifpliijcc tfoot, #rifpliijcc tr, #rifpliijcc td, #rifpliijcc th {
   border-style: none;
 }
 
-#lyvlgkfgtb p {
+#rifpliijcc p {
   margin: 0;
   padding: 0;
 }
 
-#lyvlgkfgtb .gt_table {
+#rifpliijcc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2495,12 +2495,12 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-left-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_caption {
+#rifpliijcc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lyvlgkfgtb .gt_title {
+#rifpliijcc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2512,7 +2512,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-width: 0;
 }
 
-#lyvlgkfgtb .gt_subtitle {
+#rifpliijcc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2524,7 +2524,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-width: 0;
 }
 
-#lyvlgkfgtb .gt_heading {
+#rifpliijcc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2536,13 +2536,13 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_bottom_border {
+#rifpliijcc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_col_headings {
+#rifpliijcc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2557,7 +2557,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_col_heading {
+#rifpliijcc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2577,7 +2577,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#lyvlgkfgtb .gt_column_spanner_outer {
+#rifpliijcc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2589,15 +2589,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 4px;
 }
 
-#lyvlgkfgtb .gt_column_spanner_outer:first-child {
+#rifpliijcc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lyvlgkfgtb .gt_column_spanner_outer:last-child {
+#rifpliijcc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lyvlgkfgtb .gt_column_spanner {
+#rifpliijcc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2609,11 +2609,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   width: 100%;
 }
 
-#lyvlgkfgtb .gt_spanner_row {
+#rifpliijcc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lyvlgkfgtb .gt_group_heading {
+#rifpliijcc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2639,7 +2639,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   text-align: left;
 }
 
-#lyvlgkfgtb .gt_empty_group_heading {
+#rifpliijcc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2654,15 +2654,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: middle;
 }
 
-#lyvlgkfgtb .gt_from_md > :first-child {
+#rifpliijcc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lyvlgkfgtb .gt_from_md > :last-child {
+#rifpliijcc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lyvlgkfgtb .gt_row {
+#rifpliijcc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2681,7 +2681,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#lyvlgkfgtb .gt_stub {
+#rifpliijcc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2694,7 +2694,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lyvlgkfgtb .gt_stub_row_group {
+#rifpliijcc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2708,15 +2708,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: top;
 }
 
-#lyvlgkfgtb .gt_row_group_first td {
+#rifpliijcc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lyvlgkfgtb .gt_row_group_first th {
+#rifpliijcc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lyvlgkfgtb .gt_summary_row {
+#rifpliijcc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2726,16 +2726,16 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lyvlgkfgtb .gt_first_summary_row {
+#rifpliijcc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_first_summary_row.thick {
+#rifpliijcc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lyvlgkfgtb .gt_last_summary_row {
+#rifpliijcc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2745,7 +2745,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_grand_summary_row {
+#rifpliijcc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2755,7 +2755,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lyvlgkfgtb .gt_first_grand_summary_row {
+#rifpliijcc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2765,7 +2765,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_last_grand_summary_row_top {
+#rifpliijcc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2775,11 +2775,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_striped {
+#rifpliijcc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lyvlgkfgtb .gt_table_body {
+#rifpliijcc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2788,7 +2788,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_footnotes {
+#rifpliijcc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2802,7 +2802,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_footnote {
+#rifpliijcc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2811,7 +2811,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lyvlgkfgtb .gt_sourcenotes {
+#rifpliijcc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2825,7 +2825,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lyvlgkfgtb .gt_sourcenote {
+#rifpliijcc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2833,72 +2833,72 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lyvlgkfgtb .gt_left {
+#rifpliijcc .gt_left {
   text-align: left;
 }
 
-#lyvlgkfgtb .gt_center {
+#rifpliijcc .gt_center {
   text-align: center;
 }
 
-#lyvlgkfgtb .gt_right {
+#rifpliijcc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lyvlgkfgtb .gt_font_normal {
+#rifpliijcc .gt_font_normal {
   font-weight: normal;
 }
 
-#lyvlgkfgtb .gt_font_bold {
+#rifpliijcc .gt_font_bold {
   font-weight: bold;
 }
 
-#lyvlgkfgtb .gt_font_italic {
+#rifpliijcc .gt_font_italic {
   font-style: italic;
 }
 
-#lyvlgkfgtb .gt_super {
+#rifpliijcc .gt_super {
   font-size: 65%;
 }
 
-#lyvlgkfgtb .gt_footnote_marks {
+#rifpliijcc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lyvlgkfgtb .gt_asterisk {
+#rifpliijcc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lyvlgkfgtb .gt_indent_1 {
+#rifpliijcc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lyvlgkfgtb .gt_indent_2 {
+#rifpliijcc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lyvlgkfgtb .gt_indent_3 {
+#rifpliijcc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lyvlgkfgtb .gt_indent_4 {
+#rifpliijcc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lyvlgkfgtb .gt_indent_5 {
+#rifpliijcc .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lyvlgkfgtb .katex-display {
+#rifpliijcc .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lyvlgkfgtb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#rifpliijcc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2939,17 +2939,17 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 </section>
 <section id="exercises" class="level2" data-number="3.12">
 <h2 data-number="3.12" class="anchored" data-anchor-id="exercises"><span class="header-section-number">3.12</span> Exercises</h2>
-<p><strong>Exercise 1</strong> (ILO 1). Using the four <code>dplyr</code> verbs, and a pipe, answer this: among participants aged 65 or over who have never smoked, what are the ten highest cholesterol values? Keep only <code>age</code>, <code>gender</code>, and <code>chol</code> in your answer. Then add a column called <code>chol_high</code> that is <code>TRUE</code> when <code>chol</code> is above 6 mmol/L and <code>FALSE</code> otherwise.</p>
-<p><strong>Exercise 2</strong> (ILOs 1, 3). Describe the distribution of sedentary time (<code>sed</code>). Report the mean and SD or the median and IQR, whichever the shape justifies, and support your choice with a histogram and a boxplot. Then produce a scatterplot of <code>chol</code> against <code>sed</code>, label both axes with their units, and write one sentence on whether the plot suggests any relationship between the two.</p>
-<p><strong>Exercise 3</strong> (ILOs 3, 4). Build a histogram of total cholesterol (<code>chol</code>) with a <code>binwidth</code> of 0.5, labelled properly with <code>labs()</code>. Then produce two more versions of it: one with a <code>binwidth</code> of 0.05, and one with the original bin width but with <code>+ ylim(0, 1000)</code> added. Write one sentence for each of the two changes saying what it does to the impression the plot gives, and one sentence saying which of the three you would put in a report and why.</p>
-<p><strong>Exercise 4</strong> (ILOs 1, 3, 5). Compare total cholesterol (<code>chol</code>) by gender. Produce a grouped summary and a boxplot, and write one sentence comparing the two groups. Then use <code>levels()</code> to state which gender is currently the reference level, and <code>relevel()</code> to make the other one the reference instead, assigning the result to a new object rather than overwriting <code>nhanes</code>.</p>
-<p><strong>Exercise 5</strong> (ILOs 2, 5, 6). Produce a Table 1 of <code>age</code>, <code>gender</code>, <code>eth</code>, <code>smoking</code>, and <code>chol</code>, stratified by depression classification (<code>phq.c</code>).</p>
-<p><strong>Exercise 6</strong> (ILOs 2, 3). Build a cross-tabulation of smoking status (<code>smoking</code>) against education (<code>edu</code>) with <code>table()</code>. Produce both the row percentages and the column percentages with <code>prop.table()</code>.</p>
+<p><strong>Exercise 1</strong> (ILO 2). Using the four <code>dplyr</code> verbs, and a pipe, answer this: among participants aged 65 or over who have never smoked, what are the ten highest cholesterol values? Keep only <code>age</code>, <code>gender</code>, and <code>chol</code> in your answer. Then add a column called <code>chol_high</code> that is <code>TRUE</code> when <code>chol</code> is above 6 mmol/L and <code>FALSE</code> otherwise.</p>
+<p><strong>Exercise 2</strong> (ILOs 2, 4). Describe the distribution of sedentary time (<code>sed</code>). Report the mean and SD or the median and IQR, whichever the shape justifies, and support your choice with a histogram and a boxplot. Then produce a scatterplot of <code>chol</code> against <code>sed</code>, label both axes with their units, and write one sentence on whether the plot suggests any relationship between the two.</p>
+<p><strong>Exercise 3</strong> (ILOs 4, 5). Build a histogram of total cholesterol (<code>chol</code>) with a <code>binwidth</code> of 0.5, labelled properly with <code>labs()</code>. Then produce two more versions of it: one with a <code>binwidth</code> of 0.05, and one with the original bin width but with <code>+ ylim(0, 1000)</code> added. Write one sentence for each of the two changes saying what it does to the impression the plot gives, and one sentence saying which of the three you would put in a report and why.</p>
+<p><strong>Exercise 4</strong> (ILOs 2, 4, 6). Compare total cholesterol (<code>chol</code>) by gender. Produce a grouped summary and a boxplot, and write one sentence comparing the two groups. Then use <code>levels()</code> to state which gender is currently the reference level, and <code>relevel()</code> to make the other one the reference instead, assigning the result to a new object rather than overwriting <code>nhanes</code>.</p>
+<p><strong>Exercise 5</strong> (ILOs 3, 6, 7). Produce a Table 1 of <code>age</code>, <code>gender</code>, <code>eth</code>, <code>smoking</code>, and <code>chol</code>, stratified by depression classification (<code>phq.c</code>).</p>
+<p><strong>Exercise 6</strong> (ILOs 3, 4). Build a cross-tabulation of smoking status (<code>smoking</code>) against education (<code>edu</code>) with <code>table()</code>. Produce both the row percentages and the column percentages with <code>prop.table()</code>.</p>
 <p>Then answer this question using whichever of the two is appropriate: <em>among people who never smoked, how is education distributed?</em> State which of your two tables answers it, and say in one sentence why the other one doesn’t. Finally, produce a bar chart of <code>edu</code>, labelled properly.</p>
 </section>
 <section id="writing-exercise" class="level2" data-number="3.13">
 <h2 data-number="3.13" class="anchored" data-anchor-id="writing-exercise"><span class="header-section-number">3.13</span> Writing exercise</h2>
-<p>Every chapter in this book ends with one of these, and it’s worth knowing why before you write the first one. The course’s assessment is a structured paper on a dataset you haven’t seen, where every question asks for an analysis <em>and</em> an interpretation. So these exercises here can be treated as formative assessments.</p>
+<p>Every chapter in this book ends with one of these. The course’s assessment is a structured paper on a dataset you haven’t seen, where every question asks for an analysis <em>and</em> an interpretation, so these exercises can be treated as formative assessments.</p>
 <p>Using the Table 1 from Exercise 5, write a short paragraph of a maximum of 150 words. Describe how participant characteristics differ, or don’t, across the three depression classification groups. State which characteristics look similar across groups and which look different, and avoid overstating a difference the table doesn’t support.</p>
 <p>Start by stating how many participants the table is actually based on, and how many were excluded because they had no depression classification recorded. The number is in the message printed above the table.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -3179,23 +3179,23 @@ range (`geom_point()`).</code></pre>
 <pre><code>4499 missing rows in the "phq.c" column have been removed.</code></pre>
 </div>
 <div class="cell-output-display">
-<div id="gfwnanvtoy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gfwnanvtoy table {
+<div id="ycxetyksnk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ycxetyksnk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gfwnanvtoy thead, #gfwnanvtoy tbody, #gfwnanvtoy tfoot, #gfwnanvtoy tr, #gfwnanvtoy td, #gfwnanvtoy th {
+#ycxetyksnk thead, #ycxetyksnk tbody, #ycxetyksnk tfoot, #ycxetyksnk tr, #ycxetyksnk td, #ycxetyksnk th {
   border-style: none;
 }
 
-#gfwnanvtoy p {
+#ycxetyksnk p {
   margin: 0;
   padding: 0;
 }
 
-#gfwnanvtoy .gt_table {
+#ycxetyksnk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3221,12 +3221,12 @@ range (`geom_point()`).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_caption {
+#ycxetyksnk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gfwnanvtoy .gt_title {
+#ycxetyksnk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3238,7 +3238,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-width: 0;
 }
 
-#gfwnanvtoy .gt_subtitle {
+#ycxetyksnk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3250,7 +3250,7 @@ range (`geom_point()`).</code></pre>
   border-top-width: 0;
 }
 
-#gfwnanvtoy .gt_heading {
+#ycxetyksnk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3262,13 +3262,13 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_bottom_border {
+#ycxetyksnk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_col_headings {
+#ycxetyksnk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3283,7 +3283,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_col_heading {
+#ycxetyksnk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3303,7 +3303,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#gfwnanvtoy .gt_column_spanner_outer {
+#ycxetyksnk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3315,15 +3315,15 @@ range (`geom_point()`).</code></pre>
   padding-right: 4px;
 }
 
-#gfwnanvtoy .gt_column_spanner_outer:first-child {
+#ycxetyksnk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gfwnanvtoy .gt_column_spanner_outer:last-child {
+#ycxetyksnk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gfwnanvtoy .gt_column_spanner {
+#ycxetyksnk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3335,11 +3335,11 @@ range (`geom_point()`).</code></pre>
   width: 100%;
 }
 
-#gfwnanvtoy .gt_spanner_row {
+#ycxetyksnk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gfwnanvtoy .gt_group_heading {
+#ycxetyksnk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3365,7 +3365,7 @@ range (`geom_point()`).</code></pre>
   text-align: left;
 }
 
-#gfwnanvtoy .gt_empty_group_heading {
+#ycxetyksnk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3380,15 +3380,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: middle;
 }
 
-#gfwnanvtoy .gt_from_md > :first-child {
+#ycxetyksnk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gfwnanvtoy .gt_from_md > :last-child {
+#ycxetyksnk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gfwnanvtoy .gt_row {
+#ycxetyksnk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3407,7 +3407,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#gfwnanvtoy .gt_stub {
+#ycxetyksnk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3420,7 +3420,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#gfwnanvtoy .gt_stub_row_group {
+#ycxetyksnk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3434,15 +3434,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: top;
 }
 
-#gfwnanvtoy .gt_row_group_first td {
+#ycxetyksnk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gfwnanvtoy .gt_row_group_first th {
+#ycxetyksnk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gfwnanvtoy .gt_summary_row {
+#ycxetyksnk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3452,16 +3452,16 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#gfwnanvtoy .gt_first_summary_row {
+#ycxetyksnk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_first_summary_row.thick {
+#ycxetyksnk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gfwnanvtoy .gt_last_summary_row {
+#ycxetyksnk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3471,7 +3471,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_grand_summary_row {
+#ycxetyksnk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3481,7 +3481,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#gfwnanvtoy .gt_first_grand_summary_row {
+#ycxetyksnk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3491,7 +3491,7 @@ range (`geom_point()`).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_last_grand_summary_row_top {
+#ycxetyksnk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3501,11 +3501,11 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_striped {
+#ycxetyksnk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gfwnanvtoy .gt_table_body {
+#ycxetyksnk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3514,7 +3514,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_footnotes {
+#ycxetyksnk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3528,7 +3528,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_footnote {
+#ycxetyksnk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3537,7 +3537,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#gfwnanvtoy .gt_sourcenotes {
+#ycxetyksnk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3551,7 +3551,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gfwnanvtoy .gt_sourcenote {
+#ycxetyksnk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3559,72 +3559,72 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#gfwnanvtoy .gt_left {
+#ycxetyksnk .gt_left {
   text-align: left;
 }
 
-#gfwnanvtoy .gt_center {
+#ycxetyksnk .gt_center {
   text-align: center;
 }
 
-#gfwnanvtoy .gt_right {
+#ycxetyksnk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gfwnanvtoy .gt_font_normal {
+#ycxetyksnk .gt_font_normal {
   font-weight: normal;
 }
 
-#gfwnanvtoy .gt_font_bold {
+#ycxetyksnk .gt_font_bold {
   font-weight: bold;
 }
 
-#gfwnanvtoy .gt_font_italic {
+#ycxetyksnk .gt_font_italic {
   font-style: italic;
 }
 
-#gfwnanvtoy .gt_super {
+#ycxetyksnk .gt_super {
   font-size: 65%;
 }
 
-#gfwnanvtoy .gt_footnote_marks {
+#ycxetyksnk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gfwnanvtoy .gt_asterisk {
+#ycxetyksnk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gfwnanvtoy .gt_indent_1 {
+#ycxetyksnk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gfwnanvtoy .gt_indent_2 {
+#ycxetyksnk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gfwnanvtoy .gt_indent_3 {
+#ycxetyksnk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gfwnanvtoy .gt_indent_4 {
+#ycxetyksnk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gfwnanvtoy .gt_indent_5 {
+#ycxetyksnk .gt_indent_5 {
   text-indent: 25px;
 }
 
-#gfwnanvtoy .katex-display {
+#ycxetyksnk .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#gfwnanvtoy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ycxetyksnk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
