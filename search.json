@@ -2,7 +2,7 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "",
     "text": "Introduction",
     "crumbs": [
@@ -12,7 +12,7 @@
   {
     "objectID": "index.html#what-this-book-is",
     "href": "index.html#what-this-book-is",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "What this book is",
     "text": "What this book is\nThis is a companion ebook for the statistical labs of the course MED5652 Introduction to Epidemiology and Statistics for UofG MPH students. The principles and theories of statistics are taught in the seminars. This ebook, and the lab sessions, are to apply that knowledge in epidemiology and statistics to real data using R.\nThe first two preparatory sessions help us ease into the analysis environment. R is primarily a programming language, so it has a steeper learning curve than software like SPSS: we communicate with the computer using text commands instead of a mouse. It pays that curve back, though. R is versatile enough to find a software implementation for almost any statistical method we might need, and it’s a skill employers actively look for. This ebook is set up for complete beginners regardless, with no prior data analysis or programming experience expected. From Chapter 3 on, every chapter picks up from the theories taught in the seminars, but it doesn’t replace the seminar’s content. Think of the seminar as where an idea is introduced, and the lab as where we actually do it, in R, on real data.",
     "crumbs": [
@@ -22,7 +22,7 @@
   {
     "objectID": "index.html#where-this-book-sits-against-the-modules-outcomes",
     "href": "index.html#where-this-book-sits-against-the-modules-outcomes",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "Where this book sits against the module’s outcomes",
     "text": "Where this book sits against the module’s outcomes\nMED5652 as a whole has four intended learning outcomes. By the end of the course, you will be able to:\n\nCritically assess the role of epidemiology and statistics within public health.\nCritically appraise key concepts in epidemiological design.\nCritically appraise and apply key statistical methods.\nCritically appraise and evaluate the concept of causality within public health literature.\n\nThis book is built primarily to get us through ILO 3. Along the way, it also touches on ILO 1, to understand how statistics can inform public health, and ILO 4, to explore how we can use statistics to explore causality.",
     "crumbs": [
@@ -32,7 +32,7 @@
   {
     "objectID": "index.html#structure-of-the-book",
     "href": "index.html#structure-of-the-book",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "Structure of the book",
     "text": "Structure of the book\nEach chapter of this book is one teaching week. The week number is in the chapter title, and the chapters run in week order. Week 6 is reading week and there is no teaching.\nTwo parts: two preparatory chapters worked through before seminars on statistics, then five weekly chapters, one per statistics week, each following that week’s seminar:\n\n\n\nChapter\nWeek\nWhat it covers\n\n\n\n\n1\n4\nR and R Studio\n\n\n2\n5\nData and data handling\n\n\n3\n7\nDescribing and visualising data\n\n\n4\n8\nEstimation, precision, and sample size\n\n\n5\n9\nHypothesis tests and measures of association\n\n\n6\n10\nCorrelation and simple linear regression\n\n\n7\n11\nMultiple linear and logistic regression\n\n\n\nAll weeks are interconnected, so please attend all classes. Missing one class would mean you lose the foundation of the next, with a knock-on effect on your overall learning. If you really can’t attend a class, please make sure you read and work through the relevant chapter in this ebook before the next class.\nAn appendix at the end of the book, the Glossary, collects every package, function, operator, and statistical term used across all seven chapters, grouped by package, with the chapter each one first appears in.",
     "crumbs": [
@@ -42,7 +42,7 @@
   {
     "objectID": "index.html#structure-of-a-chapter",
     "href": "index.html#structure-of-a-chapter",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "Structure of a chapter",
     "text": "Structure of a chapter\nEvery chapter in this book follows the same structure. It opens with a short problem statement framing why the chapter’s tools are needed, usually the gap the previous chapter left open, followed by the chapter’s intended learning outcomes and a setup chunk that reads in the data. After that comes the content itself, worked through with code and output, followed by a full worked example that puts several pieces together at once. Numbered exercises come next, each one tied to a specific ILO. Each of the five weekly chapters then ends with a writing exercise: a short results-section paragraph, rather than just a calculation. The statistics assessment is a structured question and answer, combining analysis with written interpretation, and the writing exercises are deliberate practices for that. The preparatory chapters (Chapters 1 and 2) work a little differently: each includes multiple-choice questions instead, aimed at the places R’s syntax most often trips people up, and Chapter 2 has a small writing exercise as well. Solutions to the numbered exercises, the self-checks, and the writing exercise are in a collapsed section at the very end of each chapter. The five weekly chapters also carry the “Try it yourself” box. It’s a prompt to change one thing in code we’ve just run and see what happens. Those don’t have written answers.",
     "crumbs": [
@@ -52,7 +52,7 @@
   {
     "objectID": "index.html#the-two-datasets",
     "href": "index.html#the-two-datasets",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "The two datasets",
     "text": "The two datasets\nAlmost everything in this book runs on one of two datasets. nhanes_mph is a curated extract of real health survey data in the US, linked to mortality records. Chapter 2 reads it in for the first time and gets us comfortable with it as data; Chapter 3 introduces it properly and is where it becomes the dataset the rest of the book runs on. strep_tb, from the medicaldata package, is the 1948 Medical Research Council (MRC) streptomycin trial, a historic randomised controlled trial, used from Chapter 4 onward wherever a binary outcome and a genuine trial design are useful. Both get introduced properly, in context, the first time that matters.",
     "crumbs": [
@@ -62,7 +62,7 @@
   {
     "objectID": "index.html#boundary-of-the-ebookies-course",
     "href": "index.html#boundary-of-the-ebookies-course",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "Boundary of the ebook/IES course",
     "text": "Boundary of the ebook/IES course\nThis book gets you to a working, applied foundation in statistics for an MPH graduate. It is not a complete statistics education. Several real, common techniques will not be covered. Our data carry a death indicator and a follow-up time, for instance, and Chapter 7 uses them to build a fixed-window mortality outcome. However, such data would be better analysed using survival analysis techniques, which will only be covered in the Advanced Statistics course. Testing for mediation, moderation/interaction, and choosing between competing regression models are all left out too. Treat every one of those signposts as a real boundary, not a gap in this book you’re expected to fill in yourself. Chapter 7 closes with a (non-exhaustive) list of statistics techniques that are common in public health but not covered here, so you know what is out there.",
     "crumbs": [
@@ -72,7 +72,7 @@
   {
     "objectID": "index.html#how-to-use-the-ebook",
     "href": "index.html#how-to-use-the-ebook",
-    "title": "IES Statistical Practicals",
+    "title": "IES Statistical Labs",
     "section": "How to use the ebook",
     "text": "How to use the ebook\nThe best thing to do is to work through the corresponding chapter before you come to the lab. Very likely you will encounter some errors you can’t fix, or exercises you can’t complete. The lab will be particularly useful to help you with these. The lab will also include demonstration of some key commands but will not be able to cover all the details in this ebook.\nWhen you work on the ebook, attempt the exercises yourself before you open the solutions. Work along in a script of your own as you go, as taught in Chapter 2. Keep this book open for the rest of the programme. It stays the reference you come back to whenever you need a reminder of how something works. If a function’s name is only half-remembered, the Glossary at the end is the place to look it up.",
     "crumbs": [
@@ -414,7 +414,7 @@
     "href": "chapters/07-descriptive.html#variable-types",
     "title": "3  Describing and visualising data (Week 7)",
     "section": "3.3 Variable types",
-    "text": "3.3 Variable types\nThe seminar classified every variable into two broad kinds, categorical and numeric.\nA categorical variable puts each participant into one of a fixed set of groups. gender and eth are nominal: the categories have no natural order. phq.c, depression classification, is ordinal: normal, mild symptoms, and possible depression run in a genuine order, even though the gap between them isn’t a measured distance. blm.cvd, baseline cardiovascular disease, is binary: a two-category special case of categorical, present or absent, even though in the data it takes the value 0 or 1.\nA numeric variable is a number, and numbers come in two shapes that matter differently for analysis. phq, the raw depression symptom score behind phq.c, is a count (sometimes called discrete): whole numbers only, 0 through 6. chol, age, and sed are continuous: any value in a range is possible, 4.7 mmol/L as easily as 4.71.\nThe type decides the summary and the plot. A mean and an SD, or a median and an IQR, describe a continuous variable. A categorical variable, however few its categories, is summarised as a proportion or a frequency table instead: for a binary variable like blm.cvd, the proportion of 1s and the mean of its 0/1 values come out as exactly the same number, but we still call it a proportion, since what it summarises is a category, not a measurement. This book says continuous from here on when that’s specifically what’s meant, not the vaguer numeric, since numeric alone doesn’t say whether a variable is a count or continuous.\nA binary variable and a nominal variable with two categories describe the same kind of fact, present or absent. That’s exactly why blm.cvd gets turned into a factor in the setup below, alongside the five columns that were categorical from the start. Recoding it doesn’t change what it is; it just replaces 0/1 with labels a reader can understand without the dictionary open, which is also why a result in this book should never show blm.cvd = 1.",
+    "text": "3.3 Variable types\nEvery variable falls into one of two broad kinds, categorical and numeric.\nA categorical variable puts each participant into one of a fixed set of groups. gender and eth are nominal: the categories have no natural order. phq.c, depression classification, is ordinal: normal, mild symptoms, and possible depression run in a genuine order, even though the gap between them isn’t a measured distance. blm.cvd, baseline cardiovascular disease, is binary: a two-category special case of categorical, present or absent, even though in the data it takes the value 0 or 1.\nA numeric variable is a number, and numbers come in two shapes that matter differently for analysis. phq, the raw depression symptom score behind phq.c, is a count (sometimes called discrete): whole numbers only, 0 through 6. chol, age, and sed are continuous: any value in a range is possible, 4.7 mmol/L as easily as 4.71.\nThe variable type decides the summary and the plot. A mean and an SD, or a median and an IQR, describe a continuous variable. A categorical variable, however few its categories, is summarised as a proportion or a frequency table instead: for a binary variable like blm.cvd, the proportion of 1s and the mean of its 0/1 values come out as exactly the same number, but we still call it a proportion, since what it summarises is a category, not a measurement. This book says continuous from here on when that’s specifically what’s meant, not the vaguer numeric, since numeric alone doesn’t say whether a variable is a count or continuous.",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Describing and visualising data (Week 7)</span>"
     ]
