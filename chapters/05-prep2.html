@@ -275,8 +275,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Chapter 1 stressed the importance of having reproducible work in statistics and public health. It also taught R’s basic syntax on a handful of patients we typed in ourselves: a small, clean dataset. Real data almost never arrives that way. It can be a spreadsheet that’s been edited by hand for years, messy and full of errors. How do we turn a real, messy file into something R can work with reliably, and prove that our process actually works, not just this once but every time we run it?</p>
-<p>Answering that runs in three steps. Firstly we take a real, messy clinic spreadsheet apart: the same clinic setting as Chapter 1’s hand-typed log, but a version that has lived in the real world and been edited only by hand in Excel. We work out what makes a dataset usable, restructure it, and save it as a CSV. Then we step up to real data, learning how to tell R where a file lives, what the common import failures look like, and how to check what actually came in rather than what we expected. Last we collect the lines that worked into an R script, so the whole data pipeline, the process that manages and transforms our data, is written down and can be run again from nothing. Week 6 is reading week; Chapter 3 picks up from here.</p>
+<p>A clinic spreadsheet kept by hand for years has a title sitting in the first row, a blank row under the headers, dates written three different ways, and a column where someone typed “n/a” one month and “-” the next. Nobody planned it that way. It happened one edit at a time, and files like it are what real analysis actually starts from. The dataset we typed out in Chapter 1 was clean because we invented it. This chapter deals with the other kind.</p>
+<p>Making a file like that usable is most of what data analysis actually is, and none of it counts unless it’s written down: a cleaned dataset nobody can reproduce is one person’s private result. So the chapter runs from the messy spreadsheet all the way through to a saved script that rebuilds the lot from nothing. In between sits the step that catches almost everyone out the first time, which is telling R where a file lives on our own computer, getting it in, and checking what actually arrived instead of assuming. Week 6 is reading week; Chapter 3 picks up from here.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">2.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -340,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p><code>library(here)</code> prints one line when it loads, which this book hides because it’s too wide to fit the page. In your own console it says <code>here() starts at ...</code> followed by the full path to your project folder. That’s worth reading the first time you see it, because it’s <code>here()</code> telling you exactly which folder it will build every path from. If that path isn’t the project folder you built in Chapter 1, nothing below will find its files, and this is where you’d find that out.</p>
+<p><code>library(here)</code> prints one line when it loads, which this book hides because it’s too wide to fit the page. In your own console it says <code>here() starts at ...</code> followed by the full path to your project folder. Read it the first time you see it, because it’s <code>here()</code> telling you exactly which folder it will build every path from. If that path isn’t the project folder you built in Chapter 1, nothing below will find its files, and this is where you’d find that out.</p>
 </section>
 <section id="four-things-that-go-wrong" class="level3" data-number="2.5.2">
 <h3 data-number="2.5.2" class="anchored" data-anchor-id="four-things-that-go-wrong"><span class="header-section-number">2.5.2</span> Four things that go wrong</h3>
@@ -527,7 +527,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 3 chol             Total cholesterol (mmol/L)             </code></pre>
 </div>
 </div>
-<p>That’s the habit worth building now: when a column’s meaning isn’t obvious from its name, the answer lives in this file, not in a guess. Chapter 3 uses this same file to build proper factors out of six of these columns; for today, just knowing how to look one up is enough.</p>
+<p>That’s the habit to build now: when a column’s meaning isn’t obvious from its name, the answer lives in this file, not in a guess. Chapter 3 uses this same file to build proper factors out of six of these columns; for today, just knowing how to look one up is enough.</p>
 </section>
 </section>
 <section id="a-first-analysis-and-your-first-script" class="level2" data-number="2.6">
@@ -582,7 +582,7 @@ dbl (24): SEQN, age, gender, eth, edu, alc_wk, vpa_w, ...
 </section>
 <section id="that-warning-above-the-plot" class="level3" data-number="2.6.4">
 <h3 data-number="2.6.4" class="anchored" data-anchor-id="that-warning-above-the-plot"><span class="header-section-number">2.6.4</span> That warning above the plot</h3>
-<p>The plot came with a line starting <code>Warning:</code>, saying it removed 2,589 rows. Read it, because we’ll see this one a lot, and then don’t worry about it.</p>
+<p>The plot came with a line starting <code>Warning:</code>, saying it removed 2,589 rows. Read it, because we’ll see this one a lot: here’s what it actually says, and when it matters.</p>
 <p>Firstly, a warning is not an error. An error means R gave up and produced nothing. A warning means R did the job and is telling us something about how. The plot is there and it’s fine.</p>
 <p>Secondly, look at the number. It’s 2,589, exactly the count of participants with no cholesterol value that we found a moment ago. A histogram puts each participant somewhere along the x-axis, and a missing value has nowhere to go, so <code>ggplot2</code> left those participants out and told us how many it dropped.</p>
 <p><strong>Why we leave these warnings switched on.</strong> R can be told to hide them, and plenty of people do, because they look untidy. This book doesn’t, and neither should we for now. That warning is a free count of how much of our data a plot is actually based on. Hide it, and a plot built on half our dataset looks exactly like a plot built on all of it. It’s the same reason we write <code>na.rm = TRUE</code> deliberately and say what it dropped, rather than typing it out of habit until it stops registering.</p>

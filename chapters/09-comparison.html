@@ -259,8 +259,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Chapter 4 taught us to attach a confidence interval to an estimate, or to the difference between two groups, so we could say how precise our estimates were. But we often want to know whether a difference is “real” or is just chance. The interval from Chapter 4 answers that indirectly. A hypothesis test answers it head on, and is often reported alongside the interval. The hypothesis test is what this chapter builds. In addition to the descriptive statistics for continuous variables, we also need to quantify differences in binary variables by groups. The risk ratio and the odds ratio from epidemiology answer that, and here we learn to attach a confidence interval and a p-value to them.</p>
-<p>So we start with the logic of a test: a null and an alternative hypothesis, a test statistic turned into a p-value, and what a p-value actually is. Then we run the tests themselves, choosing between them from the structure of the data: a one-sample t-test against a fixed reference value, a paired t-test for two related measurements on the same person, an independent-samples t-test for two separate groups, a non-parametric alternative (<code>wilcox.test()</code>) when a distribution won’t support a t-test, and a chi-squared test for a two-way table of counts. Along the way it becomes clear that a confidence interval and a hypothesis test carry the same information, which is why the reporting standard from here on is an effect size, a 95% confidence interval, and a p-value, together. We finish on risk ratios and odds ratios, and practise writing up each result in an appropriate academic style.</p>
+<p>A confidence interval says how precise an estimate is. It doesn’t say whether the effect behind it is distinguishable from none at all: two groups’ cholesterol means could sit half a millimole apart with intervals that overlap, and whether that gap is a real difference or ordinary sampling noise is exactly the question Chapter 4 leaves open. A hypothesis test closes it, and gets reported alongside the interval rather than in place of it. Binary outcomes raise a version of the same question the descriptive statistics from Chapter 3 can’t answer on their own: is a health outcome more common in one group than another, and by how much? The risk ratio and the odds ratio from epidemiology measure that, and here we attach a confidence interval and a p-value to each.</p>
+<p>Every test in this chapter runs on the same logic underneath: a null hypothesis, an alternative, a test statistic, and a p-value stating how surprising the observed data would be if the null were actually true. Which test applies depends on the shape of the data in front of us, one measurement per person or two, one group or several, continuous or count, and telling those apart correctly matters as much as running the test itself. Reported together, an effect size, its 95% confidence interval, and a p-value make up the standard this book writes results in from here on.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">5.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -539,7 +539,7 @@ X-squared = 14.176, df = 1, p-value = 0.0001665</code></pre>
 </section>
 <section id="fishers-exact-test" class="level2" data-number="5.9">
 <h2 data-number="5.9" class="anchored" data-anchor-id="fishers-exact-test"><span class="header-section-number">5.9</span> Fisher’s exact test</h2>
-<p>This is the test to reach for when a chi-squared test’s expected-count assumption fails, which in public health work usually means a small trial or a rare outcome, both common enough to be worth knowing the fix for in advance. It tests the same null and alternative hypothesis as the chi-squared test above, independence versus dependence between arm and improvement, just by an exact calculation instead of an approximation. Let’s try <code>fisher.test()</code> on this table too, even though nothing here required it. The call looks just like <code>chisq.test()</code>:</p>
+<p>This is the test to reach for when a chi-squared test’s expected-count assumption fails, which in public health work usually means a small trial or a rare outcome, both common enough that knowing the fix in advance pays off. It tests the same null and alternative hypothesis as the chi-squared test above, independence versus dependence between arm and improvement, just by an exact calculation instead of an approximation. Let’s try <code>fisher.test()</code> on this table too, even though nothing here required it. The call looks just like <code>chisq.test()</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(tab_arm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -566,7 +566,7 @@ odds ratio
 <p><strong>Null hypothesis.</strong> In the population, the risk ratio is 1, and the odds ratio is 1: no association between arm and improvement.</p>
 <p><strong>Alternative hypothesis.</strong> The risk ratio, and the odds ratio, differ from 1.</p>
 <p>Note the null value sits at 1 for a risk ratio or an odds ratio, not 0. A ratio of 1 means the two groups’ risk, or odds, are identical; a difference in means or a slope has its null at 0 instead, because there the null value means no gap rather than no ratio.</p>
-<p>They expect the table a particular way round. That’s worth knowing before building one, because getting it wrong produces a perfectly ordinary-looking answer, not an error. The <strong>exposure goes in the rows</strong>, with the reference group first. The <strong>outcome goes in the columns</strong>, and the second column is taken as the event: the thing whose risk we’re comparing. Our table has <code>arm</code> in the rows and <code>improved</code> in the columns. <code>improved</code> holds <code>TRUE</code>/<code>FALSE</code> values, and <code>table()</code> orders these <code>FALSE</code> then <code>TRUE</code>, so improvement lands in the second column exactly as needed. Print the table and look at it before passing it on. If the reference row or the event column is the wrong one, these functions still return a risk ratio, just an upside-down one.</p>
+<p>They expect the table a particular way round, and getting it wrong produces a perfectly ordinary-looking answer, not an error, so check the layout before building one. The <strong>exposure goes in the rows</strong>, with the reference group first. The <strong>outcome goes in the columns</strong>, and the second column is taken as the event: the thing whose risk we’re comparing. Our table has <code>arm</code> in the rows and <code>improved</code> in the columns. <code>improved</code> holds <code>TRUE</code>/<code>FALSE</code> values, and <code>table()</code> orders these <code>FALSE</code> then <code>TRUE</code>, so improvement lands in the second column exactly as needed. Print the table and look at it before passing it on. If the reference row or the event column is the wrong one, these functions still return a risk ratio, just an upside-down one.</p>
 <p><code>levels()</code>, from base R, lists a factor’s categories in their current order, which is what we need to check before comparing rows:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(strep_tb<span class="sc">$</span>arm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -669,23 +669,23 @@ Table&nbsp;5.1
 </figcaption>
 <div aria-describedby="tbl-summary-addp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="yqyqhmvbem" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#yqyqhmvbem table {
+<div id="uwwvmtsrkl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#uwwvmtsrkl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#yqyqhmvbem thead, #yqyqhmvbem tbody, #yqyqhmvbem tfoot, #yqyqhmvbem tr, #yqyqhmvbem td, #yqyqhmvbem th {
+#uwwvmtsrkl thead, #uwwvmtsrkl tbody, #uwwvmtsrkl tfoot, #uwwvmtsrkl tr, #uwwvmtsrkl td, #uwwvmtsrkl th {
   border-style: none;
 }
 
-#yqyqhmvbem p {
+#uwwvmtsrkl p {
   margin: 0;
   padding: 0;
 }
 
-#yqyqhmvbem .gt_table {
+#uwwvmtsrkl .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -711,12 +711,12 @@ Table&nbsp;5.1
   border-left-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_caption {
+#uwwvmtsrkl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#yqyqhmvbem .gt_title {
+#uwwvmtsrkl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -728,7 +728,7 @@ Table&nbsp;5.1
   border-bottom-width: 0;
 }
 
-#yqyqhmvbem .gt_subtitle {
+#uwwvmtsrkl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -740,7 +740,7 @@ Table&nbsp;5.1
   border-top-width: 0;
 }
 
-#yqyqhmvbem .gt_heading {
+#uwwvmtsrkl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -752,13 +752,13 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_bottom_border {
+#uwwvmtsrkl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_col_headings {
+#uwwvmtsrkl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -773,7 +773,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_col_heading {
+#uwwvmtsrkl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -793,7 +793,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#yqyqhmvbem .gt_column_spanner_outer {
+#uwwvmtsrkl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -805,15 +805,15 @@ Table&nbsp;5.1
   padding-right: 4px;
 }
 
-#yqyqhmvbem .gt_column_spanner_outer:first-child {
+#uwwvmtsrkl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#yqyqhmvbem .gt_column_spanner_outer:last-child {
+#uwwvmtsrkl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#yqyqhmvbem .gt_column_spanner {
+#uwwvmtsrkl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -825,11 +825,11 @@ Table&nbsp;5.1
   width: 100%;
 }
 
-#yqyqhmvbem .gt_spanner_row {
+#uwwvmtsrkl .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#yqyqhmvbem .gt_group_heading {
+#uwwvmtsrkl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -855,7 +855,7 @@ Table&nbsp;5.1
   text-align: left;
 }
 
-#yqyqhmvbem .gt_empty_group_heading {
+#uwwvmtsrkl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -870,15 +870,15 @@ Table&nbsp;5.1
   vertical-align: middle;
 }
 
-#yqyqhmvbem .gt_from_md > :first-child {
+#uwwvmtsrkl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#yqyqhmvbem .gt_from_md > :last-child {
+#uwwvmtsrkl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#yqyqhmvbem .gt_row {
+#uwwvmtsrkl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -897,7 +897,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#yqyqhmvbem .gt_stub {
+#uwwvmtsrkl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -910,7 +910,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#yqyqhmvbem .gt_stub_row_group {
+#uwwvmtsrkl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -924,15 +924,15 @@ Table&nbsp;5.1
   vertical-align: top;
 }
 
-#yqyqhmvbem .gt_row_group_first td {
+#uwwvmtsrkl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#yqyqhmvbem .gt_row_group_first th {
+#uwwvmtsrkl .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#yqyqhmvbem .gt_summary_row {
+#uwwvmtsrkl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -942,16 +942,16 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#yqyqhmvbem .gt_first_summary_row {
+#uwwvmtsrkl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_first_summary_row.thick {
+#uwwvmtsrkl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#yqyqhmvbem .gt_last_summary_row {
+#uwwvmtsrkl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -961,7 +961,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_grand_summary_row {
+#uwwvmtsrkl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -971,7 +971,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#yqyqhmvbem .gt_first_grand_summary_row {
+#uwwvmtsrkl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -981,7 +981,7 @@ Table&nbsp;5.1
   border-top-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_last_grand_summary_row_top {
+#uwwvmtsrkl .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -991,11 +991,11 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_striped {
+#uwwvmtsrkl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#yqyqhmvbem .gt_table_body {
+#uwwvmtsrkl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1004,7 +1004,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_footnotes {
+#uwwvmtsrkl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1018,7 +1018,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_footnote {
+#uwwvmtsrkl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1027,7 +1027,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#yqyqhmvbem .gt_sourcenotes {
+#uwwvmtsrkl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1041,7 +1041,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#yqyqhmvbem .gt_sourcenote {
+#uwwvmtsrkl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1049,72 +1049,72 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#yqyqhmvbem .gt_left {
+#uwwvmtsrkl .gt_left {
   text-align: left;
 }
 
-#yqyqhmvbem .gt_center {
+#uwwvmtsrkl .gt_center {
   text-align: center;
 }
 
-#yqyqhmvbem .gt_right {
+#uwwvmtsrkl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#yqyqhmvbem .gt_font_normal {
+#uwwvmtsrkl .gt_font_normal {
   font-weight: normal;
 }
 
-#yqyqhmvbem .gt_font_bold {
+#uwwvmtsrkl .gt_font_bold {
   font-weight: bold;
 }
 
-#yqyqhmvbem .gt_font_italic {
+#uwwvmtsrkl .gt_font_italic {
   font-style: italic;
 }
 
-#yqyqhmvbem .gt_super {
+#uwwvmtsrkl .gt_super {
   font-size: 65%;
 }
 
-#yqyqhmvbem .gt_footnote_marks {
+#uwwvmtsrkl .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#yqyqhmvbem .gt_asterisk {
+#uwwvmtsrkl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#yqyqhmvbem .gt_indent_1 {
+#uwwvmtsrkl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#yqyqhmvbem .gt_indent_2 {
+#uwwvmtsrkl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#yqyqhmvbem .gt_indent_3 {
+#uwwvmtsrkl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#yqyqhmvbem .gt_indent_4 {
+#uwwvmtsrkl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#yqyqhmvbem .gt_indent_5 {
+#uwwvmtsrkl .gt_indent_5 {
   text-indent: 25px;
 }
 
-#yqyqhmvbem .katex-display {
+#uwwvmtsrkl .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#yqyqhmvbem div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#uwwvmtsrkl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
