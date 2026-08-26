@@ -193,6 +193,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (Week 11)</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/12-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Summary</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -274,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setup" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">6.2</span> Setup</h2>
 <p>As in Chapters 3 to 5, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary.</p>
-<p>This chapter adds one new package, <code>broom</code>. If <code>broom</code> isn’t already on your machine, run <code>install.packages("broom")</code> once in the console.</p>
+<p>This chapter adds one new package, <code>broom</code>. If <code>broom</code> isn’t already on your machine, run <code>install.packages('broom')</code> once in the console.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
@@ -282,45 +288,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>dictionary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_dictionary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data'</span>, <span class="st">'mph_nhanes_20241107.csv'</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>dictionary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data'</span>, <span class="st">'mph_nhanes_20241107_dictionary.csv'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="fu">factor</span>(gender,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Male'</span>, <span class="st">'Female'</span>)),</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">eth =</span> <span class="fu">factor</span>(eth,</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>),</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Mexican American"</span>, <span class="st">"Other Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Others"</span>)),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Mexican American'</span>, <span class="st">'Other Hispanic'</span>, <span class="st">'White'</span>, <span class="st">'Black'</span>, <span class="st">'Others'</span>)),</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">edu =</span> <span class="fu">factor</span>(edu,</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Less than high school"</span>, <span class="st">"High school graduate"</span>, <span class="st">"Above high school"</span>)),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Less than high school'</span>, <span class="st">'High school graduate'</span>, <span class="st">'Above high school'</span>)),</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">smoking =</span> <span class="fu">factor</span>(smoking,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Previous"</span>, <span class="st">"Current"</span>)),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Never'</span>, <span class="st">'Previous'</span>, <span class="st">'Current'</span>)),</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">phq.c =</span> <span class="fu">factor</span>(phq.c,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"0 Normal"</span>, <span class="st">"1 Mild symptoms"</span>, <span class="st">"2 Possible depression"</span>),</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Normal"</span>, <span class="st">"Mild symptoms"</span>, <span class="st">"Possible depression"</span>),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'0 Normal'</span>, <span class="st">'1 Mild symptoms'</span>, <span class="st">'2 Possible depression'</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Normal'</span>, <span class="st">'Mild symptoms'</span>, <span class="st">'Possible depression'</span>),</span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">blm.cvd =</span> <span class="fu">factor</span>(blm.cvd,</span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>))</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>))</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This is the same recode we introduced in Chapter 3 and repeated in Chapters 4 and 5. See Chapter 3 for the reasoning behind each variable and each choice of <code>ordered = TRUE</code>. We repeat it here, unchanged, so this chapter stands on its own too.</p>
 </section>
 <section id="correlation-pearsons-r-and-spearmans-rho" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="correlation-pearsons-r-and-spearmans-rho"><span class="header-section-number">6.3</span> Correlation: Pearson’s r and Spearman’s rho</h2>
-<p>A correlation coefficient examines whether and to what extent two variables move together proportionally. The two variables are symmetric in a correlation: neither is assumed to be an “outcome”.</p>
+<p>A correlation coefficient examines whether and to what extent two variables move together proportionally. The two variables are symmetric in a correlation: neither is assumed to be an ‘outcome’.</p>
 <p><code>cor()</code>, from base R, calculates a correlation coefficient between two continuous variables. Its default method is Pearson’s r, which measures the strength of a linear, or straight-line, association. We’ll use the pairing this chapter’s first model uses, <code>age</code> and <code>chol</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(nhanes<span class="sc">$</span>age, nhanes<span class="sc">$</span>chol, <span class="at">use =</span> <span class="st">"complete.obs"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(nhanes<span class="sc">$</span>age, nhanes<span class="sc">$</span>chol, <span class="at">use =</span> <span class="st">'complete.obs'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.09398053</code></pre>
 </div>
 </div>
-<p><code>use = "complete.obs"</code> tells <code>cor()</code> to drop any participant missing either variable first; without it, a single missing value makes the whole calculation return <code>NA</code>. <code>cor.test()</code> adds a confidence interval and a p-value, and drops incomplete pairs automatically.</p>
+<p><code>use = 'complete.obs'</code> tells <code>cor()</code> to drop any participant missing either variable first; without it, a single missing value makes the whole calculation return <code>NA</code>. <code>cor.test()</code> adds a confidence interval and a p-value, and drops incomplete pairs automatically.</p>
 <p><strong>Null hypothesis.</strong> In the population, the true correlation between age and cholesterol is zero.</p>
 <p><strong>Alternative hypothesis.</strong> The true correlation is not zero.</p>
 <div class="cell">
@@ -340,12 +346,12 @@ sample estimates:
 </div>
 </div>
 <p>Pearson’s r here is about 0.094 (95% CI 0.084 to 0.104, p &lt; 0.001): a weak but non-zero positive correlation between age and cholesterol.</p>
-<p>Pearson’s r assumes both variables sit on a scale where equal units of increase or decrease mean the same thing throughout, i.e.&nbsp;an interval or ratio scale. <code>phq.c</code> doesn’t fit with this assumption as “Possible depression” isn’t a fixed distance from “Mild symptoms” the way one extra year of age is from another, it’s an ordered category, not a measurement. Spearman’s rank correlation is the alternative, correlating ranks rather than raw values, so it only needs observations put in order, not a distance measured between them. <code>phq.c</code> is already an ordered factor, so <code>as.numeric()</code> from base R turns it into the numbers 1, 2, and 3 in the order the factor was built, the ranking Spearman’s correlation needs.</p>
+<p>Pearson’s r assumes both variables sit on a scale where equal units of increase or decrease mean the same thing throughout, i.e.&nbsp;an interval or ratio scale. <code>phq.c</code> doesn’t fit with this assumption as ‘Possible depression’ isn’t a fixed distance from ‘Mild symptoms’ the way one extra year of age is from another, it’s an ordered category, not a measurement. Spearman’s rank correlation is the alternative, correlating ranks rather than raw values, so it only needs observations put in order, not a distance measured between them. <code>phq.c</code> is already an ordered factor, so <code>as.numeric()</code> from base R turns it into the numbers 1, 2, and 3 in the order the factor was built, the ranking Spearman’s correlation needs.</p>
 <p><strong>Null hypothesis.</strong> In the population, the true rank correlation between age and depression symptom category is zero.</p>
 <p><strong>Alternative hypothesis.</strong> The true rank correlation is not zero.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>phq_numeric <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(nhanes<span class="sc">$</span>phq.c)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(nhanes<span class="sc">$</span>age, phq_numeric, <span class="at">method =</span> <span class="st">"spearman"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(nhanes<span class="sc">$</span>age, phq_numeric, <span class="at">method =</span> <span class="st">'spearman'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in cor.test.default(nhanes$age, phq_numeric, method = "spearman"):
 cannot compute exact p-value with ties</code></pre>
@@ -362,16 +368,16 @@ sample estimates:
 0.004619514 </code></pre>
 </div>
 </div>
-<p>Spearman’s rho here is about 0.005, p = 0.37: close enough to zero, and far from significant, so age and depression symptom category show no clear monotonic relationship. <code>cor.test()</code> doesn’t report a confidence interval for Spearman’s rho the way it did for Pearson’s r above; rho has no equivalent simple formula for one. The warning above, “cannot compute exact p-value with ties,” isn’t a problem: with tens of thousands of participants spread across only three <code>phq.c</code> categories, many necessarily share a rank, so R falls back on an approximate p-value, which is still valid.</p>
+<p>Spearman’s rho here is about 0.005, p = 0.37: close enough to zero, and far from significant, so age and depression symptom category show no clear monotonic relationship. <code>cor.test()</code> doesn’t report a confidence interval for Spearman’s rho the way it did for Pearson’s r above; rho has no equivalent simple formula for one. The warning above, ‘cannot compute exact p-value with ties,’ isn’t a problem: with tens of thousands of participants spread across only three <code>phq.c</code> categories, many necessarily share a rank, so R falls back on an approximate p-value, which is still valid.</p>
 </section>
 <section id="a-scatterplot-with-a-fitted-line-cholesterol-by-age" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="a-scatterplot-with-a-fitted-line-cholesterol-by-age"><span class="header-section-number">6.4</span> A scatterplot with a fitted line: cholesterol by age</h2>
-<p>Chapter 3 plotted total cholesterol (<code>chol</code>, in mmol/L) against age (in years) as a plain scatterplot, with no line through it. <code>geom_smooth()</code>, from <code>ggplot2</code>, adds one. With <code>method = "lm"</code>, it fits exactly the simple linear regression this chapter is about, and draws the result:</p>
+<p>Chapter 3 plotted total cholesterol (<code>chol</code>, in mmol/L) against age (in years) as a plain scatterplot, with no line through it. <code>geom_smooth()</code>, from <code>ggplot2</code>, adds one. With <code>method = 'lm'</code>, it fits exactly the simple linear regression this chapter is about, and draws the result:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(age), <span class="sc">!</span><span class="fu">is.na</span>(chol)), <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Age (years)"</span>, <span class="at">y =</span> <span class="st">"Total cholesterol (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">'lm'</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Age (years)'</span>, <span class="at">y =</span> <span class="st">'Total cholesterol (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
@@ -383,7 +389,7 @@ sample estimates:
 </div>
 </div>
 </div>
-<p>Above the plot, <code>ggplot2</code> printed <code>`geom_smooth()` using formula = 'y ~ x'</code>. That’s a message, not a warning: it’s just reporting which formula it fitted, since <code>geom_smooth()</code> picks one for us if we don’t say. Here it chose a straight line in <code>x</code>, exactly the simple linear regression we asked for with <code>method = "lm"</code>.</p>
+<p>Above the plot, <code>ggplot2</code> printed <code>`geom_smooth()` using formula = 'y ~ x'</code>. That’s a message, not a warning: it’s just reporting which formula it fitted, since <code>geom_smooth()</code> picks one for us if we don’t say. Here it chose a straight line in <code>x</code>, exactly the simple linear regression we asked for with <code>method = 'lm'</code>.</p>
 <p>The shaded band around the line is a 95% confidence interval for the line itself, the same idea as every other confidence interval in this course, just drawn as a band rather than printed as two numbers. The line slopes gently upward: cholesterol tends to be a little higher in older participants. The cloud of points around it is wide, though. Age doesn’t determine cholesterol on its own, and the next section puts a number on exactly how much of the variation in cholesterol age can explain.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -395,7 +401,7 @@ sample estimates:
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Re-run the plot above with <code>geom_smooth(method = "lm", se = FALSE)</code>. Then try <code>geom_smooth(method = "lm", level = 0.80)</code>. Describe what disappeared in the first change, then what changed in the second, one sentence each.</p>
+<p>Re-run the plot above with <code>geom_smooth(method = 'lm', se = FALSE)</code>. Then try <code>geom_smooth(method = 'lm', level = 0.80)</code>. Describe what disappeared in the first change, then what changed in the second, one sentence each.</p>
 </div>
 </div>
 </section>
@@ -496,7 +502,7 @@ F-statistic: 234.8 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 genderFemale 0.1469893 0.1901101</code></pre>
 </div>
 </div>
-<p>With a continuous predictor like <code>age</code>, the <code>(Intercept)</code> was an abstract number, cholesterol at age zero, nobody’s actual cholesterol. With a two-category predictor it’s concrete: <code>gender</code>’s first level is <code>"Male"</code>, so <code>(Intercept)</code>, 4.8859 mmol/L, is simply mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5’s <code>relevel()</code> work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.</p>
+<p>With a continuous predictor like <code>age</code>, the <code>(Intercept)</code> was an abstract number, cholesterol at age zero, nobody’s actual cholesterol. With a two-category predictor it’s concrete: <code>gender</code>’s first level is <code>'Male'</code>, so <code>(Intercept)</code>, 4.8859 mmol/L, is simply mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5’s <code>relevel()</code> work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.</p>
 <p>The slope, on <code>genderFemale</code>, is the difference between the two group means: 0.1685 mmol/L, women minus men, with its own standard error, t-value, and p-value, and a 95% confidence interval of 0.1470 to 0.1901 mmol/L. Chapter 5 reported the same comparison as 0.17 mmol/L higher in women (95% CI: 0.15 to 0.19 mmol/L), but only after reversing the signs on what <code>t.test()</code> printed, because <code>t.test()</code> reports Male minus Female by default. <code>lm()</code> reports the comparison the other way round, reference category first, so the sign comes out already the way we want to read it: the same underlying result, with no sign-flipping needed here.</p>
 <p>The two results agree this closely because they’re close to the same calculation, but not identically the same one. <code>t.test()</code>’s default doesn’t assume the two groups share one variance, as Chapter 5’s independent-samples section said explicitly; <code>lm()</code> does assume it, one shared residual variance for the whole model. Telling <code>t.test()</code> to make that same assumption, with <code>var.equal = TRUE</code>, closes the gap completely:</p>
 <div class="cell">
@@ -557,10 +563,10 @@ eduAbove high school    -0.03895027 0.01424346</code></pre>
 </div>
 </div>
 <p>Two rows this time, <code>eduHigh school graduate</code> and <code>eduAbove high school</code>, each a difference from whichever category is first in <code>levels(edu_chol_complete$edu)</code>. Neither is anywhere near significant here: on this evidence, education isn’t associated with cholesterol in this sample.</p>
-<p><code>levels()</code> confirms the reference is <code>"Less than high school"</code>. <code>relevel()</code>, already met in Chapter 3, moves a different category to the front. This time we write the releveled factor back into a data frame, rather than working on a standalone copy the way Chapter 3 did: <code>lm()</code> needs to find <code>edu</code> already releveled inside whatever <code>data =</code> points at, so it goes into a new object, <code>edu_relevelled</code>, leaving <code>edu_chol_complete</code> and the model fitted on it untouched:</p>
+<p><code>levels()</code> confirms the reference is <code>'Less than high school'</code>. <code>relevel()</code>, already met in Chapter 3, moves a different category to the front. This time we write the releveled factor back into a data frame, rather than working on a standalone copy the way Chapter 3 did: <code>lm()</code> needs to find <code>edu</code> already releveled inside whatever <code>data =</code> points at, so it goes into a new object, <code>edu_relevelled</code>, leaving <code>edu_chol_complete</code> and the model fitted on it untouched:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>edu_relevelled <span class="ot">&lt;-</span> edu_chol_complete <span class="sc">|&gt;</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu =</span> <span class="fu">relevel</span>(edu, <span class="at">ref =</span> <span class="st">"Above high school"</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu =</span> <span class="fu">relevel</span>(edu, <span class="at">ref =</span> <span class="st">'Above high school'</span>))</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>m_edu_relevel <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> edu, <span class="at">data =</span> edu_relevelled)</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_edu_relevel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -619,12 +625,12 @@ eduHigh school graduate  -0.03073571 0.02406383</code></pre>
 # ℹ 39,166 more rows</code></pre>
 </div>
 </div>
-<p>Plotting residuals against fitted values checks linearity and constant variance together. If the model is a good fit, the points should scatter evenly above and below zero, with no obvious curve and no obvious change in spread from left to right. <code>geom_hline()</code>, from <code>ggplot2</code>, draws a single horizontal line across the plot at whatever height <code>yintercept</code> names, and we put one at zero to make “above and below” easy to judge by eye:</p>
+<p>Plotting residuals against fitted values checks linearity and constant variance together. If the model is a good fit, the points should scatter evenly above and below zero, with no obvious curve and no obvious change in spread from left to right. <code>geom_hline()</code>, from <code>ggplot2</code>, draws a single horizontal line across the plot at whatever height <code>yintercept</code> names, and we put one at zero to make ‘above and below’ easy to judge by eye:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(age_aug, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Fitted value (mmol/L)"</span>, <span class="at">y =</span> <span class="st">"Residual (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Fitted value (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Residual (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -638,7 +644,7 @@ eduHigh school graduate  -0.03073571 0.02406383</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(age_aug, <span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Theoretical quantiles"</span>, <span class="at">y =</span> <span class="st">"Standardised residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Theoretical quantiles'</span>, <span class="at">y =</span> <span class="st">'Standardised residuals'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -653,14 +659,14 @@ eduHigh school graduate  -0.03073571 0.02406383</code></pre>
 <h2 data-number="6.9" class="anchored" data-anchor-id="prediction-and-extrapolation-from-the-model"><span class="header-section-number">6.9</span> Prediction and extrapolation from the model</h2>
 <p><code>predict()</code>, from base R, uses a fitted model to generate a predicted value for a new set of inputs. Those inputs need to arrive as a data frame, with a column named to match each predictor in the model. <code>data.frame()</code>, also from base R, builds one directly from the values we supply, instead of reading one in from a file:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m_age, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">150</span>)), <span class="at">interval =</span> <span class="st">"confidence"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m_age, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">150</span>)), <span class="at">interval =</span> <span class="st">'confidence'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
 1 4.959003 4.948142 4.969865
 2 5.543408 5.482643 5.604174</code></pre>
 </div>
 </div>
-<p><code>interval = "confidence"</code> adds a confidence interval around each prediction. This confidence interval describes the precision of the predicted <strong>mean</strong> value, not the precision for an <strong>individual</strong>. The precision around an individual prediction is called a <strong>prediction interval</strong>. It’s always wider than the confidence interval around the mean, since predicting one person’s value is less certain than predicting the average across many. A prediction interval can be requested by stating <code>interval = "prediction"</code> instead.</p>
+<p><code>interval = 'confidence'</code> adds a confidence interval around each prediction. This confidence interval describes the precision of the predicted <strong>mean</strong> value, not the precision for an <strong>individual</strong>. The precision around an individual prediction is called a <strong>prediction interval</strong>. It’s always wider than the confidence interval around the mean, since predicting one person’s value is less certain than predicting the average across many. A prediction interval can be requested by stating <code>interval = 'prediction'</code> instead.</p>
 <p>The first row, age 45, sits comfortably inside the range of ages actually observed in this sample (18 to 85), so this prediction is supported by data the model was fitted on. The second row, age 150, is not. Nobody in this dataset, or in any verified human population, is 150 years old. The model has no information about what happens at that age, and fitting a straight line through the data we do have says nothing reliable about what lies far outside it. The predicted value it returns looks like an ordinary number, which is exactly what makes extrapolation dangerous: a plausible-looking output doesn’t mean the input that produced it was reasonable. Always check a prediction’s input against the range the model was actually fitted on before trusting its output.</p>
 </section>
 <section id="worked-example-cholesterol-by-sedentary-time" class="level2" data-number="6.10">
@@ -669,8 +675,8 @@ eduHigh school graduate  -0.03073571 0.02406383</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sed), <span class="sc">!</span><span class="fu">is.na</span>(chol)), <span class="fu">aes</span>(<span class="at">x =</span> sed, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sedentary time (hours/day)"</span>, <span class="at">y =</span> <span class="st">"Total cholesterol (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">'lm'</span>) <span class="sc">+</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Sedentary time (hours/day)'</span>, <span class="at">y =</span> <span class="st">'Total cholesterol (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
@@ -722,7 +728,7 @@ sed         -0.002095651 9.269529e-05</code></pre>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sed_aug, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
 <span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Fitted value (mmol/L)"</span>, <span class="at">y =</span> <span class="st">"Residual (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Fitted value (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Residual (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -733,7 +739,7 @@ sed         -0.002095651 9.269529e-05</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sed_aug, <span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Theoretical quantiles"</span>, <span class="at">y =</span> <span class="st">"Standardised residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Theoretical quantiles'</span>, <span class="at">y =</span> <span class="st">'Standardised residuals'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -751,7 +757,7 @@ sed         -0.002095651 9.269529e-05</code></pre>
 <p><strong>Exercise 2</strong> (ILO 4). For the model fitted in Exercise 1, produce a residuals-vs-fitted plot and a QQ plot. Write one sentence describing what each plot shows, and one sentence commenting on anything the plots reveal about the shape of <code>vpa_r</code> itself.</p>
 <p><strong>Exercise 3</strong> (ILO 5). Using the model fitted in Exercise 1, predict total cholesterol at <code>vpa_r</code> = 1 hour/day and at <code>vpa_r</code> = 24 hours/day. Write one sentence stating which of the two predictions can be trusted, and one sentence explaining why the other cannot, referring to the range of <code>vpa_r</code> actually observed in the data.</p>
 <p><strong>Exercise 4</strong> (ILOs 2, 3). State the null and alternative hypotheses, then reproduce Chapter 5’s worked example, sedentary time (<code>sed</code>) by gender, with <code>lm()</code> instead of <code>t.test()</code>. Compare the confidence interval <code>lm()</code> gives you to the one Chapter 5 reported. Write one sentence on what you find, and a second sentence explaining it, using <code>var.equal = TRUE</code> to check your explanation.</p>
-<p><strong>Exercise 5</strong> (ILOs 2, 6). State the null and alternative hypotheses, then fit <code>chol ~ smoking</code>. Use <code>levels()</code> to check which category of <code>smoking</code> the model used as its reference, then refit with <code>relevel()</code> using <code>"Current"</code> as the reference instead. Report the first model’s coefficients in one sentence, then write a second sentence stating what changed between the two model fits and a third stating what stayed exactly the same, and why.</p>
+<p><strong>Exercise 5</strong> (ILOs 2, 6). State the null and alternative hypotheses, then fit <code>chol ~ smoking</code>. Use <code>levels()</code> to check which category of <code>smoking</code> the model used as its reference, then refit with <code>relevel()</code> using <code>'Current'</code> as the reference instead. Report the first model’s coefficients in one sentence, then write a second sentence stating what changed between the two model fits and a third stating what stayed exactly the same, and why.</p>
 </section>
 <section id="writing-exercise" class="level2" data-number="6.12">
 <h2 data-number="6.12" class="anchored" data-anchor-id="writing-exercise"><span class="header-section-number">6.12</span> Writing exercise</h2>
@@ -776,8 +782,8 @@ sed         -0.002095651 9.269529e-05</code></pre>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vpa_r_complete, <span class="fu">aes</span>(<span class="at">x =</span> vpa_r, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Vigorous activity outside work (hours/day)"</span>, <span class="at">y =</span> <span class="st">"Total cholesterol (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">'lm'</span>) <span class="sc">+</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Vigorous activity outside work (hours/day)'</span>, <span class="at">y =</span> <span class="st">'Total cholesterol (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
@@ -833,7 +839,7 @@ vpa_r       -0.2006789 -0.1389139</code></pre>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vpa_r_aug, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
 <span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
 <span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Fitted value (mmol/L)"</span>, <span class="at">y =</span> <span class="st">"Residual (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Fitted value (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Residual (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -844,7 +850,7 @@ vpa_r       -0.2006789 -0.1389139</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vpa_r_aug, <span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span></span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Theoretical quantiles"</span>, <span class="at">y =</span> <span class="st">"Standardised residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Theoretical quantiles'</span>, <span class="at">y =</span> <span class="st">'Standardised residuals'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -856,7 +862,7 @@ vpa_r       -0.2006789 -0.1389139</code></pre>
 <p>The residuals-vs-fitted plot checks linearity and constant variance; the QQ plot checks whether the residuals are approximately normally distributed. Most points in the residual plot fall into a small number of vertical strips rather than scattering freely. That’s because <code>vpa_r</code> itself only takes a small number of distinct values: most participants report exactly zero hours/day of vigorous activity outside work. Their fitted value and residual pattern is shared, not spread out. This is a feature of the predictor’s own distribution, not a sign that the model is wrongly specified.</p>
 <p><strong>Exercise 3</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m_vpa_r, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">vpa_r =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">24</span>)), <span class="at">interval =</span> <span class="st">"confidence"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m_vpa_r, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">vpa_r =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">24</span>)), <span class="at">interval =</span> <span class="st">'confidence'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        fit       lwr      upr
 1 4.8009945 4.7718047 4.830184
@@ -954,7 +960,7 @@ smokingPrevious -0.0051953902 0.04839717
 smokingCurrent  -0.0001129389 0.05570047</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>smoking_relevelled <span class="ot">&lt;-</span> smoking_chol_complete <span class="sc">|&gt;</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">smoking =</span> <span class="fu">relevel</span>(smoking, <span class="at">ref =</span> <span class="st">"Current"</span>))</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">smoking =</span> <span class="fu">relevel</span>(smoking, <span class="at">ref =</span> <span class="st">'Current'</span>))</span>
 <span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>m_smoking_relevel <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> smoking, <span class="at">data =</span> smoking_relevelled)</span>
 <span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_smoking_relevel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -986,7 +992,7 @@ smokingNever    -0.05570047 0.0001129389
 smokingPrevious -0.03904065 0.0266548955</code></pre>
 </div>
 </div>
-<p><code>levels()</code> on the original factor shows <code>"Never"</code> first, so that’s the reference the first model used: mean cholesterol is about 4.97 mmol/L in never-smokers, 0.022 mmol/L higher in previous smokers (95% CI -0.005 to 0.048, p = 0.114), and 0.028 mmol/L higher in current smokers (95% CI 0.000 to 0.056, p = 0.051), neither significant at the conventional 5% level. Releveled to <code>"Current"</code>, both rows change: the intercept becomes current smokers’ own mean, and the two remaining rows compare <code>"Never"</code> and <code>"Previous"</code> against <code>"Current"</code> instead. <code>Multiple R-squared</code> and <code>Residual standard error</code> are identical in both printouts, 0.0001279 and 1.091. Which category anchors the comparison changed; what the model actually fits, and predicts for any given participant, didn’t.</p>
+<p><code>levels()</code> on the original factor shows <code>'Never'</code> first, so that’s the reference the first model used: mean cholesterol is about 4.97 mmol/L in never-smokers, 0.022 mmol/L higher in previous smokers (95% CI -0.005 to 0.048, p = 0.114), and 0.028 mmol/L higher in current smokers (95% CI 0.000 to 0.056, p = 0.051), neither significant at the conventional 5% level. Releveled to <code>'Current'</code>, both rows change: the intercept becomes current smokers’ own mean, and the two remaining rows compare <code>'Never'</code> and <code>'Previous'</code> against <code>'Current'</code> instead. <code>Multiple R-squared</code> and <code>Residual standard error</code> are identical in both printouts, 0.0001279 and 1.091. Which category anchors the comparison changed; what the model actually fits, and predicts for any given participant, didn’t.</p>
 <p><strong>Writing exercise (sample answer)</strong></p>
 <p>Sedentary time was not significantly associated with total cholesterol in this sample (slope -0.0010 mmol/L per hour/day, 95% CI: -0.0021 to 0.0001 mmol/L, p = 0.073). The confidence interval includes zero, so these data are consistent with no true association. This model adjusts for nothing else, so it cannot say whether age, gender, or other characteristics are masking or accounting for this result.</p>
 </div>

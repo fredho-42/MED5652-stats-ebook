@@ -193,6 +193,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (Week 11)</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/12-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Summary</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -262,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Scrolling through a dataset of tens of thousands of participants tells us almost nothing. Twenty rows we can read; twenty thousand we can’t hold in our head at all. Chapter 2 got a dataset of exactly that size into R and confirmed every column had arrived, which isn’t the same as knowing what any of it looks like. Seeing that takes summary statistics and graphs, and building them is the work of this chapter.</p>
-<p>Which statistic is the right one depends entirely on the kind of variable in front of us. A mean and an SD describe a continuous variable and say nothing sensible about a categorical one, where a count and a percentage do the job instead. So the types come first here, and the summaries, the plots, and the choice of what to show all follow from getting them right. The chapter’s destination is a “Table 1”, the participant-characteristics table that opens most published health research, along with the paragraph of prose that has to go with it.</p>
+<p>Which statistic is the right one depends entirely on the kind of variable in front of us. A mean and an SD describe a continuous variable and say nothing sensible about a categorical one, where a count and a percentage do the job instead. So the types come first here, and the summaries, the plots, and the choice of what to show all follow from getting them right. The chapter’s destination is a ‘Table 1’, the participant-characteristics table that opens most published health research, along with the paragraph of prose that has to go with it.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">3.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -273,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Build histograms, boxplots, bar charts, and scatterplots using <code>ggplot2</code></li>
 <li>Modify a plot’s bin width, scale, and labels, and evaluate the effect on interpretation</li>
 <li>Convert a character variable to a factor using <code>factor()</code> and set its reference level using <code>relevel()</code></li>
-<li>Produce a basic “Table 1” of participant characteristics using <code>gtsummary::tbl_summary()</code>, and describe it in writing</li>
+<li>Produce a basic ‘Table 1’ of participant characteristics using <code>gtsummary::tbl_summary()</code>, and describe it in writing</li>
 </ol>
 </section>
 <section id="the-data-nhanes_mph" class="level2" data-number="3.2">
@@ -296,7 +302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="3.4" class="anchored" data-anchor-id="setup"><span class="header-section-number">3.4</span> Setup</h2>
 <p>As in Chapter 2, we read the data with <code>read_csv()</code> from the <code>readr</code> package. We build the file path with <code>here()</code> from the <code>here</code> package. This builds a path from the project folder down to the file, so the code runs on any machine no matter where the project sits. <code>nhanes_mph</code> arrives as two files: the data, and a separate dictionary that describes every variable. Both are plain CSV files, so we read both with <code>read_csv()</code>.</p>
 <p>This chapter loads one package new to the book: <code>gtsummary</code>, for building tables. <code>dplyr</code>, for manipulating data, was loaded back in Chapter 1, and <code>ggplot2</code>, for plotting, in Chapter 2, so both are already familiar. Installing and loading it are still the two separate actions Chapter 1 distinguished, so if <code>gtsummary</code> isn’t installed already, run this once in the console. You don’t need to put it in the script.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"gtsummary"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'gtsummary'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>After that, the <code>library()</code> calls below are all we need, this session and every session after it.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
@@ -305,8 +311,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107.csv"</span>))</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>dictionary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"mph_nhanes_20241107_dictionary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data'</span>, <span class="st">'mph_nhanes_20241107.csv'</span>))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>dictionary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">'data'</span>, <span class="st">'mph_nhanes_20241107_dictionary.csv'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Running that in your own console prints more than it does on this page. The <code>library()</code> calls announce themselves, and each <code>read_csv()</code> prints the column specification message Chapter 2 unpacked. This book hides both from here on, as both have been explained.</p>
 <p><code>glimpse()</code>, from <code>dplyr</code>, shows every column, its type, and its first few values. It’s useful for checking what actually came in, rather than what we expected to come in.</p>
@@ -347,7 +353,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 <p>Six columns describe a category but aren’t usable as one yet: <code>gender</code>, <code>eth</code>, <code>edu</code>, <code>smoking</code>, <code>phq.c</code>, and <code>blm.cvd</code>. <code>glimpse()</code> reports how R has <strong>stored</strong> each column, which is a different question from what the variable statistically <strong>is</strong>. <code>blm.cvd</code> is binary, so categorical, but R read its 0s and 1s as numbers and lists it as <code>&lt;dbl&gt;</code>; <code>gender</code> and <code>edu</code> are the same, plain integers standing in for a label. <code>smoking</code> and <code>phq.c</code> are categorical too, just stored as text: <code>glimpse()</code> lists both as <code>&lt;chr&gt;</code>, not numbers at all. Whichever way R happened to store a column, the variable’s statistical type doesn’t change, and R can’t infer one from the other just by looking at it. Whatever the raw form, we should consult the data documentation, e.g.&nbsp;the data dictionary, whenever possible.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dictionary <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">Variable names</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"gender"</span>, <span class="st">"eth"</span>, <span class="st">"edu"</span>, <span class="st">"smoking"</span>, <span class="st">"phq.c"</span>, <span class="st">"blm.cvd"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">Variable names</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'gender'</span>, <span class="st">'eth'</span>, <span class="st">'edu'</span>, <span class="st">'smoking'</span>, <span class="st">'phq.c'</span>, <span class="st">'blm.cvd'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
   `Variable names` Description                                              
@@ -360,29 +366,29 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 6 blm.cvd          Baseline CVD (0=No; 1=Yes)                               </code></pre>
 </div>
 </div>
-<p>The dictionary gives a numeric code against each category for <code>gender</code>, <code>eth</code>, <code>edu</code>, and <code>blm.cvd</code>: <code>1=Male; 2=Female</code>, and so on. Those are the four we have to translate. For <code>smoking</code> and <code>phq.c</code> it just lists the categories, and <code>glimpse()</code> already told us why no translation is needed: they don’t arrive as bare numbers at all. <code>smoking</code> is already the text “Never”, “Previous”, or “Current”. <code>phq.c</code> is already a label too, with the original code number kept at the front of the string, for example <code>"0 Normal"</code>. The dictionary isn’t exhaustive, either. <code>dth</code>, the death indicator we use in Chapter 7, has not had a coding given to it. But by programming convention, <code>0</code> is no (or the logical <code>FALSE</code>), and <code>1</code> is yes (or the logical <code>TRUE</code>).</p>
-<p>We turn every one of the six into a factor with <code>mutate()</code> and <code>factor()</code>, whether the raw values are numbers or text. <code>factor()</code> takes the raw values (<code>levels</code>) and the labels we want to give them (<code>labels</code>), in matching order. The labels are ours to choose, and we take one small liberty below: the dictionary abbreviates <code>eth</code>’s first category to “Mexican”, and we write it out as “Mexican American”, the full NHANES category name. One of the six, <code>phq.c</code>, is ordinal: its categories run from normal to possible depression in a natural order, so we build it with <code>ordered = TRUE</code>. <code>gender</code>, <code>eth</code>, <code>smoking</code>, and <code>blm.cvd</code> are nominal, with no natural order, so they’re plain factors for the more familiar reason. By default, the first level listed becomes the <em>reference</em> level, the category everything else gets compared against. The next section says more about what that means and why it’s set deliberately.</p>
+<p>The dictionary gives a numeric code against each category for <code>gender</code>, <code>eth</code>, <code>edu</code>, and <code>blm.cvd</code>: <code>1=Male; 2=Female</code>, and so on. Those are the four we have to translate. For <code>smoking</code> and <code>phq.c</code> it just lists the categories, and <code>glimpse()</code> already told us why no translation is needed: they don’t arrive as bare numbers at all. <code>smoking</code> is already the text ‘Never’, ‘Previous’, or ‘Current’. <code>phq.c</code> is already a label too, with the original code number kept at the front of the string, for example <code>'0 Normal'</code>. The dictionary isn’t exhaustive, either. <code>dth</code>, the death indicator we use in Chapter 7, has not had a coding given to it. But by programming convention, <code>0</code> is no (or the logical <code>FALSE</code>), and <code>1</code> is yes (or the logical <code>TRUE</code>).</p>
+<p>We turn every one of the six into a factor with <code>mutate()</code> and <code>factor()</code>, whether the raw values are numbers or text. <code>factor()</code> takes the raw values (<code>levels</code>) and the labels we want to give them (<code>labels</code>), in matching order. The labels are ours to choose, and we take one small liberty below: the dictionary abbreviates <code>eth</code>‘s first category to ’Mexican’, and we write it out as ‘Mexican American’, the full NHANES category name. One of the six, <code>phq.c</code>, is ordinal: its categories run from normal to possible depression in a natural order, so we build it with <code>ordered = TRUE</code>. <code>gender</code>, <code>eth</code>, <code>smoking</code>, and <code>blm.cvd</code> are nominal, with no natural order, so they’re plain factors for the more familiar reason. By default, the first level listed becomes the <em>reference</em> level, the category everything else gets compared against. The next section says more about what that means and why it’s set deliberately.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="fu">factor</span>(gender,</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Male'</span>, <span class="st">'Female'</span>)),</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">eth =</span> <span class="fu">factor</span>(eth,</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>),</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Mexican American"</span>, <span class="st">"Other Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Others"</span>)),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Mexican American'</span>, <span class="st">'Other Hispanic'</span>, <span class="st">'White'</span>, <span class="st">'Black'</span>, <span class="st">'Others'</span>)),</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">edu =</span> <span class="fu">factor</span>(edu,</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Less than high school"</span>, <span class="st">"High school graduate"</span>, <span class="st">"Above high school"</span>)),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Less than high school'</span>, <span class="st">'High school graduate'</span>, <span class="st">'Above high school'</span>)),</span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">smoking =</span> <span class="fu">factor</span>(smoking,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Never"</span>, <span class="st">"Previous"</span>, <span class="st">"Current"</span>)),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Never'</span>, <span class="st">'Previous'</span>, <span class="st">'Current'</span>)),</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">phq.c =</span> <span class="fu">factor</span>(phq.c,</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"0 Normal"</span>, <span class="st">"1 Mild symptoms"</span>, <span class="st">"2 Possible depression"</span>),</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Normal"</span>, <span class="st">"Mild symptoms"</span>, <span class="st">"Possible depression"</span>),</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'0 Normal'</span>, <span class="st">'1 Mild symptoms'</span>, <span class="st">'2 Possible depression'</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Normal'</span>, <span class="st">'Mild symptoms'</span>, <span class="st">'Possible depression'</span>),</span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">blm.cvd =</span> <span class="fu">factor</span>(blm.cvd,</span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>))</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'No'</span>, <span class="st">'Yes'</span>))</span>
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(nhanes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -429,17 +435,17 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 <pre><code>[1] "Never"    "Previous" "Current" </code></pre>
 </div>
 </div>
-<p><code>"Never"</code> is first, so <code>"Never"</code> is the reference. Everything else gets read against it: “Previous” means previous compared with never, and “Current” means current compared with never. That’s the sensible choice here, and it isn’t an accident. It’s what we asked for when we wrote <code>levels = c("Never", "Previous", "Current")</code> in the recode above. Change the order in that line and we change the reference.</p>
+<p><code>'Never'</code> is first, so <code>'Never'</code> is the reference. Everything else gets read against it: ‘Previous’ means previous compared with never, and ‘Current’ means current compared with never. That’s the sensible choice here, and it isn’t an accident. It’s what we asked for when we wrote <code>levels = c('Never', 'Previous', 'Current')</code> in the recode above. Change the order in that line and we change the reference.</p>
 <p>Sometimes we want a different reference without rebuilding the factor. <code>relevel()</code>, also from base R, takes a factor and moves the level named in <code>ref</code> to the front:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>eth_white_ref <span class="ot">&lt;-</span> <span class="fu">relevel</span>(nhanes<span class="sc">$</span>eth, <span class="at">ref =</span> <span class="st">"White"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>eth_white_ref <span class="ot">&lt;-</span> <span class="fu">relevel</span>(nhanes<span class="sc">$</span>eth, <span class="at">ref =</span> <span class="st">'White'</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(eth_white_ref)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "White"            "Mexican American" "Other Hispanic"  
 [4] "Black"            "Others"          </code></pre>
 </div>
 </div>
-<p><code>"White"</code> has moved to the front, so it would now be the reference, with the other four groups read against it. The rest keep their order, just shifted along.</p>
+<p><code>'White'</code> has moved to the front, so it would now be the reference, with the other four groups read against it. The rest keep their order, just shifted along.</p>
 <p>Notice we assigned the result to a new object, <code>eth_white_ref</code>, rather than writing it back into <code>nhanes</code>. That’s deliberate. Every chapter in this book rebuilds <code>nhanes</code> with the same recode. If we changed this factor here, this chapter’s <code>nhanes</code> would stop matching the one later chapters build, and a table or model would come out different for no visible reason. When we’re demonstrating something, we work on a copy.</p>
 <p>Right now the reference level only decides the order categories appear in a table, or along a bar chart’s axis. Once a categorical predictor enters a regression model in Chapter 6, it decides what every coefficient means.</p>
 </section>
@@ -537,7 +543,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 <p>These four combine in a short pipe to answer a real question. For example, who are the ten oldest current smokers in the sample?</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(smoking <span class="sc">==</span> <span class="st">"Current"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(smoking <span class="sc">==</span> <span class="st">'Current'</span>) <span class="sc">|&gt;</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(age)) <span class="sc">|&gt;</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender, smoking) <span class="sc">|&gt;</span></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -651,7 +657,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> sed)) <span class="sc">+</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sedentary time (hours/day)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Sedentary time (hours/day)'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 7331 rows containing non-finite outside the scale range
 (`stat_bin()`).</code></pre>
@@ -664,14 +670,14 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 </div>
 </div>
 </div>
-<p><code>ggplot()</code> names the data and the mapping, <code>geom_histogram()</code> says to draw it as a histogram, and <code>labs()</code> sets the axis labels. Use <code>labs()</code> every time: left out, the axes are labelled with the raw column name, so this one would have read <code>sed</code> instead of “Sedentary time (hours/day)”, and anyone outside the course would have to guess what that means.</p>
+<p><code>ggplot()</code> names the data and the mapping, <code>geom_histogram()</code> says to draw it as a histogram, and <code>labs()</code> sets the axis labels. Use <code>labs()</code> every time: left out, the axes are labelled with the raw column name, so this one would have read <code>sed</code> instead of ‘Sedentary time (hours/day)’, and anyone outside the course would have to guess what that means.</p>
 <p>That warning about removed rows is the one Chapter 2 explained: <code>sed</code> has 7,331 missing values, so <code>ggplot2</code> left them out and said so. It will appear above most plots in this chapter, with a different number each time depending on the variable. Glance at the number, check it’s the size we expect, and carry on.</p>
 <p><code>ggplot2</code> is highly versatile and can produce nearly any plot we need. Some examples below:</p>
 <p>A bar chart of smoking status:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(smoking)), <span class="fu">aes</span>(<span class="at">x =</span> smoking)) <span class="sc">+</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Smoking status"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Smoking status'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -685,7 +691,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Gender"</span>, <span class="at">y =</span> <span class="st">"Total cholesterol (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Gender'</span>, <span class="at">y =</span> <span class="st">'Total cholesterol (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2589 rows containing non-finite outside the scale range
 (`stat_boxplot()`).</code></pre>
@@ -703,7 +709,7 @@ $ fu_month &lt;dbl&gt; 236, 245, 244, 238, 245, 243, 242, 243, 247, 231, 235, 24
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Age (years)"</span>, <span class="at">y =</span> <span class="st">"Total cholesterol (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Age (years)'</span>, <span class="at">y =</span> <span class="st">'Total cholesterol (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2589 rows containing missing values or values outside the scale
 range (`geom_point()`).</code></pre>
@@ -728,36 +734,36 @@ range (`geom_point()`).</code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <p>Take the histogram of <code>sed</code> above. Change <code>binwidth</code> to <code>0.1</code>, then to <code>5</code>, and re-run it each time. Then add <code>+ ylim(0, 500)</code> to the original plot. <code>ylim()</code>, from <code>ggplot2</code>, fixes the lower and upper limits of the y-axis by hand instead of letting the plot choose them to fit the data. Be careful with it: anything falling outside the limits you set is dropped from the plot altogether rather than being drawn cut off at the edge, so a bar taller than the limit doesn’t get shortened, it disappears. For each change, write one sentence on what altered in the plot, and one sentence on what the data themselves did not change. This is the same distinction the seminar drew between a plot design choice and the underlying distribution.</p>
-<p>This is the first of several “Try it yourself” boxes in the book, and none of them has a written solution. Running the code is the answer.</p>
+<p>This is the first of several ‘Try it yourself’ boxes in the book, and none of them has a written solution. Running the code is the answer.</p>
 </div>
 </div>
 </section>
 <section id="a-first-table-1" class="level2" data-number="3.10">
 <h2 data-number="3.10" class="anchored" data-anchor-id="a-first-table-1"><span class="header-section-number">3.10</span> A first Table 1</h2>
-<p>A “Table 1” is a common first table in a health research report. It shows participant characteristics, often split by a grouping variable. We could do it manually with the descriptive statistics commands above (e.g.&nbsp;<code>mean()</code>, <code>table()</code>) and it is a good exercise. However, the more convenient way is to use <code>tbl_summary()</code>, from <code>gtsummary</code>.</p>
+<p>A ‘Table 1’ is a common first table in a health research report. It shows participant characteristics, often split by a grouping variable. We could do it manually with the descriptive statistics commands above (e.g.&nbsp;<code>mean()</code>, <code>table()</code>) and it is a good exercise. However, the more convenient way is to use <code>tbl_summary()</code>, from <code>gtsummary</code>.</p>
 <p>The code below creates the summary table overall for the five selected variables.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender, eth, smoking, chol) <span class="sc">|&gt;</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="dcnyktgtnv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dcnyktgtnv table {
+<div id="ilklxvbwdv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ilklxvbwdv table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#dcnyktgtnv thead, #dcnyktgtnv tbody, #dcnyktgtnv tfoot, #dcnyktgtnv tr, #dcnyktgtnv td, #dcnyktgtnv th {
+#ilklxvbwdv thead, #ilklxvbwdv tbody, #ilklxvbwdv tfoot, #ilklxvbwdv tr, #ilklxvbwdv td, #ilklxvbwdv th {
   border-style: none;
 }
 
-#dcnyktgtnv p {
+#ilklxvbwdv p {
   margin: 0;
   padding: 0;
 }
 
-#dcnyktgtnv .gt_table {
+#ilklxvbwdv .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -783,12 +789,12 @@ range (`geom_point()`).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_caption {
+#ilklxvbwdv .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#dcnyktgtnv .gt_title {
+#ilklxvbwdv .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -800,7 +806,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-width: 0;
 }
 
-#dcnyktgtnv .gt_subtitle {
+#ilklxvbwdv .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -812,7 +818,7 @@ range (`geom_point()`).</code></pre>
   border-top-width: 0;
 }
 
-#dcnyktgtnv .gt_heading {
+#ilklxvbwdv .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -824,13 +830,13 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_bottom_border {
+#ilklxvbwdv .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_col_headings {
+#ilklxvbwdv .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -845,7 +851,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_col_heading {
+#ilklxvbwdv .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -865,7 +871,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#dcnyktgtnv .gt_column_spanner_outer {
+#ilklxvbwdv .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -877,15 +883,15 @@ range (`geom_point()`).</code></pre>
   padding-right: 4px;
 }
 
-#dcnyktgtnv .gt_column_spanner_outer:first-child {
+#ilklxvbwdv .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dcnyktgtnv .gt_column_spanner_outer:last-child {
+#ilklxvbwdv .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dcnyktgtnv .gt_column_spanner {
+#ilklxvbwdv .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -897,11 +903,11 @@ range (`geom_point()`).</code></pre>
   width: 100%;
 }
 
-#dcnyktgtnv .gt_spanner_row {
+#ilklxvbwdv .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#dcnyktgtnv .gt_group_heading {
+#ilklxvbwdv .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -927,7 +933,7 @@ range (`geom_point()`).</code></pre>
   text-align: left;
 }
 
-#dcnyktgtnv .gt_empty_group_heading {
+#ilklxvbwdv .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -942,15 +948,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: middle;
 }
 
-#dcnyktgtnv .gt_from_md > :first-child {
+#ilklxvbwdv .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dcnyktgtnv .gt_from_md > :last-child {
+#ilklxvbwdv .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dcnyktgtnv .gt_row {
+#ilklxvbwdv .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -969,7 +975,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#dcnyktgtnv .gt_stub {
+#ilklxvbwdv .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -982,7 +988,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#dcnyktgtnv .gt_stub_row_group {
+#ilklxvbwdv .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -996,15 +1002,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: top;
 }
 
-#dcnyktgtnv .gt_row_group_first td {
+#ilklxvbwdv .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#dcnyktgtnv .gt_row_group_first th {
+#ilklxvbwdv .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#dcnyktgtnv .gt_summary_row {
+#ilklxvbwdv .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1014,16 +1020,16 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#dcnyktgtnv .gt_first_summary_row {
+#ilklxvbwdv .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_first_summary_row.thick {
+#ilklxvbwdv .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#dcnyktgtnv .gt_last_summary_row {
+#ilklxvbwdv .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1033,7 +1039,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_grand_summary_row {
+#ilklxvbwdv .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1043,7 +1049,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#dcnyktgtnv .gt_first_grand_summary_row {
+#ilklxvbwdv .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1053,7 +1059,7 @@ range (`geom_point()`).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_last_grand_summary_row_top {
+#ilklxvbwdv .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1063,11 +1069,11 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_striped {
+#ilklxvbwdv .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dcnyktgtnv .gt_table_body {
+#ilklxvbwdv .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1076,7 +1082,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_footnotes {
+#ilklxvbwdv .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1090,7 +1096,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_footnote {
+#ilklxvbwdv .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1099,7 +1105,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#dcnyktgtnv .gt_sourcenotes {
+#ilklxvbwdv .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1113,7 +1119,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dcnyktgtnv .gt_sourcenote {
+#ilklxvbwdv .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1121,72 +1127,72 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#dcnyktgtnv .gt_left {
+#ilklxvbwdv .gt_left {
   text-align: left;
 }
 
-#dcnyktgtnv .gt_center {
+#ilklxvbwdv .gt_center {
   text-align: center;
 }
 
-#dcnyktgtnv .gt_right {
+#ilklxvbwdv .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dcnyktgtnv .gt_font_normal {
+#ilklxvbwdv .gt_font_normal {
   font-weight: normal;
 }
 
-#dcnyktgtnv .gt_font_bold {
+#ilklxvbwdv .gt_font_bold {
   font-weight: bold;
 }
 
-#dcnyktgtnv .gt_font_italic {
+#ilklxvbwdv .gt_font_italic {
   font-style: italic;
 }
 
-#dcnyktgtnv .gt_super {
+#ilklxvbwdv .gt_super {
   font-size: 65%;
 }
 
-#dcnyktgtnv .gt_footnote_marks {
+#ilklxvbwdv .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#dcnyktgtnv .gt_asterisk {
+#ilklxvbwdv .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#dcnyktgtnv .gt_indent_1 {
+#ilklxvbwdv .gt_indent_1 {
   text-indent: 5px;
 }
 
-#dcnyktgtnv .gt_indent_2 {
+#ilklxvbwdv .gt_indent_2 {
   text-indent: 10px;
 }
 
-#dcnyktgtnv .gt_indent_3 {
+#ilklxvbwdv .gt_indent_3 {
   text-indent: 15px;
 }
 
-#dcnyktgtnv .gt_indent_4 {
+#ilklxvbwdv .gt_indent_4 {
   text-indent: 20px;
 }
 
-#dcnyktgtnv .gt_indent_5 {
+#ilklxvbwdv .gt_indent_5 {
   text-indent: 25px;
 }
 
-#dcnyktgtnv .katex-display {
+#ilklxvbwdv .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#dcnyktgtnv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ilklxvbwdv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1291,23 +1297,23 @@ range (`geom_point()`).</code></pre>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender, eth, smoking, chol) <span class="sc">|&gt;</span></span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="jusodaadoc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#jusodaadoc table {
+<div id="qffmdivyst" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qffmdivyst table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#jusodaadoc thead, #jusodaadoc tbody, #jusodaadoc tfoot, #jusodaadoc tr, #jusodaadoc td, #jusodaadoc th {
+#qffmdivyst thead, #qffmdivyst tbody, #qffmdivyst tfoot, #qffmdivyst tr, #qffmdivyst td, #qffmdivyst th {
   border-style: none;
 }
 
-#jusodaadoc p {
+#qffmdivyst p {
   margin: 0;
   padding: 0;
 }
 
-#jusodaadoc .gt_table {
+#qffmdivyst .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1333,12 +1339,12 @@ range (`geom_point()`).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_caption {
+#qffmdivyst .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#jusodaadoc .gt_title {
+#qffmdivyst .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1350,7 +1356,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-width: 0;
 }
 
-#jusodaadoc .gt_subtitle {
+#qffmdivyst .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1362,7 +1368,7 @@ range (`geom_point()`).</code></pre>
   border-top-width: 0;
 }
 
-#jusodaadoc .gt_heading {
+#qffmdivyst .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1374,13 +1380,13 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_bottom_border {
+#qffmdivyst .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_col_headings {
+#qffmdivyst .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1395,7 +1401,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_col_heading {
+#qffmdivyst .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1415,7 +1421,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#jusodaadoc .gt_column_spanner_outer {
+#qffmdivyst .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1427,15 +1433,15 @@ range (`geom_point()`).</code></pre>
   padding-right: 4px;
 }
 
-#jusodaadoc .gt_column_spanner_outer:first-child {
+#qffmdivyst .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jusodaadoc .gt_column_spanner_outer:last-child {
+#qffmdivyst .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jusodaadoc .gt_column_spanner {
+#qffmdivyst .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1447,11 +1453,11 @@ range (`geom_point()`).</code></pre>
   width: 100%;
 }
 
-#jusodaadoc .gt_spanner_row {
+#qffmdivyst .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#jusodaadoc .gt_group_heading {
+#qffmdivyst .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1477,7 +1483,7 @@ range (`geom_point()`).</code></pre>
   text-align: left;
 }
 
-#jusodaadoc .gt_empty_group_heading {
+#qffmdivyst .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1492,15 +1498,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: middle;
 }
 
-#jusodaadoc .gt_from_md > :first-child {
+#qffmdivyst .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jusodaadoc .gt_from_md > :last-child {
+#qffmdivyst .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jusodaadoc .gt_row {
+#qffmdivyst .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1519,7 +1525,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#jusodaadoc .gt_stub {
+#qffmdivyst .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1532,7 +1538,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#jusodaadoc .gt_stub_row_group {
+#qffmdivyst .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1546,15 +1552,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: top;
 }
 
-#jusodaadoc .gt_row_group_first td {
+#qffmdivyst .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#jusodaadoc .gt_row_group_first th {
+#qffmdivyst .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#jusodaadoc .gt_summary_row {
+#qffmdivyst .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1564,16 +1570,16 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#jusodaadoc .gt_first_summary_row {
+#qffmdivyst .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_first_summary_row.thick {
+#qffmdivyst .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#jusodaadoc .gt_last_summary_row {
+#qffmdivyst .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1583,7 +1589,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_grand_summary_row {
+#qffmdivyst .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1593,7 +1599,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#jusodaadoc .gt_first_grand_summary_row {
+#qffmdivyst .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1603,7 +1609,7 @@ range (`geom_point()`).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_last_grand_summary_row_top {
+#qffmdivyst .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1613,11 +1619,11 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_striped {
+#qffmdivyst .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#jusodaadoc .gt_table_body {
+#qffmdivyst .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1626,7 +1632,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_footnotes {
+#qffmdivyst .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1640,7 +1646,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_footnote {
+#qffmdivyst .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1649,7 +1655,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#jusodaadoc .gt_sourcenotes {
+#qffmdivyst .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1663,7 +1669,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jusodaadoc .gt_sourcenote {
+#qffmdivyst .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1671,72 +1677,72 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#jusodaadoc .gt_left {
+#qffmdivyst .gt_left {
   text-align: left;
 }
 
-#jusodaadoc .gt_center {
+#qffmdivyst .gt_center {
   text-align: center;
 }
 
-#jusodaadoc .gt_right {
+#qffmdivyst .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jusodaadoc .gt_font_normal {
+#qffmdivyst .gt_font_normal {
   font-weight: normal;
 }
 
-#jusodaadoc .gt_font_bold {
+#qffmdivyst .gt_font_bold {
   font-weight: bold;
 }
 
-#jusodaadoc .gt_font_italic {
+#qffmdivyst .gt_font_italic {
   font-style: italic;
 }
 
-#jusodaadoc .gt_super {
+#qffmdivyst .gt_super {
   font-size: 65%;
 }
 
-#jusodaadoc .gt_footnote_marks {
+#qffmdivyst .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#jusodaadoc .gt_asterisk {
+#qffmdivyst .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#jusodaadoc .gt_indent_1 {
+#qffmdivyst .gt_indent_1 {
   text-indent: 5px;
 }
 
-#jusodaadoc .gt_indent_2 {
+#qffmdivyst .gt_indent_2 {
   text-indent: 10px;
 }
 
-#jusodaadoc .gt_indent_3 {
+#qffmdivyst .gt_indent_3 {
   text-indent: 15px;
 }
 
-#jusodaadoc .gt_indent_4 {
+#qffmdivyst .gt_indent_4 {
   text-indent: 20px;
 }
 
-#jusodaadoc .gt_indent_5 {
+#qffmdivyst .gt_indent_5 {
   text-indent: 25px;
 }
 
-#jusodaadoc .katex-display {
+#qffmdivyst .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#jusodaadoc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qffmdivyst div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1848,26 +1854,26 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender, eth, smoking, chol) <span class="sc">|&gt;</span></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(</span>
 <span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> gender,</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">'{mean} ({sd})'</span>)</span>
 <span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="tghbsstafc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tghbsstafc table {
+<div id="yzvmjbheum" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yzvmjbheum table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tghbsstafc thead, #tghbsstafc tbody, #tghbsstafc tfoot, #tghbsstafc tr, #tghbsstafc td, #tghbsstafc th {
+#yzvmjbheum thead, #yzvmjbheum tbody, #yzvmjbheum tfoot, #yzvmjbheum tr, #yzvmjbheum td, #yzvmjbheum th {
   border-style: none;
 }
 
-#tghbsstafc p {
+#yzvmjbheum p {
   margin: 0;
   padding: 0;
 }
 
-#tghbsstafc .gt_table {
+#yzvmjbheum .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1893,12 +1899,12 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-left-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_caption {
+#yzvmjbheum .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tghbsstafc .gt_title {
+#yzvmjbheum .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1910,7 +1916,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-width: 0;
 }
 
-#tghbsstafc .gt_subtitle {
+#yzvmjbheum .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1922,7 +1928,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-width: 0;
 }
 
-#tghbsstafc .gt_heading {
+#yzvmjbheum .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1934,13 +1940,13 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_bottom_border {
+#yzvmjbheum .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_col_headings {
+#yzvmjbheum .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1955,7 +1961,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_col_heading {
+#yzvmjbheum .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1975,7 +1981,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#tghbsstafc .gt_column_spanner_outer {
+#yzvmjbheum .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1987,15 +1993,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 4px;
 }
 
-#tghbsstafc .gt_column_spanner_outer:first-child {
+#yzvmjbheum .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tghbsstafc .gt_column_spanner_outer:last-child {
+#yzvmjbheum .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tghbsstafc .gt_column_spanner {
+#yzvmjbheum .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2007,11 +2013,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   width: 100%;
 }
 
-#tghbsstafc .gt_spanner_row {
+#yzvmjbheum .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tghbsstafc .gt_group_heading {
+#yzvmjbheum .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2037,7 +2043,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   text-align: left;
 }
 
-#tghbsstafc .gt_empty_group_heading {
+#yzvmjbheum .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2052,15 +2058,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: middle;
 }
 
-#tghbsstafc .gt_from_md > :first-child {
+#yzvmjbheum .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tghbsstafc .gt_from_md > :last-child {
+#yzvmjbheum .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tghbsstafc .gt_row {
+#yzvmjbheum .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2079,7 +2085,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#tghbsstafc .gt_stub {
+#yzvmjbheum .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2092,7 +2098,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#tghbsstafc .gt_stub_row_group {
+#yzvmjbheum .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2106,15 +2112,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: top;
 }
 
-#tghbsstafc .gt_row_group_first td {
+#yzvmjbheum .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tghbsstafc .gt_row_group_first th {
+#yzvmjbheum .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tghbsstafc .gt_summary_row {
+#yzvmjbheum .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2124,16 +2130,16 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#tghbsstafc .gt_first_summary_row {
+#yzvmjbheum .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_first_summary_row.thick {
+#yzvmjbheum .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tghbsstafc .gt_last_summary_row {
+#yzvmjbheum .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2143,7 +2149,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_grand_summary_row {
+#yzvmjbheum .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2153,7 +2159,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#tghbsstafc .gt_first_grand_summary_row {
+#yzvmjbheum .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2163,7 +2169,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_last_grand_summary_row_top {
+#yzvmjbheum .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2173,11 +2179,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_striped {
+#yzvmjbheum .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tghbsstafc .gt_table_body {
+#yzvmjbheum .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2186,7 +2192,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_footnotes {
+#yzvmjbheum .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2200,7 +2206,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_footnote {
+#yzvmjbheum .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2209,7 +2215,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#tghbsstafc .gt_sourcenotes {
+#yzvmjbheum .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2223,7 +2229,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#tghbsstafc .gt_sourcenote {
+#yzvmjbheum .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2231,72 +2237,72 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#tghbsstafc .gt_left {
+#yzvmjbheum .gt_left {
   text-align: left;
 }
 
-#tghbsstafc .gt_center {
+#yzvmjbheum .gt_center {
   text-align: center;
 }
 
-#tghbsstafc .gt_right {
+#yzvmjbheum .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tghbsstafc .gt_font_normal {
+#yzvmjbheum .gt_font_normal {
   font-weight: normal;
 }
 
-#tghbsstafc .gt_font_bold {
+#yzvmjbheum .gt_font_bold {
   font-weight: bold;
 }
 
-#tghbsstafc .gt_font_italic {
+#yzvmjbheum .gt_font_italic {
   font-style: italic;
 }
 
-#tghbsstafc .gt_super {
+#yzvmjbheum .gt_super {
   font-size: 65%;
 }
 
-#tghbsstafc .gt_footnote_marks {
+#yzvmjbheum .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tghbsstafc .gt_asterisk {
+#yzvmjbheum .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tghbsstafc .gt_indent_1 {
+#yzvmjbheum .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tghbsstafc .gt_indent_2 {
+#yzvmjbheum .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tghbsstafc .gt_indent_3 {
+#yzvmjbheum .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tghbsstafc .gt_indent_4 {
+#yzvmjbheum .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tghbsstafc .gt_indent_5 {
+#yzvmjbheum .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tghbsstafc .katex-display {
+#yzvmjbheum .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tghbsstafc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#yzvmjbheum div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2402,7 +2408,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 </div>
 </div>
 </div>
-<p>Three things in that line are new. <code>list()</code>, from base R, bundles several settings together, one per variable or group of variables, which is what <code>statistic</code> needs when there’s more than one display rule to give. <code>all_continuous()</code>, from <code>gtsummary</code>, means “every continuous variable in this table”, so one line covers both <code>age</code> and <code>chol</code> at once rather than naming each separately. The <code>~</code> between it and the text that follows just pairs the two: which variables, and what to show for them. This book properly introduces <code>~</code> as formula syntax in Chapter 4; here it’s doing a related but different job, pairing a selection with a display rule rather than an outcome with a predictor. And <code>"{mean} ({sd})"</code> is a piece of text with slots in it. <code>gtsummary</code> works out the mean and the standard deviation for each variable, then drops each number into the spot where its name appears in curly braces. It comes out as something like <code>47.3 (18.1)</code>. Everything outside the braces, here a space and a pair of round brackets, is printed exactly as written. <code>tbl_summary()</code> is highly customisable. We can change the statistic for any specific variable, or format different variables differently. That’s outside the scope of this course, and left as an exploration exercise for anyone interested.</p>
+<p>Three things in that line are new. <code>list()</code>, from base R, bundles several settings together, one per variable or group of variables, which is what <code>statistic</code> needs when there’s more than one display rule to give. <code>all_continuous()</code>, from <code>gtsummary</code>, means ‘every continuous variable in this table’, so one line covers both <code>age</code> and <code>chol</code> at once rather than naming each separately. The <code>~</code> between it and the text that follows just pairs the two: which variables, and what to show for them. This book properly introduces <code>~</code> as formula syntax in Chapter 4; here it’s doing a related but different job, pairing a selection with a display rule rather than an outcome with a predictor. And <code>'{mean} ({sd})'</code> is a piece of text with slots in it. <code>gtsummary</code> works out the mean and the standard deviation for each variable, then drops each number into the spot where its name appears in curly braces. It comes out as something like <code>47.3 (18.1)</code>. Everything outside the braces, here a space and a pair of round brackets, is printed exactly as written. <code>tbl_summary()</code> is highly customisable. We can change the statistic for any specific variable, or format different variables differently. That’s outside the scope of this course, and left as an exploration exercise for anyone interested.</p>
 </section>
 <section id="worked-example-describing-age" class="level2" data-number="3.11">
 <h2 data-number="3.11" class="anchored" data-anchor-id="worked-example-describing-age"><span class="header-section-number">3.11</span> Worked example: describing age</h2>
@@ -2425,7 +2431,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Age (years)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Age (years)'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2438,7 +2444,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">y =</span> age)) <span class="sc">+</span></span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Gender"</span>, <span class="at">y =</span> <span class="st">"Age (years)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Gender'</span>, <span class="at">y =</span> <span class="st">'Age (years)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2452,23 +2458,23 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender) <span class="sc">|&gt;</span></span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="lpbyuxibtm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lpbyuxibtm table {
+<div id="afdvynydfm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#afdvynydfm table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lpbyuxibtm thead, #lpbyuxibtm tbody, #lpbyuxibtm tfoot, #lpbyuxibtm tr, #lpbyuxibtm td, #lpbyuxibtm th {
+#afdvynydfm thead, #afdvynydfm tbody, #afdvynydfm tfoot, #afdvynydfm tr, #afdvynydfm td, #afdvynydfm th {
   border-style: none;
 }
 
-#lpbyuxibtm p {
+#afdvynydfm p {
   margin: 0;
   padding: 0;
 }
 
-#lpbyuxibtm .gt_table {
+#afdvynydfm .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2494,12 +2500,12 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-left-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_caption {
+#afdvynydfm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lpbyuxibtm .gt_title {
+#afdvynydfm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2511,7 +2517,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-width: 0;
 }
 
-#lpbyuxibtm .gt_subtitle {
+#afdvynydfm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2523,7 +2529,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-width: 0;
 }
 
-#lpbyuxibtm .gt_heading {
+#afdvynydfm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2535,13 +2541,13 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_bottom_border {
+#afdvynydfm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_col_headings {
+#afdvynydfm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2556,7 +2562,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_col_heading {
+#afdvynydfm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2576,7 +2582,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#lpbyuxibtm .gt_column_spanner_outer {
+#afdvynydfm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2588,15 +2594,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 4px;
 }
 
-#lpbyuxibtm .gt_column_spanner_outer:first-child {
+#afdvynydfm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lpbyuxibtm .gt_column_spanner_outer:last-child {
+#afdvynydfm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lpbyuxibtm .gt_column_spanner {
+#afdvynydfm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2608,11 +2614,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   width: 100%;
 }
 
-#lpbyuxibtm .gt_spanner_row {
+#afdvynydfm .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lpbyuxibtm .gt_group_heading {
+#afdvynydfm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2638,7 +2644,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   text-align: left;
 }
 
-#lpbyuxibtm .gt_empty_group_heading {
+#afdvynydfm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2653,15 +2659,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: middle;
 }
 
-#lpbyuxibtm .gt_from_md > :first-child {
+#afdvynydfm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lpbyuxibtm .gt_from_md > :last-child {
+#afdvynydfm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lpbyuxibtm .gt_row {
+#afdvynydfm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2680,7 +2686,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   overflow-x: hidden;
 }
 
-#lpbyuxibtm .gt_stub {
+#afdvynydfm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2693,7 +2699,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lpbyuxibtm .gt_stub_row_group {
+#afdvynydfm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2707,15 +2713,15 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   vertical-align: top;
 }
 
-#lpbyuxibtm .gt_row_group_first td {
+#afdvynydfm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lpbyuxibtm .gt_row_group_first th {
+#afdvynydfm .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lpbyuxibtm .gt_summary_row {
+#afdvynydfm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2725,16 +2731,16 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lpbyuxibtm .gt_first_summary_row {
+#afdvynydfm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_first_summary_row.thick {
+#afdvynydfm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lpbyuxibtm .gt_last_summary_row {
+#afdvynydfm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2744,7 +2750,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_grand_summary_row {
+#afdvynydfm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2754,7 +2760,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lpbyuxibtm .gt_first_grand_summary_row {
+#afdvynydfm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2764,7 +2770,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-top-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_last_grand_summary_row_top {
+#afdvynydfm .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2774,11 +2780,11 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_striped {
+#afdvynydfm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lpbyuxibtm .gt_table_body {
+#afdvynydfm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2787,7 +2793,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-bottom-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_footnotes {
+#afdvynydfm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2801,7 +2807,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_footnote {
+#afdvynydfm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2810,7 +2816,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lpbyuxibtm .gt_sourcenotes {
+#afdvynydfm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2824,7 +2830,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   border-right-color: #D3D3D3;
 }
 
-#lpbyuxibtm .gt_sourcenote {
+#afdvynydfm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2832,72 +2838,72 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
   padding-right: 5px;
 }
 
-#lpbyuxibtm .gt_left {
+#afdvynydfm .gt_left {
   text-align: left;
 }
 
-#lpbyuxibtm .gt_center {
+#afdvynydfm .gt_center {
   text-align: center;
 }
 
-#lpbyuxibtm .gt_right {
+#afdvynydfm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lpbyuxibtm .gt_font_normal {
+#afdvynydfm .gt_font_normal {
   font-weight: normal;
 }
 
-#lpbyuxibtm .gt_font_bold {
+#afdvynydfm .gt_font_bold {
   font-weight: bold;
 }
 
-#lpbyuxibtm .gt_font_italic {
+#afdvynydfm .gt_font_italic {
   font-style: italic;
 }
 
-#lpbyuxibtm .gt_super {
+#afdvynydfm .gt_super {
   font-size: 65%;
 }
 
-#lpbyuxibtm .gt_footnote_marks {
+#afdvynydfm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lpbyuxibtm .gt_asterisk {
+#afdvynydfm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lpbyuxibtm .gt_indent_1 {
+#afdvynydfm .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lpbyuxibtm .gt_indent_2 {
+#afdvynydfm .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lpbyuxibtm .gt_indent_3 {
+#afdvynydfm .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lpbyuxibtm .gt_indent_4 {
+#afdvynydfm .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lpbyuxibtm .gt_indent_5 {
+#afdvynydfm .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lpbyuxibtm .katex-display {
+#afdvynydfm .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lpbyuxibtm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#afdvynydfm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2966,7 +2972,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <p><strong>Exercise 1</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age <span class="sc">&gt;=</span> <span class="dv">65</span>, smoking <span class="sc">==</span> <span class="st">"Never"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age <span class="sc">&gt;=</span> <span class="dv">65</span>, smoking <span class="sc">==</span> <span class="st">'Never'</span>) <span class="sc">|&gt;</span></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(chol)) <span class="sc">|&gt;</span></span>
 <span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, gender, chol) <span class="sc">|&gt;</span></span>
 <span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3009,7 +3015,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 # ℹ 41,755 more rows</code></pre>
 </div>
 </div>
-<p><code>chol &gt; 6</code> is a comparison, exactly like the ones in Chapter 1, and it returns <code>TRUE</code> or <code>FALSE</code> for every row. Participants with no cholesterol value recorded get <code>NA</code> rather than <code>FALSE</code>, which is correct: we don’t know whether they’re above 6, and guessing “no” would be inventing data.</p>
+<p><code>chol &gt; 6</code> is a comparison, exactly like the ones in Chapter 1, and it returns <code>TRUE</code> or <code>FALSE</code> for every row. Participants with no cholesterol value recorded get <code>NA</code> rather than <code>FALSE</code>, which is correct: we don’t know whether they’re above 6, and guessing ‘no’ would be inventing data.</p>
 <p><strong>Exercise 2</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span></span>
@@ -3025,7 +3031,7 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> sed)) <span class="sc">+</span></span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sedentary time (hours/day)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Sedentary time (hours/day)'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 7331 rows containing non-finite outside the scale range
 (`stat_bin()`).</code></pre>
@@ -3037,9 +3043,9 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> sed, <span class="at">y =</span> <span class="st">""</span>)) <span class="sc">+</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> sed, <span class="at">y =</span> <span class="st">''</span>)) <span class="sc">+</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sedentary time (hours/day)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Sedentary time (hours/day)'</span>, <span class="at">y =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 7331 rows containing non-finite outside the scale range
 (`stat_boxplot()`).</code></pre>
@@ -3056,8 +3062,8 @@ N = 21,680<span class="gt_footnote_marks" style="white-space:nowrap;font-style:i
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> sed, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sedentary time (hours/day)"</span>,</span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total cholesterol (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Sedentary time (hours/day)'</span>,</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Total cholesterol (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 9456 rows containing missing values or values outside the scale
 range (`geom_point()`).</code></pre>
@@ -3075,7 +3081,7 @@ range (`geom_point()`).</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> chol)) <span class="sc">+</span></span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Total cholesterol (mmol/L)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Total cholesterol (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2589 rows containing non-finite outside the scale range
 (`stat_bin()`).</code></pre>
@@ -3089,7 +3095,7 @@ range (`geom_point()`).</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> chol)) <span class="sc">+</span></span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.05</span>) <span class="sc">+</span></span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Total cholesterol (mmol/L)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Total cholesterol (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2589 rows containing non-finite outside the scale range
 (`stat_bin()`).</code></pre>
@@ -3104,7 +3110,7 @@ range (`geom_point()`).</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes, <span class="fu">aes</span>(<span class="at">x =</span> chol)) <span class="sc">+</span></span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">1000</span>) <span class="sc">+</span></span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Total cholesterol (mmol/L)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Total cholesterol (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2589 rows containing non-finite outside the scale range
 (`stat_bin()`).</code></pre>
@@ -3143,7 +3149,7 @@ range (`geom_point()`).</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Gender"</span>, <span class="at">y =</span> <span class="st">"Total cholesterol (mmol/L)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Gender'</span>, <span class="at">y =</span> <span class="st">'Total cholesterol (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2589 rows containing non-finite outside the scale range
 (`stat_boxplot()`).</code></pre>
@@ -3162,13 +3168,13 @@ range (`geom_point()`).</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Male"   "Female"</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>gender_female_ref <span class="ot">&lt;-</span> <span class="fu">relevel</span>(nhanes<span class="sc">$</span>gender, <span class="at">ref =</span> <span class="st">"Female"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>gender_female_ref <span class="ot">&lt;-</span> <span class="fu">relevel</span>(nhanes<span class="sc">$</span>gender, <span class="at">ref =</span> <span class="st">'Female'</span>)</span>
 <span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(gender_female_ref)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Female" "Male"  </code></pre>
 </div>
 </div>
-<p><code>"Male"</code> is listed first, so <code>"Male"</code> is currently the reference level, which follows from the recode listing the numeric code <code>1</code> first and labelling it <code>"Male"</code>. After <code>relevel()</code>, <code>"Female"</code> is at the front of the new object and would be the reference instead. <code>nhanes</code> itself is untouched.</p>
+<p><code>'Male'</code> is listed first, so <code>'Male'</code> is currently the reference level, which follows from the recode listing the numeric code <code>1</code> first and labelling it <code>'Male'</code>. After <code>relevel()</code>, <code>'Female'</code> is at the front of the new object and would be the reference instead. <code>nhanes</code> itself is untouched.</p>
 <p><strong>Exercise 5</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>nhanes <span class="sc">|&gt;</span></span>
@@ -3178,23 +3184,23 @@ range (`geom_point()`).</code></pre>
 <pre><code>4499 missing rows in the "phq.c" column have been removed.</code></pre>
 </div>
 <div class="cell-output-display">
-<div id="bjdcvugcsx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bjdcvugcsx table {
+<div id="ijvzofmvck" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ijvzofmvck table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bjdcvugcsx thead, #bjdcvugcsx tbody, #bjdcvugcsx tfoot, #bjdcvugcsx tr, #bjdcvugcsx td, #bjdcvugcsx th {
+#ijvzofmvck thead, #ijvzofmvck tbody, #ijvzofmvck tfoot, #ijvzofmvck tr, #ijvzofmvck td, #ijvzofmvck th {
   border-style: none;
 }
 
-#bjdcvugcsx p {
+#ijvzofmvck p {
   margin: 0;
   padding: 0;
 }
 
-#bjdcvugcsx .gt_table {
+#ijvzofmvck .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3220,12 +3226,12 @@ range (`geom_point()`).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_caption {
+#ijvzofmvck .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bjdcvugcsx .gt_title {
+#ijvzofmvck .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3237,7 +3243,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-width: 0;
 }
 
-#bjdcvugcsx .gt_subtitle {
+#ijvzofmvck .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3249,7 +3255,7 @@ range (`geom_point()`).</code></pre>
   border-top-width: 0;
 }
 
-#bjdcvugcsx .gt_heading {
+#ijvzofmvck .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3261,13 +3267,13 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_bottom_border {
+#ijvzofmvck .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_col_headings {
+#ijvzofmvck .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3282,7 +3288,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_col_heading {
+#ijvzofmvck .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3302,7 +3308,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#bjdcvugcsx .gt_column_spanner_outer {
+#ijvzofmvck .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3314,15 +3320,15 @@ range (`geom_point()`).</code></pre>
   padding-right: 4px;
 }
 
-#bjdcvugcsx .gt_column_spanner_outer:first-child {
+#ijvzofmvck .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bjdcvugcsx .gt_column_spanner_outer:last-child {
+#ijvzofmvck .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bjdcvugcsx .gt_column_spanner {
+#ijvzofmvck .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3334,11 +3340,11 @@ range (`geom_point()`).</code></pre>
   width: 100%;
 }
 
-#bjdcvugcsx .gt_spanner_row {
+#ijvzofmvck .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bjdcvugcsx .gt_group_heading {
+#ijvzofmvck .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3364,7 +3370,7 @@ range (`geom_point()`).</code></pre>
   text-align: left;
 }
 
-#bjdcvugcsx .gt_empty_group_heading {
+#ijvzofmvck .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3379,15 +3385,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: middle;
 }
 
-#bjdcvugcsx .gt_from_md > :first-child {
+#ijvzofmvck .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bjdcvugcsx .gt_from_md > :last-child {
+#ijvzofmvck .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bjdcvugcsx .gt_row {
+#ijvzofmvck .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3406,7 +3412,7 @@ range (`geom_point()`).</code></pre>
   overflow-x: hidden;
 }
 
-#bjdcvugcsx .gt_stub {
+#ijvzofmvck .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3419,7 +3425,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#bjdcvugcsx .gt_stub_row_group {
+#ijvzofmvck .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3433,15 +3439,15 @@ range (`geom_point()`).</code></pre>
   vertical-align: top;
 }
 
-#bjdcvugcsx .gt_row_group_first td {
+#ijvzofmvck .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bjdcvugcsx .gt_row_group_first th {
+#ijvzofmvck .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bjdcvugcsx .gt_summary_row {
+#ijvzofmvck .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3451,16 +3457,16 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#bjdcvugcsx .gt_first_summary_row {
+#ijvzofmvck .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_first_summary_row.thick {
+#ijvzofmvck .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bjdcvugcsx .gt_last_summary_row {
+#ijvzofmvck .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3470,7 +3476,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_grand_summary_row {
+#ijvzofmvck .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3480,7 +3486,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#bjdcvugcsx .gt_first_grand_summary_row {
+#ijvzofmvck .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3490,7 +3496,7 @@ range (`geom_point()`).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_last_grand_summary_row_top {
+#ijvzofmvck .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3500,11 +3506,11 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_striped {
+#ijvzofmvck .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bjdcvugcsx .gt_table_body {
+#ijvzofmvck .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3513,7 +3519,7 @@ range (`geom_point()`).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_footnotes {
+#ijvzofmvck .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3527,7 +3533,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_footnote {
+#ijvzofmvck .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3536,7 +3542,7 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#bjdcvugcsx .gt_sourcenotes {
+#ijvzofmvck .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3550,7 +3556,7 @@ range (`geom_point()`).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bjdcvugcsx .gt_sourcenote {
+#ijvzofmvck .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3558,72 +3564,72 @@ range (`geom_point()`).</code></pre>
   padding-right: 5px;
 }
 
-#bjdcvugcsx .gt_left {
+#ijvzofmvck .gt_left {
   text-align: left;
 }
 
-#bjdcvugcsx .gt_center {
+#ijvzofmvck .gt_center {
   text-align: center;
 }
 
-#bjdcvugcsx .gt_right {
+#ijvzofmvck .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bjdcvugcsx .gt_font_normal {
+#ijvzofmvck .gt_font_normal {
   font-weight: normal;
 }
 
-#bjdcvugcsx .gt_font_bold {
+#ijvzofmvck .gt_font_bold {
   font-weight: bold;
 }
 
-#bjdcvugcsx .gt_font_italic {
+#ijvzofmvck .gt_font_italic {
   font-style: italic;
 }
 
-#bjdcvugcsx .gt_super {
+#ijvzofmvck .gt_super {
   font-size: 65%;
 }
 
-#bjdcvugcsx .gt_footnote_marks {
+#ijvzofmvck .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bjdcvugcsx .gt_asterisk {
+#ijvzofmvck .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bjdcvugcsx .gt_indent_1 {
+#ijvzofmvck .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bjdcvugcsx .gt_indent_2 {
+#ijvzofmvck .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bjdcvugcsx .gt_indent_3 {
+#ijvzofmvck .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bjdcvugcsx .gt_indent_4 {
+#ijvzofmvck .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bjdcvugcsx .gt_indent_5 {
+#ijvzofmvck .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bjdcvugcsx .katex-display {
+#ijvzofmvck .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bjdcvugcsx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ijvzofmvck div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3769,7 +3775,7 @@ N = 3,460<span class="gt_footnote_marks" style="white-space:nowrap;font-style:it
 </div>
 </div>
 </div>
-<p>Notice the message above the table: <code>4499 missing rows in the "phq.c" column have been removed.</code> That’s <code>gtsummary</code> telling us something important, not complaining. It isn’t an error, and the table is fine.</p>
+<p>Notice the message above the table: <code>4499 missing rows in the 'phq.c' column have been removed.</code> That’s <code>gtsummary</code> telling us something important, not complaining. It isn’t an error, and the table is fine.</p>
 <p>What it means is this. We asked for the table split three ways, by <code>phq.c</code>. A participant with no depression classification recorded can’t go in any of the three columns, and <code>tbl_summary()</code> left them out. The table describes the 37,266 who remain.</p>
 <p>It matters here more than usual, because this is the table the writing exercise asks you to describe. Describing it as though it covered everybody would overstate what it shows by 4,499 people.</p>
 <p><strong>Exercise 6</strong></p>
@@ -3800,12 +3806,12 @@ N = 3,460<span class="gt_footnote_marks" style="white-space:nowrap;font-style:it
   Current              0.2634293            0.2669225         0.1573324</code></pre>
 </div>
 </div>
-<p>The row percentages are the ones that answer the question. <code>smoking</code> was given to <code>table()</code> first, so smoking is the rows, and <code>margin = 1</code> divides each row by its own total. The “Never” row then reads as the education breakdown <em>within</em> people who never smoked, which is exactly what was asked, and those three numbers add to 100%.</p>
+<p>The row percentages are the ones that answer the question. <code>smoking</code> was given to <code>table()</code> first, so smoking is the rows, and <code>margin = 1</code> divides each row by its own total. The ‘Never’ row then reads as the education breakdown <em>within</em> people who never smoked, which is exactly what was asked, and those three numbers add to 100%.</p>
 <p>The column percentages answer a different question: within each education group, what share smoke, used to smoke, and never smoked. That’s a perfectly good question, just not this one. Both tables come from the same counts, so neither is more correct than the other in the abstract. What decides it is which total we want the percentages to be a share of, and that comes from the question, not from the data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(edu)), <span class="fu">aes</span>(<span class="at">x =</span> edu)) <span class="sc">+</span></span>
 <span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Education"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Education'</span>, <span class="at">y =</span> <span class="st">'Count'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

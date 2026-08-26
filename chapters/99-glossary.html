@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/11-adjustment.html" rel="prev">
+<link href="../chapters/12-summary.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -155,6 +155,12 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="../chapters/11-adjustment.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (Week 11)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/12-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Summary</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -323,7 +329,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td><code>c()</code></td>
-<td>Combines single values (“scalars”) into a vector.</td>
+<td>Combines single values (‘scalars’) into a vector.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="even">
@@ -408,7 +414,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>set.seed()</code></td>
-<td>Fixes the sequence of “random” numbers R uses, so a random draw repeats the same way every time.</td>
+<td>Fixes the sequence of ‘random’ numbers R uses, so a random draw repeats the same way every time.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="odd">
@@ -571,7 +577,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>confint()</code></td>
-<td>Pulls a fitted model’s confidence intervals. For <code>glm()</code>, this refits the model repeatedly (“profiling”) rather than using a shortcut formula.</td>
+<td>Pulls a fitted model’s confidence intervals. For <code>glm()</code>, this refits the model repeatedly (‘profiling’) rather than using a shortcut formula.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="odd">
@@ -821,12 +827,12 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td><code>tbl_summary()</code></td>
-<td>Builds a publication-style summary table (“Table 1”). <code>by =</code> stratifies it by a grouping variable.</td>
+<td>Builds a publication-style summary table (‘Table 1’). <code>by =</code> stratifies it by a grouping variable.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
 <td><code>all_continuous()</code></td>
-<td>Inside <code>list()</code> or <code>statistic =</code>, means “every continuous variable in this table”.</td>
+<td>Inside <code>list()</code> or <code>statistic =</code>, means ‘every continuous variable in this table’.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="odd">
@@ -899,7 +905,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>oddsratio()</code></td>
-<td>Takes an r x 2 table and calculates the odds ratio. <code>method = "wald"</code> matches the ± 1.96 x SE formula behind a confidence interval built by hand.</td>
+<td>Takes an r x 2 table and calculates the odds ratio. <code>method = 'wald'</code> matches the ± 1.96 x SE formula behind a confidence interval built by hand.</td>
 <td>Chapter 5</td>
 </tr>
 </tbody>
@@ -929,7 +935,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>|&gt;</code></td>
-<td>The pipe. Takes what’s on the left and feeds it in as the first input to what’s on the right. Read aloud as “and then”.</td>
+<td>The pipe. Takes what’s on the left and feeds it in as the first input to what’s on the right. Read aloud as ‘and then’.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="odd">
@@ -954,12 +960,12 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td>
-<td>Less than, greater than, and their “or equal to” versions.</td>
+<td>Less than, greater than, and their ‘or equal to’ versions.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="even">
-<td><code>""</code></td>
-<td>Marks a value as text. Numbers, <code>TRUE</code>/<code>FALSE</code>, and object or column names don’t take quotes. <code>"20"</code> will be recognised as text in R.</td>
+<td><code>''</code></td>
+<td>Marks a value as text. Numbers, <code>TRUE</code>/<code>FALSE</code>, and object or column names don’t take quotes. <code>'20'</code> will be recognised as text in R.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="odd">
@@ -1149,12 +1155,12 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Confidence interval (CI)</td>
-<td>A range of values, built around a point estimate and based on the standard error, that quantifies our uncertainty about the true population parameter. Also known as an “interval estimate”.</td>
+<td>A range of values, built around a point estimate and based on the standard error, that quantifies our uncertainty about the true population parameter. Also known as an ‘interval estimate’.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="odd">
 <td>95% CI</td>
-<td>If we repeated our sampling process indefinitely, 95% of the calculated intervals would contain the true population value. It is incorrect to say “there is a 95% chance our specific interval holds the true value”.</td>
+<td>If we repeated our sampling process indefinitely, 95% of the calculated intervals would contain the true population value. It is incorrect to say ‘there is a 95% chance our specific interval holds the true value’.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="even">
@@ -1297,8 +1303,8 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>Multivariable</td>
-<td>Several predictors, one outcome. Some writers say “multiple regression” for the same thing. “Multivariate regression” is a different, formal term for several outcomes modelled together, not used in this course.</td>
-<td>Chapter 7</td>
+<td>Several predictors, one outcome. Some writers say ‘multiple regression’ for the same thing. ‘Multivariate regression’ is a different, formal term for several outcomes modelled together, not used in this course.</td>
+<td>Summary</td>
 </tr>
 <tr class="even">
 <td>Crude, adjusted</td>
@@ -1768,8 +1774,8 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../chapters/11-adjustment.html" class="pagination-link" aria-label="Multiple linear and logistic regression (Week 11)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multiple linear and logistic regression (Week 11)</span></span>
+      <a href="../chapters/12-summary.html" class="pagination-link" aria-label="Summary">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Summary</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
