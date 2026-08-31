@@ -32,3 +32,5 @@ renv/staging/
 
 # Internal planning/instruction docs, not part of the published book
 *.md
+# ...except the repo's own public-facing README
+!README.md

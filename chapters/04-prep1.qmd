@@ -103,16 +103,6 @@ age
 
 `age` now holds the value 34. It appears in the Environment pane, top right, and stays there for the rest of the session, or until we overwrite it by assigning something else to the same name.
 
-<!-- This is confusing for someone totally new, suggest deleting until commands like round are introduced.
-`=` looks similar, but does a different job. Inside the parentheses of a function call, `=` doesn't create an object at all. It names which argument of the function a value belongs to: -->
-
-```{r}
-#| label: equals-demo
-round(x = 3.14159, digits = 2)
-```
-
-<!-- Here, `x = 3.14159` doesn't create an object called `x`. It tells `round()` that 3.14159 is the value for its `x` argument. Outside a function call, `=` can actually be used for assignment too, the same way `<-` can. This course always writes `<-` for assignment and keeps `=` for naming arguments inside a function call, so the two jobs stay visually distinct rather than looking identical on the page. -->
-
 ## Vectors and a first look at data frames
 
 Most of what we do with data in this course means handling many values of the same variable at once, everyone's age in a sample, say, not just one person's. `c()` combines several values into one object like that, called a **vector**. The single `age` we assigned a moment ago only records one patient; the log needs all four. The code below combines all four ages and assigns the result to `age`, overwriting the single value from before, exactly the way the Objects and assignment section said an object could be overwritten:
